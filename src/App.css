@@ -1,21 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne&display=swap');
+
+html *
+{
+   font-family: 'Syne', sans-serif !important ;
+}
+
 .App {
+  font-family: 'Syne', sans-serif !important ;
+  text-align: center;
+  /* background: #282c34; */
+}
+p{
+  color: rgb(27, 27, 26);
+}
+
+.split{
+  height: 100%;
+  width: 50%;
+  top: 0;
+  display: block;
+  /* overflow-x: hidden; */
+  /* padding-top: 20px; */
+}
+
+.Videos-block{
+  /* background: lightblue; */
+  left: 0;
+  float: left;
+}
+
+.friendsVideoBlock{
   text-align: center;
 }
+.friendsVideo{
+  display: block;
+  margin: auto;
+  text-align: center;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+/* .myVideo{
+  border-radius: 5px;
+  border: 1px solid black;
+}  */
+
+.self-view{
+  /* display: block; */
+  /* margin-left: 5%; */
+  border-radius: 5px;
+  border: 1px solid black;
+}
+
+.Start-share, .Stop-share{
+  font-family: 'Syne', sans-serif ;
+  color:whitesmoke;
+  padding:5px;
+  margin: 5px;
+  border:1px solid rgb(175, 173, 173);
+  border-radius: 10px;
+}
+.Start-share{
+  background-color: rgb(76, 141, 163);
+}
+.Stop-share{
+  background-color: rgb(175, 42, 18);
+}
+
+.Message-block{
+  right: 0;
+  float: left;
+}
+
+.Conversation-block{
+  padding-top: 0px;
+  width: 500px;
+  height: 70vh;
+  border: 2px solid gray;
+  border-radius: 10px;
+  background: lavenderblush;
+  overflow: scroll
+}
+.Conversation-block p{
+color: #313133
+}
+
+.Message-input-box{
+
+  display: block;
+  float: left;
+}
+
+.textInput{
+  margin-top: 5px;
+  border-radius: 5px;
+}
+
+.textInput:disabled{
+  opacity: 50%;
+} 
+
+.Upload-button{
+  display: block;
+  float: left;
+}
+
+.File-options{
+  display: block;
+  float: left;
+}
+
+
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
+/* .You {
+  color: red;
+  font-size: x-large;
+  font-weight: bolder;
+} */
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.inputFile{
+  font-family: 'Syne', sans-serif;
+}
+
+input[type="file"] {
+  display: none;
+}
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.sendButton{
+  font-family: 'Syne', sans-serif;
+  padding:5px 0px;
+  border:1px solid rgb(175, 173, 173);
+  width: 7em;
+  border-radius: 10px;
+  background-color: rgb(76, 141, 163);
+  /* border: 1px solid indianred; */
+  font-size: 15px;
+  color: antiquewhite;
+}
+
+.Save-button{
+  font-family: 'Syne', sans-serif;
+  font-size: 5px;
 }
 
 .App-header {
   background-color: #282c34;
-  min-height: 100vh;
+  min-height: 10vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,15 +164,66 @@
   color: white;
 }
 
+.App-header p{
+  color: antiquewhite;
+}
+
 .App-link {
   color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+
+ /* Buttons  */
+
+
+
+.answerButton {
+
+  border: none;
+  border-radius: 1000px;
+  z-index: 200;
+  transition: all 0.3s ease-in-out 0s;
+  cursor: pointer;
+  outline: none;
+  position: relative;
+  padding: 10px;
   }
-  to {
-    transform: rotate(360deg);
+
+.button:hover, .button:focus {
+  color: #313133;
+  transform: translateY(-6px);
+}
+
+
+.answerButton::after {
+  z-index: 200;
+  content: '';
+  width: 30px; height: 30px;
+  border-radius: 100%;
+  border: 6px solid green;
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: ring 1.5s infinite;
+}
+
+
+@keyframes ring {
+  0% {
+    width: 30px;
+    height: 30px;
+    opacity: 1;
   }
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+.preview{
+  width: 10vh;
+  height: 10vh;
 }
