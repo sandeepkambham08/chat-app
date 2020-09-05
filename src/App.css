@@ -16,16 +16,23 @@ p{
 
 .split{
   height: 100%;
-  width: 50%;
   top: 0;
   display: block;
   /* overflow-x: hidden; */
   /* padding-top: 20px; */
 }
 
+
 .Videos-block{
   /* background: lightblue; */
+  width: 70%;
   left: 0;
+  float: left;
+}
+
+.Message-block{
+  width: 30%;
+  right: 0;
   float: left;
 }
 
@@ -36,21 +43,25 @@ p{
   display: block;
   margin: auto;
   text-align: center;
-  border: 1px solid black;
+ border: 1px solid black;
   border-radius: 10px;
+  min-width: 600px;
+  max-width: 600px;;
+  min-height: 450px;
+  max-height: 450px;
+  /* transform: scale(-1,1); */
 }
 
-/* .myVideo{
-  border-radius: 5px;
+ .self-view{
+  border-radius: 10px;
+  min-width: 160px;
+  max-width: 160px;
+  min-height: 120px;
+  max-height: 120px;
   border: 1px solid black;
-}  */
+  transform: scale(-1,1);
+} 
 
-.self-view{
-  /* display: block; */
-  /* margin-left: 5%; */
-  border-radius: 5px;
-  border: 1px solid black;
-}
 
 .Start-share, .Stop-share{
   font-family: 'Syne', sans-serif ;
@@ -67,14 +78,11 @@ p{
   background-color: rgb(175, 42, 18);
 }
 
-.Message-block{
-  right: 0;
-  float: left;
-}
+
 
 .Conversation-block{
   padding-top: 0px;
-  width: 500px;
+  width: 300px;
   height: 70vh;
   border: 2px solid gray;
   border-radius: 10px;

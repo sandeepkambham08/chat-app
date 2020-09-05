@@ -94,6 +94,9 @@ class App extends Component {
     downloadButton:false,
     progressBar:false,
     screenShare:false,
+    stream:null,
+    audioTrack:null,
+    videoTrack:null,
   }
 
   // To start a video call & creating an offer 
@@ -215,6 +218,95 @@ class App extends Component {
   }
   
   // ^^^^^^^^^^^^^^ Call now Connected ^^^^^^^^^^^^^^^^^ //
+// Stop Video //
+stopVideo = () =>{
+    
+  const tracks = this.state.stream.getTracks();
+  tracks.forEach(track=>{
+    if(track.kind==='video'){
+      console.log(track);
+      track.stop();
+      console.log('Video off');
+    }
+    //senders.push(pc.addTrack(track,stream))
+    //pc.addTrack(track,this.state.stream)
+    //selfView.srcObject = stream;
+    console.log(this.state.stream.getTracks());
+  })
+}
+
+resumeVideo =() =>{
+  navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+  .then((stream)=>{
+    // console.log(stream.getTracks());
+    // console.log(senders);
+    senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[1]);
+    // console.log(senders);
+    // console.log(stream.getTracks());
+    document.getElementById('self-view').srcObject = stream;
+  })
+}
+  // // Stop Video //
+  // stopVideo = () =>{
+  
+  //   const tracks = this.state.stream.getTracks();
+  //   const videoTrack = this.state.videoTrack;
+  //   console.log(videoTrack)
+  //   // tracks.forEach(track=>{
+  //   //   if(track.kind==='video'){
+  //   //     console.log(track);
+  //   //     track.stop();
+  //   //     //senders.find(sender => sender.track.kind === 'video').stop();
+  //   //     console.log('Video off');
+  //   //   }
+  //   //   //senders.push(pc.addTrack(track,stream))
+  //   //   //pc.addTrack(track,this.state.stream)
+  //   //   //selfView.srcObject = stream;
+  //   // })
+  //   videoTrack.stop();
+  //   console.log('video stopped')
+  //   console.log(videoTrack);
+  //   // this.setState({videoTrack:null});
+  // }
+
+  // resumeVideo =() =>{
+  //   navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+  //   .then((stream)=>{
+  //     const tracks = stream.getTracks();
+  //     tracks.forEach(track=>{
+  //     if(track.kind==='video'){
+  //       console.log('Video type found in resume video');
+  //       this.setState({videoTrack:track});
+  //       pc.addTrack(track,stream);
+  //     }
+  //   })
+  //     // console.log(stream.getTracks());
+  //     // console.log(senders);
+  //     // senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[1]);
+  //     // console.log(senders);
+  //     // console.log(stream.getTracks());
+  //     document.getElementById('self-view').srcObject = stream;
+  //   })
+
+
+  //   // const mediaStream = this.state.stream;
+  //   // mediaStream.getVideoTracks()[0].enabled =
+  //   // !(mediaStream.getVideoTracks()[0].enabled);
+    
+  //   // const tracks = this.state.stream.getTracks();
+  //   // tracks.forEach(track=>{
+  //   //   if(track.kind==='video'){
+  //   //     console.log(track);
+  //   //     pc.addTrack(track,this.state.stream)
+  //   //     console.log('Video on');
+  //   //   }
+  //   //   //senders.push(pc.addTrack(track,stream))
+  //   //   //pc.addTrack(track,this.state.stream)
+  //   //   //selfView.srcObject = stream;
+  //   //   console.log(this.state.stream.getTracks());
+  //   // })
+   
+  // }
 
   // Share screen 
   shareScreenStart = () => {
@@ -233,18 +325,29 @@ class App extends Component {
   }
 
   shareScreenStop = () =>{
-    this.setState({screenShare:false});
+     this.setState({screenShare:false});
     console.log('Stop share');
 
     navigator.mediaDevices.getUserMedia({ audio: true, video: true })
     .then((stream)=>{
-      console.log(stream.getTracks());
-      console.log(senders);
+      // console.log(stream.getTracks());
+      // console.log(senders);
       senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[1]);
-      console.log(senders);
-      console.log(stream.getTracks());
+      // console.log(senders);
+      // console.log(stream.getTracks());
       document.getElementById('self-view').srcObject = stream;
     })
+
+    // senders.find(sender => sender.track.kind === 'video').removeTrack(this.state.stream.getTracks()[0]);
+    // const tracks = this.state.stream.getTracks();
+    //   tracks.forEach(track=>{
+    //     console.log(track);
+    //     //senders.push(pc.addTrack(track,stream))
+    //     //pc.addTrack(track,this.state.stream)
+    //     //selfView.srcObject = stream;
+    //     console.log(this.state.stream.getTracks());
+    //   })
+    // console.log(this.state.stream.getTracks())
 
   //   senders.find(sender => sender.track.kind === 'video')
   //   .replaceTrack(userMediaStream.getTracks().find(track => track.kind === 'video'));
@@ -438,15 +541,17 @@ class App extends Component {
           <div className="App-header">
             <p>Have a conversation with privacy</p>
           </div>
-          <div className='Videos-block split'>
+          <div className='Videos-block split' >
             <div className='friendsVideoBlock'>
               <p>Friend's Video</p>
-              <video ref={this.friendsVideo} className='friendsVideo' id="friendsVideo" autoPlay style={{ minWidth: '500px', maxWidth: '500px', transform: 'scale(-1,1)' }}></video>
+              <video ref={this.friendsVideo}  className='friendsVideo' id="friendsVideo" autoPlay ></video>
             </div>
 
             <p>My Video</p>
             {/* <video id="myVideo" className='myVideo' autoPlay muted style={{ width: '200px', transform: 'scale(-1,1)' }}></video> */}
-            <video id="self-view" className='self-view' autoPlay muted style={{ width: '200px', transform: 'scale(-1,1)' }}></video>
+            <video id="self-view" className='self-view' autoPlay muted ></video>
+            <button onClick={this.stopVideo}>Off Video</button>
+            <button onClick={this.resumeVideo}>On Video</button>
             <button className='Start-share' hidden={!this.state.messageBoxActive || this.state.screenShare} onClick={this.shareScreenStart}>Share screen</button>
             <button className='Stop-share' hidden={!this.state.screenShare} onClick={this.shareScreenStop}>Stop share</button>
             <br></br>
@@ -473,8 +578,8 @@ class App extends Component {
               <button variant="contained" className='sendButton' disabled={!this.state.messageBoxActive} onClick={this.sendInputMessage}>SEND ></button>
               <br></br>
             </div>
-            <label for="inputFile" class="custom-file-upload" > Custom Upload </label>
-            <input disabled={!this.state.messageBoxActive} onChange={(e) => { this.fileSelect(e) }} type="file"/> 
+            {/* <label htmlFor="inputFile" hidden={this.state.messageBoxActive} className="custom-file-upload" > Custom Upload </label>
+            <input id='inputFile' disabled={!this.state.messageBoxActive} onChange={(e) => { this.fileSelect(e) }} type="file"/>  */}
             <input id='inputFile'  className='inputFile' type='file' disabled={!this.state.messageBoxActive} onChange={(e) => { this.fileSelect(e) }} size="60" style={{ display: 'block', float: 'left', padding: '22px 15px 0 15px' }}></input>
             {/* <Button variant="contained" onChange={(e) => { this.fileSelect(e) }} color="primary" startIcon={<CloudUploadIcon />} >Upload
             </Button> */}
@@ -533,13 +638,25 @@ class App extends Component {
     // ------ Screenshare with self Video  -----------  //
     navigator.mediaDevices.getUserMedia({ audio: true, video: true })
     .then((stream)=>{
+      this.setState({stream:stream});
       const tracks = stream.getTracks();
       tracks.forEach(track=>{
+        if(track.kind==='audio'){
+          this.setState({audioTrack:track});
+         // pc.addTrack(track,stream);
+        }
+        if(track.kind==='video'){
+          this.setState({videoTrack:track});
+         // pc.addTrack(track,stream);
+        }
         console.log(track);
         senders.push(pc.addTrack(track,stream))
         selfView.srcObject = stream;
+        console.log(this.state.stream.getTracks());
       })
-      });
+      return stream;
+      })
+      // .then(stream => pc.addStream(stream));
 
       // pc.ontrack = (event) =>{
       //   console.log('Now added friends stream' + Date.now())
