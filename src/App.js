@@ -6,6 +6,10 @@ import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
+import VideocamIcon from '@material-ui/icons/Videocam';
+import VideocamOffIcon from '@material-ui/icons/VideocamOff';
+import video_off from './media/video_off.png';
+import video_on from './media/video_on.png';
 
 //import adapter from 'webrtc-adapter';
 
@@ -36,8 +40,6 @@ var loaded = 0;        // To calculate percentage of downloaded file on receiver
 
 //Screen share
 const senders= [];
-let userMediaStream;
-let displayMediaStream;
 
 var iceCandidateCount = 1;
 pc.onicecandidate = (event) => {
@@ -97,6 +99,7 @@ class App extends Component {
     stream:null,
     audioTrack:null,
     videoTrack:null,
+    videoOn:true,
   }
 
   // To start a video call & creating an offer 
@@ -220,22 +223,14 @@ class App extends Component {
   // ^^^^^^^^^^^^^^ Call now Connected ^^^^^^^^^^^^^^^^^ //
 // Stop Video //
 stopVideo = () =>{
-    
-  const tracks = this.state.stream.getTracks();
-  tracks.forEach(track=>{
-    if(track.kind==='video'){
-      console.log(track);
-      track.stop();
-      console.log('Video off');
-    }
-    //senders.push(pc.addTrack(track,stream))
-    //pc.addTrack(track,this.state.stream)
-    //selfView.srcObject = stream;
-    console.log(this.state.stream.getTracks());
-  })
+const videoTrack = senders.find(sender => sender.track.kind === 'video');
+videoTrack.track.stop();
+console.log('Video off');
+this.setState({videoOn:false}); // Video button toggle
 }
 
 resumeVideo =() =>{
+  console.log(senders);
   navigator.mediaDevices.getUserMedia({ audio: true, video: true })
   .then((stream)=>{
     // console.log(stream.getTracks());
@@ -245,69 +240,10 @@ resumeVideo =() =>{
     // console.log(stream.getTracks());
     document.getElementById('self-view').srcObject = stream;
   })
+  console.log(senders.find(sender => sender.track.kind === 'video'));
+  this.setState({videoOn:true});   // Video button toggle
 }
-  // // Stop Video //
-  // stopVideo = () =>{
   
-  //   const tracks = this.state.stream.getTracks();
-  //   const videoTrack = this.state.videoTrack;
-  //   console.log(videoTrack)
-  //   // tracks.forEach(track=>{
-  //   //   if(track.kind==='video'){
-  //   //     console.log(track);
-  //   //     track.stop();
-  //   //     //senders.find(sender => sender.track.kind === 'video').stop();
-  //   //     console.log('Video off');
-  //   //   }
-  //   //   //senders.push(pc.addTrack(track,stream))
-  //   //   //pc.addTrack(track,this.state.stream)
-  //   //   //selfView.srcObject = stream;
-  //   // })
-  //   videoTrack.stop();
-  //   console.log('video stopped')
-  //   console.log(videoTrack);
-  //   // this.setState({videoTrack:null});
-  // }
-
-  // resumeVideo =() =>{
-  //   navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-  //   .then((stream)=>{
-  //     const tracks = stream.getTracks();
-  //     tracks.forEach(track=>{
-  //     if(track.kind==='video'){
-  //       console.log('Video type found in resume video');
-  //       this.setState({videoTrack:track});
-  //       pc.addTrack(track,stream);
-  //     }
-  //   })
-  //     // console.log(stream.getTracks());
-  //     // console.log(senders);
-  //     // senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[1]);
-  //     // console.log(senders);
-  //     // console.log(stream.getTracks());
-  //     document.getElementById('self-view').srcObject = stream;
-  //   })
-
-
-  //   // const mediaStream = this.state.stream;
-  //   // mediaStream.getVideoTracks()[0].enabled =
-  //   // !(mediaStream.getVideoTracks()[0].enabled);
-    
-  //   // const tracks = this.state.stream.getTracks();
-  //   // tracks.forEach(track=>{
-  //   //   if(track.kind==='video'){
-  //   //     console.log(track);
-  //   //     pc.addTrack(track,this.state.stream)
-  //   //     console.log('Video on');
-  //   //   }
-  //   //   //senders.push(pc.addTrack(track,stream))
-  //   //   //pc.addTrack(track,this.state.stream)
-  //   //   //selfView.srcObject = stream;
-  //   //   console.log(this.state.stream.getTracks());
-  //   // })
-   
-  // }
-
   // Share screen 
   shareScreenStart = () => {
     // if (!displayMediaStream) {
@@ -325,9 +261,14 @@ resumeVideo =() =>{
   }
 
   shareScreenStop = () =>{
-     this.setState({screenShare:false});
     console.log('Stop share');
-
+    if(!this.state.videoOn){
+      const screenTrack = senders.find(sender => sender.track.kind === 'video');
+      screenTrack.track.stop();
+    }
+    else{
+    const shareTrack = senders.find(sender => sender.track.kind === 'video');
+    shareTrack.track.stop();
     navigator.mediaDevices.getUserMedia({ audio: true, video: true })
     .then((stream)=>{
       // console.log(stream.getTracks());
@@ -337,21 +278,8 @@ resumeVideo =() =>{
       // console.log(stream.getTracks());
       document.getElementById('self-view').srcObject = stream;
     })
-
-    // senders.find(sender => sender.track.kind === 'video').removeTrack(this.state.stream.getTracks()[0]);
-    // const tracks = this.state.stream.getTracks();
-    //   tracks.forEach(track=>{
-    //     console.log(track);
-    //     //senders.push(pc.addTrack(track,stream))
-    //     //pc.addTrack(track,this.state.stream)
-    //     //selfView.srcObject = stream;
-    //     console.log(this.state.stream.getTracks());
-    //   })
-    // console.log(this.state.stream.getTracks())
-
-  //   senders.find(sender => sender.track.kind === 'video')
-  //   .replaceTrack(userMediaStream.getTracks().find(track => track.kind === 'video'));
-  // document.getElementById('self-view').srcObject = userMediaStream;
+    }
+    this.setState({screenShare:false});
   }
 
 
@@ -549,9 +477,14 @@ resumeVideo =() =>{
 
             <p>My Video</p>
             {/* <video id="myVideo" className='myVideo' autoPlay muted style={{ width: '200px', transform: 'scale(-1,1)' }}></video> */}
+            
+            {/* <button onClick={this.stopVideo} hidden={!this.state.videoOn}>Off Video</button> */}
+            <img id="videoOff" className='videoOff' src={video_on} onClick={this.stopVideo} hidden={!this.state.videoOn} alt='Video off' />
+            {/* <VideocamOffIcon onClick={this.stopVideo} hidden={!this.state.videoOn} color='primary'></VideocamOffIcon> */}
+            {/* <VideocamIcon onClick={this.resumeVideo} hidden={this.state.videoOn} color='primary'></VideocamIcon> */}
+            <img id="videoOn" className='videoOn' src={video_off} onClick={this.resumeVideo} hidden={this.state.videoOn} alt='Video on' />
             <video id="self-view" className='self-view' autoPlay muted ></video>
-            <button onClick={this.stopVideo}>Off Video</button>
-            <button onClick={this.resumeVideo}>On Video</button>
+            {/* <button onClick={this.resumeVideo} hidden={this.state.videoOn} >On Video</button> */}
             <button className='Start-share' hidden={!this.state.messageBoxActive || this.state.screenShare} onClick={this.shareScreenStart}>Share screen</button>
             <button className='Stop-share' hidden={!this.state.screenShare} onClick={this.shareScreenStop}>Stop share</button>
             <br></br>
@@ -573,7 +506,7 @@ resumeVideo =() =>{
             </div>
 
             <div className='Message-input-box'>
-              <textarea id='textInput' className='textInput' placeholder="Enter your message here " disabled={!this.state.messageBoxActive} onKeyDown={(e) => { this.enterAsInput(e) }}></textarea>
+              <input type='text' id='textInput' className='textInput' placeholder="Enter your message here " disabled={!this.state.messageBoxActive} onKeyDown={(e) => { this.enterAsInput(e) }}  style={{width:'150%',height:'1.75em' }}></input>
               <br></br>
               <button variant="contained" className='sendButton' disabled={!this.state.messageBoxActive} onClick={this.sendInputMessage}>SEND ></button>
               <br></br>

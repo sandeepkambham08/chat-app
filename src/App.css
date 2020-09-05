@@ -62,6 +62,31 @@ p{
   transform: scale(-1,1);
 } 
 
+.videoOff, .videoOn{
+  width: 25px;
+  height: 25px;
+  padding: 6px;
+  margin-right: 5px;
+  border-radius: 15px;
+  transition: background-color 600ms ease;
+}
+.videoOn{
+  background-color: rgb(199, 43, 43);
+  opacity: 80%;
+  
+}
+.videoOn:hover{
+  background-color: rgb(7, 175, 35);
+}
+
+.videoOff{
+  background-color: rgb(7, 175, 35);
+  opacity: 80%;
+}
+.videoOff:hover{
+  background-color: rgb(199, 43, 43);
+}
+
 
 .Start-share, .Stop-share{
   font-family: 'Syne', sans-serif ;
@@ -100,7 +125,7 @@ color: #313133
 }
 
 .textInput{
-  margin-top: 5px;
+  margin: 5px 0px;
   border-radius: 5px;
 }
 
