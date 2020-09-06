@@ -7,8 +7,41 @@ html *
 
 .App {
   font-family: 'Syne', sans-serif !important ;
+  
+  /* text-align: center; */
+  
+}
+.App-header {
+  background-color: #282c34;
+  height: 10vh;
+  width: 100%;
+  display: block;
+  float: left;
+  flex-direction: column;
+  /* align-items: center;
+  justify-content: center; */
+  font-size: calc(10px + 2vmin);
+  color: white;
+  position: fixed;
+}
+
+.App-header p{
   text-align: center;
-  /* background: #282c34; */
+  color: antiquewhite;
+}
+
+.Side-drawer-button{
+  width: 4vw;
+  height: 6vh;
+  display: block;
+  right:0;
+  margin: 2vh 0.5vw 0 0;
+  position: fixed;
+  cursor: pointer;
+}
+
+.App-link {
+  color: #61dafb;
 }
 p{
   color: rgb(27, 27, 26);
@@ -16,7 +49,7 @@ p{
 
 .split{
   height: 100%;
-  top: 0;
+  top: 100;
   display: block;
   /* overflow-x: hidden; */
   /* padding-top: 20px; */
@@ -25,54 +58,95 @@ p{
 
 .Videos-block{
   /* background: lightblue; */
-  width: 70%;
-  left: 0;
+  width: 100vw;
   float: left;
+  margin-top: 10vh;
+  z-index: 100;
+  background-color: azure;
 }
 
-.Message-block{
-  width: 30%;
+.Side-drawer{
+  width: 30vw;
   right: 0;
-  float: left;
+  position: fixed;
+  margin-top: 10vh;
+  z-index: 200;
+  background-color: rgba(0, 0, 0, 0.808);
+  box-sizing: border-box;
+  transition: transform 0.5s ease-in;
+}
+.Contacts-drawer-button{
+  width: 4vw;
+  height: 6vh;
+  display: block;
+  left:0;
+  margin: 2vh 0vw 0 0.5vw;
+  position: fixed;
+}
+.Drawer-open{
+  transform: translateX(0);
 }
 
-.friendsVideoBlock{
+.Drawer-close{
+  transform: translateX(+100%);
+}
+
+.caption{
   text-align: center;
+}
+.Both-Videos{
+  /* text-align: center; */
+  border: 1px solid black;
+  margin-left: 25%;
+  border-radius: 10px;
+  width: 800px;
+  height: 600px;
+  z-index: 100;
 }
 .friendsVideo{
-  display: block;
-  margin: auto;
+  border-radius: 10px;
   text-align: center;
- border: 1px solid black;
-  border-radius: 10px;
-  min-width: 600px;
-  max-width: 600px;;
-  min-height: 450px;
-  max-height: 450px;
-  /* transform: scale(-1,1); */
+  width: 800px;
+  height: 600px;
+  z-index: 100;
+  position: absolute;
 }
-
+.myVideo-and-controls{
+  position: relative;
+  margin: 54% 0 0 73%;
+  z-index: 200;
+}
  .self-view{
+  margin: 30px 0px 0px 40px;
   border-radius: 10px;
-  min-width: 160px;
   max-width: 160px;
-  min-height: 120px;
   max-height: 120px;
   border: 1px solid black;
-  transform: scale(-1,1);
+  /* transform: scale(-1,1); */
 } 
 
 .videoOff, .videoOn{
-  width: 25px;
-  height: 25px;
+  width: 20px;
+  height: 20px;
+  padding: 6px;
+  margin-top: 110px;
+  margin-left: 0px;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 300;
+  border: 1px solid white;
+  transition: background-color 600ms ease-in-out;
+}
+.videoOff:hover, .videoOn:hover{
+  width: 20px;
+  height: 20px;
   padding: 6px;
   margin-right: 5px;
-  border-radius: 15px;
-  transition: background-color 600ms ease;
+  cursor: pointer;
 }
+
 .videoOn{
-  background-color: rgb(199, 43, 43);
-  opacity: 80%;
+  background-color: rgb(199, 43, 43, 0.9);
   
 }
 .videoOn:hover{
@@ -80,35 +154,49 @@ p{
 }
 
 .videoOff{
-  background-color: rgb(7, 175, 35);
-  opacity: 80%;
+  background-color: rgb(7, 175, 35 , 0.9);
 }
 .videoOff:hover{
   background-color: rgb(199, 43, 43);
 }
 
-
 .Start-share, .Stop-share{
-  font-family: 'Syne', sans-serif ;
-  color:whitesmoke;
-  padding:5px;
-  margin: 5px;
-  border:1px solid rgb(175, 173, 173);
-  border-radius: 10px;
+  width: 20px;
+  height: 20px;
+  padding: 6px;
+  margin-top: 60px;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 300;
+  border: 1px solid white;
+  cursor: pointer;
+  transition: background-color 300ms ease-in-out;
 }
+
 .Start-share{
-  background-color: rgb(76, 141, 163);
+  background-color: rgb(211, 211, 212);
+}
+.Start-share:hover{
+  width: 30px;
+  height: 30px;
+  padding: 2px;
+  background-color: white;
 }
 .Stop-share{
   background-color: rgb(175, 42, 18);
 }
-
-
+.Stop-share:hover{
+  width: 30px;
+  height: 30px;
+  padding: 2px;
+  background-color: rgb(250, 4, 4);
+}
 
 .Conversation-block{
   padding-top: 0px;
-  width: 300px;
-  height: 70vh;
+  text-align: center;
+  width: 99%;
+  height: 67vh;
   border: 2px solid gray;
   border-radius: 10px;
   background: lavenderblush;
@@ -119,7 +207,6 @@ color: #313133
 }
 
 .Message-input-box{
-
   display: block;
   float: left;
 }
@@ -129,6 +216,34 @@ color: #313133
   border-radius: 5px;
 }
 
+.Your-input {
+  word-wrap: break-word;
+  margin-left:9% ;
+  max-width: 90%;
+  color: rgb(250, 248, 245) !important;
+  background-color: #545657b2;
+  text-align: right;
+  padding: 5px 10px;
+  border-radius: 15px;
+  border-bottom-right-radius: 2px;
+}
+
+.Friend-input {
+  word-wrap: break-word;
+  margin-right:9% ;
+  max-width: 90%;
+  background-color: #61dafb;
+  text-align: left;
+  /* float: left; */
+  padding: 5px 10px;
+  border-radius: 15px;
+  border-bottom-left-radius: 2px;
+}
+
+.who-tag{
+  font-weight: bolder;
+}
+
 .textInput:disabled{
   opacity: 50%;
 } 
@@ -136,6 +251,7 @@ color: #313133
 .Upload-button{
   display: block;
   float: left;
+  cursor: pointer;
 }
 
 .File-options{
@@ -159,9 +275,9 @@ color: #313133
   font-family: 'Syne', sans-serif;
 }
 
-input[type="file"] {
+/* input[type="file"] {
   display: none;
-}
+} */
 .custom-file-upload {
   border: 1px solid #ccc;
   display: inline-block;
@@ -179,32 +295,16 @@ input[type="file"] {
   /* border: 1px solid indianred; */
   font-size: 15px;
   color: antiquewhite;
+  cursor: pointer;
+}
+.sendButton:disabled{
+display: none;
 }
 
 .Save-button{
   font-family: 'Syne', sans-serif;
   font-size: 5px;
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 10vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-header p{
-  color: antiquewhite;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
 
  /* Buttons  */
 
@@ -225,6 +325,7 @@ input[type="file"] {
 .button:hover, .button:focus {
   color: #313133;
   transform: translateY(-6px);
+  cursor: pointer;
 }
 
 

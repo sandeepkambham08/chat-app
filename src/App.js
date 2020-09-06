@@ -10,6 +10,8 @@ import VideocamIcon from '@material-ui/icons/Videocam';
 import VideocamOffIcon from '@material-ui/icons/VideocamOff';
 import video_off from './media/video_off.png';
 import video_on from './media/video_on.png';
+import side_drawer from './media/side_drawer_new.png';
+import screen_share from './media/screen_share.png';
 
 //import adapter from 'webrtc-adapter';
 
@@ -39,7 +41,7 @@ var chunkLength = 10000;     // To divide file into chunks
 var loaded = 0;        // To calculate percentage of downloaded file on receiver side
 
 //Screen share
-const senders= [];
+const senders = [];
 
 var iceCandidateCount = 1;
 pc.onicecandidate = (event) => {
@@ -89,17 +91,19 @@ class App extends Component {
     offerReceived: false,
     offerAccepted: false,
     messageReceived: '',
-    messageBoxActive: false,
+    callConnected: false,
     fileList: null,
-    fileURL:null,
-    fileName:'',
-    downloadButton:false,
-    progressBar:false,
-    screenShare:false,
-    stream:null,
-    audioTrack:null,
-    videoTrack:null,
-    videoOn:true,
+    fileURL: null,
+    fileName: '',
+    downloadButton: false,
+    progressBar: false,
+    screenShare: false,
+    stream: null,
+    audioTrack: null,
+    videoTrack: null,
+    videoOn: true,
+    drawerOpen: false,
+    loggedIn: true,
   }
 
   // To start a video call & creating an offer 
@@ -162,7 +166,7 @@ class App extends Component {
           console.log('STEP 15: ANSWER added to Remote description - TIME: ' + Date.now())
           db.ref('/ice/').on('child_added', (snapshot) => {
             this.readIceMessage(snapshot)
-            this.setState({ messageBoxActive: true }) //Caller side message box active 
+            this.setState({ callConnected: true }) //Caller side message box active 
           });
         });
       }
@@ -191,7 +195,7 @@ class App extends Component {
         console.log('STEP 13: Added answer to PC localDescription - TIME: ' + Date.now())
         this.sendMessage(yourId, JSON.stringify({ 'sdp': pc.localDescription }));
         console.log('STEP 14: Sent ANSWER to you')
-        this.setState({ messageBoxActive: true })  //Receiver side message box active 
+        this.setState({ callConnected: true })  //Receiver side message box active 
         pc.ondatachannel = function (event) {
           var channelReceived = event.channel;
           var arrayToStoreChunks = [];
@@ -219,82 +223,97 @@ class App extends Component {
     }
     else { console.log('================ Self generated ICE candidates ================') }
   }
-  
-  // ^^^^^^^^^^^^^^ Call now Connected ^^^^^^^^^^^^^^^^^ //
-// Stop Video //
-stopVideo = () =>{
-const videoTrack = senders.find(sender => sender.track.kind === 'video');
-videoTrack.track.stop();
-console.log('Video off');
-this.setState({videoOn:false}); // Video button toggle
-}
 
-resumeVideo =() =>{
-  console.log(senders);
-  navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-  .then((stream)=>{
-    // console.log(stream.getTracks());
-    // console.log(senders);
-    senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[1]);
-    // console.log(senders);
-    // console.log(stream.getTracks());
-    document.getElementById('self-view').srcObject = stream;
-  })
-  console.log(senders.find(sender => sender.track.kind === 'video'));
-  this.setState({videoOn:true});   // Video button toggle
-}
-  
+  // ^^^^^^^^^^^^^^ Call now Connected ^^^^^^^^^^^^^^^^^ //
+  // Stop Video //
+  stopVideo = () => {
+    const videoTrack = senders.find(sender => sender.track.kind === 'video');
+    videoTrack.track.stop();
+    console.log('Video off');
+    this.setState({ videoOn: false }); // Video button toggle
+  }
+
+  resumeVideo = () => {
+    console.log(senders);
+    navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+      .then((stream) => {
+        // console.log(stream.getTracks());
+        // console.log(senders);
+        senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[1]);
+        // console.log(senders);
+        // console.log(stream.getTracks());
+        document.getElementById('self-view').srcObject = stream;
+      })
+    console.log(senders.find(sender => sender.track.kind === 'video'));
+    this.setState({ videoOn: true });   // Video button toggle
+  }
+
   // Share screen 
   shareScreenStart = () => {
     // if (!displayMediaStream) {
     //   displayMediaStream = navigator.mediaDevices.getDisplayMedia();
     // }
-    navigator.mediaDevices.getDisplayMedia().then(stream=>{
+    navigator.mediaDevices.getDisplayMedia().then(stream => {
       console.log(stream.getTracks());
       console.log(senders);
       senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[0]);
       console.log(senders);
       console.log(stream.getTracks());
       document.getElementById('self-view').srcObject = stream;
+      this.setState({ screenShare: true });
     })
-    this.setState({screenShare:true});
   }
 
-  shareScreenStop = () =>{
+  shareScreenStop = () => {
     console.log('Stop share');
-    if(!this.state.videoOn){
+    if (!this.state.videoOn) {
       const screenTrack = senders.find(sender => sender.track.kind === 'video');
       screenTrack.track.stop();
+      this.setState({ screenShare: false });
     }
-    else{
-    const shareTrack = senders.find(sender => sender.track.kind === 'video');
-    shareTrack.track.stop();
-    navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-    .then((stream)=>{
-      // console.log(stream.getTracks());
-      // console.log(senders);
-      senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[1]);
-      // console.log(senders);
-      // console.log(stream.getTracks());
-      document.getElementById('self-view').srcObject = stream;
-    })
+    else {
+      const shareTrack = senders.find(sender => sender.track.kind === 'video');
+      shareTrack.track.stop();
+      navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+        .then((stream) => {
+          // console.log(stream.getTracks());
+          // console.log(senders);
+          senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[1]);
+          // console.log(senders);
+          // console.log(stream.getTracks());
+          document.getElementById('self-view').srcObject = stream;
+          this.setState({ screenShare: false });
+        })
     }
-    this.setState({screenShare:false});
   }
 
 
   // To send messages on chat
   sendInputMessage = () => {
-    const input = document.getElementById('textInput');
-    console.log("You entered : " + input.value)
-    // document.getElementById('messageReceived').innerHTML+='<p class="You">You: </p>';
-    document.getElementById('messageReceived').append('You :' + input.value);
-    document.getElementById('messageReceived').innerHTML += '<br></br>';
+    const input = document.getElementById('textInput').value;
+    console.log("You entered : " + input)
+    //const messageReceived = document.getElementById('messageReceived');
+    //messageReceived.innerHTML+="<span class='Your-input' >You : {input}</span>"
+    // old working 
+    //  document.getElementById('messageReceived').append('You :' + input.value);
+    document.getElementById('messageReceived').innerHTML += "<p class='Your-input'><span class='who-tag'>You : </span>" + input + "</p>"
+    // document.getElementById('messageReceived').className='Your-input'
+    // document.getElementById('messageReceived').innerHTML += '<br></br>';
+    //
+
+    /* new working 
+    var tag = document.createElement("p");
+    var text = document.createTextNode('You :' + input.value);
+    //tag.className='Your-input';
+    tag.appendChild(text);
+    messageReceived.append(text);
+    */
+
     var data = {};
     data.type = 'text';
-    data.message = input.value;
+    data.message = input;
     dataChannel.send(JSON.stringify(data));
-    input.value = null;  //To clear the input box
+    document.getElementById('textInput').value = null;  //To clear the input box
   }
 
   // To enable 'Enter' to send message
@@ -307,11 +326,9 @@ resumeVideo =() =>{
     }
   }
 
-  
-
   // To select and load the file
   fileSelect = (e) => {
-    this.setState({progressBar:true});     // Show progress bar
+    this.setState({ progressBar: true });     // Show progress bar
     var fileList = e.target.files;
     var file = fileList[0];
     this.setState({ fileList: file })
@@ -349,34 +366,34 @@ resumeVideo =() =>{
     //document.getElementById('downloadSection').innerHTML= '<a href="input" download="inputfile">'
     console.log(input);
   }
- 
+
   // To handle received message on chat/file transfer
   handleChatMessage = (event, arrayToStoreChunks) => {
     var data = JSON.parse(event.data);
     var progressValue = document.getElementById('progressBar');
-   
+
     console.log(data.type);
     if (data.type === 'file') {
-      this.setState({progressBar:true});  
+      this.setState({ progressBar: true });
       var fileName = data.fileName;
       var fileType = data.fileType;
       var fileSize = data.fileSize;
       var totalLength = data.totalLength;
-      if(totalLength){            // totalLength only sent on start
-        progressValue.max=totalLength;
+      if (totalLength) {            // totalLength only sent on start
+        progressValue.max = totalLength;
         console.log(totalLength);
-        progressValue.value=0;
+        progressValue.value = 0;
       }
       progressValue.max = fileSize;
       console.log(fileName + fileType + fileSize);
       arrayToStoreChunks.push(data.message); // pushing chunks in array  
       //console.log(data.message.length);
-      loaded+=data.message.length;
+      loaded += data.message.length;
       console.log(loaded);
-      progressValue.value=loaded;
+      progressValue.value = loaded;
       if (data.last) {
-       // this.saveToDisk(arrayToStoreChunks.join(''), fileName);
-       this.setState({fileURL:arrayToStoreChunks.join(''), fileName: fileName, downloadButton:true})
+        // this.saveToDisk(arrayToStoreChunks.join(''), fileName);
+        this.setState({ fileURL: arrayToStoreChunks.join(''), fileName: fileName, downloadButton: true })
         arrayToStoreChunks = []; // resetting array
       }
 
@@ -385,8 +402,9 @@ resumeVideo =() =>{
       console.log(data.message);
       console.log('Friend : ' + data.message);
       // console.log(event.data.size);
-      document.getElementById('messageReceived').append('Friend :' + data.message);
-      document.getElementById('messageReceived').innerHTML += '<br></br>'
+      // document.getElementById('messageReceived').append('Friend :' + data.message);
+      document.getElementById('messageReceived').innerHTML += "<p class='Friend-input'> <span class='who-tag'>Friend : </span>" + data.message + "</p>"
+      // document.getElementById('messageReceived').innerHTML += '<br></br>'
     }
   }
 
@@ -401,10 +419,10 @@ resumeVideo =() =>{
     data.fileSize = file.size;
 
     if (event) {
-      text =event.target.result;
+      text = event.target.result;
       data.totalLength = text.length;
     } // on first invocation
-  
+
     if (text.length > chunkLength) {
       data.message = text.slice(0, chunkLength); // getting chunk using predefined chunk length
       data.type = 'file';
@@ -414,7 +432,7 @@ resumeVideo =() =>{
       data.last = true;
     }
 
-    dataChannel.send(JSON.stringify(data)); 
+    dataChannel.send(JSON.stringify(data));
 
     var remainingDataURL = text.slice(data.message.length);
     if (remainingDataURL.length) {
@@ -436,11 +454,11 @@ resumeVideo =() =>{
 
     save.dispatchEvent(evt);
     (window.URL || window.webkitURL).revokeObjectURL(save.href);
-    this.setState({downloadButton:false})
+    this.setState({ downloadButton: false })
   }
 
-  deleteReceivedfile = () =>{
-    this.setState({downloadButton:false,fileURL:null,fileName:''});
+  deleteReceivedfile = () => {
+    this.setState({ downloadButton: false, fileURL: null, fileName: '' });
     var progressValue = document.getElementById('progressBar');
     progressValue.value = 0;
   }
@@ -454,50 +472,62 @@ resumeVideo =() =>{
     var offerAnswer = db.ref('/offerAnswer/');
     offerAnswer.remove();
     //console.log(msg);
-    
+
     pc.close();
 
     window.location.reload();
     this.setState({ offerReceived: false, callingOther: false });
   }
+  drawerToggle = () => {
+    let updated = !this.state.drawerOpen;
+    this.setState({ drawerOpen: updated });
+  }
 
   render() {
+    let sideDrawerClasses = ['Side-drawer', 'Drawer-close'];
+    if (this.state.drawerOpen) {
+      sideDrawerClasses = ['Side-drawer', 'Drawer-open'];
+    }
 
-    if (this.state.caller && !this.state.receiver) {
+    if (this.state.loggedIn) {
       return (
         <div className="App">
           <div className="App-header">
+            <img className='Contacts-drawer-button' src={side_drawer} onClick={this.drawerToggle} />
+            <img className='Side-drawer-button' src={side_drawer} onClick={this.drawerToggle} />
             <p>Have a conversation with privacy</p>
           </div>
-          <div className='Videos-block split' >
-            <div className='friendsVideoBlock'>
-              <p>Friend's Video</p>
-              <video ref={this.friendsVideo}  className='friendsVideo' id="friendsVideo" autoPlay ></video>
+          <div className='Videos-block' >
+            <div className='caption'>
+              <p>Connect with loved ones</p>
             </div>
 
-            <p>My Video</p>
-            {/* <video id="myVideo" className='myVideo' autoPlay muted style={{ width: '200px', transform: 'scale(-1,1)' }}></video> */}
-            
-            {/* <button onClick={this.stopVideo} hidden={!this.state.videoOn}>Off Video</button> */}
-            <img id="videoOff" className='videoOff' src={video_on} onClick={this.stopVideo} hidden={!this.state.videoOn} alt='Video off' />
-            {/* <VideocamOffIcon onClick={this.stopVideo} hidden={!this.state.videoOn} color='primary'></VideocamOffIcon> */}
-            {/* <VideocamIcon onClick={this.resumeVideo} hidden={this.state.videoOn} color='primary'></VideocamIcon> */}
-            <img id="videoOn" className='videoOn' src={video_off} onClick={this.resumeVideo} hidden={this.state.videoOn} alt='Video on' />
-            <video id="self-view" className='self-view' autoPlay muted ></video>
-            {/* <button onClick={this.resumeVideo} hidden={this.state.videoOn} >On Video</button> */}
-            <button className='Start-share' hidden={!this.state.messageBoxActive || this.state.screenShare} onClick={this.shareScreenStart}>Share screen</button>
-            <button className='Stop-share' hidden={!this.state.screenShare} onClick={this.shareScreenStop}>Stop share</button>
-            <br></br>
-            {!this.state.offerReceived && !this.state.callingOther &&
-              <Button variant="contained" color="primary" onClick={this.showFriendsFace} style={{ margin: '10px' }}> Call </Button>
-            }
-            {this.state.offerReceived && !this.state.offerAccepted &&
-              <Button className='answerButton' variant="contained" hidden={!this.state.offerReceived} onClick={this.acceptCall} style={{ margin: '10px', backgroundColor: 'green' }} > Answer </Button>
-            }
-            <Button variant="contained" color="secondary" onClick={this.endCall}> End Call </Button>
-            <br></br>
-          </div>
-          <div className='Message-block' style={{ paddingTop: '20px' }}>
+            <div className='Both-Videos'>
+              <video id="friendsVideo" className='friendsVideo' ref={this.friendsVideo} autoPlay > sdfsf</video>
+
+              <div className='myVideo-and-controls'>
+                <img id="videoOn" className='videoOn' src={video_off} onClick={this.resumeVideo} hidden={this.state.videoOn} alt='Video on' />
+                <img id="videoOff" className='videoOff' src={video_on} onClick={this.stopVideo} hidden={!this.state.videoOn} alt='Video off' />
+                <img id="screenShare" className='Start-share' src={screen_share} hidden={!this.state.callConnected || this.state.screenShare} onClick={this.shareScreenStart} />
+                <img id="screenShare" className='Stop-share' src={screen_share} hidden={!this.state.screenShare} onClick={this.shareScreenStop} />
+                {/* <button className='Stop-share' hidden={!this.state.screenShare} onClick={this.shareScreenStop}>Stop share</button> */}
+                <video id="self-view" className='self-view' autoPlay muted ></video>
+              </div>
+
+              <br></br>
+              {!this.state.offerReceived && !this.state.callingOther &&
+                <Button variant="contained" color="primary" onClick={this.showFriendsFace} style={{ margin: '10px', zIndex: '200' }}> Call </Button>
+              }
+              {this.state.offerReceived && !this.state.offerAccepted &&
+                <Button className='answerButton' variant="contained" hidden={!this.state.offerReceived} onClick={this.acceptCall} style={{ backgroundColor: 'green', zIndex: '200' }} > Answer </Button>
+              }
+              {/* {(this.state.offerReceived || this.state.callConnected) && */}
+              <Button variant="contained" color="secondary" onClick={this.endCall} style={{ margin: '10px', zIndex: '200' }}> End Call </Button>
+              {/* } */}
+              <br></br>
+            </div>
+          </div> {/*End Videos class */}
+          <div className={sideDrawerClasses.join('  ')} style={{ paddingTop: '20px' }}>
             <div className=' split Conversation-block'>
               <p> Conversation </p>
               <div id='messageReceived'>
@@ -506,32 +536,40 @@ resumeVideo =() =>{
             </div>
 
             <div className='Message-input-box'>
-              <input type='text' id='textInput' className='textInput' placeholder="Enter your message here " disabled={!this.state.messageBoxActive} onKeyDown={(e) => { this.enterAsInput(e) }}  style={{width:'150%',height:'1.75em' }}></input>
+              <input type='text' id='textInput' className='textInput' placeholder="Enter your message here " disabled={!this.state.callConnected} onKeyDown={(e) => { this.enterAsInput(e) }} style={{ width: '150%', height: '1.75em' }}></input>
               <br></br>
-              <button variant="contained" className='sendButton' disabled={!this.state.messageBoxActive} onClick={this.sendInputMessage}>SEND ></button>
+              <button variant="contained" className='sendButton' disabled={!this.state.callConnected} onClick={this.sendInputMessage}>SEND ></button>
               <br></br>
             </div>
-            {/* <label htmlFor="inputFile" hidden={this.state.messageBoxActive} className="custom-file-upload" > Custom Upload </label>
-            <input id='inputFile' disabled={!this.state.messageBoxActive} onChange={(e) => { this.fileSelect(e) }} type="file"/>  */}
-            <input id='inputFile'  className='inputFile' type='file' disabled={!this.state.messageBoxActive} onChange={(e) => { this.fileSelect(e) }} size="60" style={{ display: 'block', float: 'left', padding: '22px 15px 0 15px' }}></input>
-            {/* <Button variant="contained" onChange={(e) => { this.fileSelect(e) }} color="primary" startIcon={<CloudUploadIcon />} >Upload
-            </Button> */}
+            {/* <label htmlFor="inputFile" hidden={this.state.callConnected} className="custom-file-upload" > Custom Upload </label>
+            <input id='inputFile' disabled={!this.state.callConnected} onChange={(e) => { this.fileSelect(e) }} type="file"/>  */}
+            <input id='inputFile' className='inputFile' type='file' disabled={!this.state.callConnected} onChange={(e) => { this.fileSelect(e) }} size="60" style={{ display: 'block', float: 'left', padding: '22px 15px 0 15px' }}></input>
             <br></br>
             <div className='File-options'>
-            <progress id='progressBar' hidden={!this.state.progressBar} value='0' max='0'></progress>
-            {/* <CircularProgress id='progressBar2'variant="static" value={0}/>  */}
-            {/* <button onClick={this.saveToDisk} hidden={!this.state.downloadButton} disabled={!this.state.downloadButton}>Download</button> */}
-            <Button className='Save-button' size='small' onClick={this.saveToDisk} hidden={!this.state.downloadButton} disabled={!this.state.downloadButton} variant="contained" color="default" startIcon={<SaveIcon />} style={{ marginLeft: '15px',padding:'5px', borderRadius: '10px'}}>Save</Button>
-            <IconButton aria-label="delete" onClick={this.deleteReceivedfile} disabled={!this.state.downloadButton}> <DeleteIcon/> </IconButton>
+              <progress id='progressBar' hidden={!this.state.progressBar} value='0' max='0'></progress>
+              <Button className='Save-button' size='small' onClick={this.saveToDisk} hidden={!this.state.downloadButton} disabled={!this.state.downloadButton} variant="contained" color="default" startIcon={<SaveIcon />} style={{ marginLeft: '15px', padding: '5px', borderRadius: '10px' }}>Save</Button>
+              <IconButton aria-label="delete" onClick={this.deleteReceivedfile} disabled={!this.state.downloadButton}> <DeleteIcon /> </IconButton>
             </div>
             {/* <button  onClick={(e)=>{this.sendFileButton(e)}}  style={{display:'block', float:'left', marginLeft:'20px'}} >Send file</button> */}
             {/* <div id='downloadSection' className='downloadSection'>
               <img id='preview' className='preview' />
             </div> */}
-            
+
           </div>
         </div> //App end div
       );
+    }
+    else if(!this.state.loggedIn){
+      return(
+        <div className="App">
+        {/* <div className="App-header">
+          <img className='Contacts-drawer-button' src={side_drawer} onClick={this.drawerToggle} />
+          <img className='Side-drawer-button' src={side_drawer} onClick={this.drawerToggle} />
+          <p>Have a conversation with privacy</p>
+        </div> */}
+        <input type='text'/>
+        </div>
+      )
     }
 
   }
@@ -552,7 +590,7 @@ resumeVideo =() =>{
     //     return stream;
     //   })
     //   .then(stream => pc.addStream(stream));
-    
+
     // ------^^Adding self Video^^--------//
 
     // Listen for Offer / Answer on firebase 
@@ -566,37 +604,42 @@ resumeVideo =() =>{
       // console.log(stream);
       friendsVideo.srcObject = stream;
     })
+
+
     // ------  Listener for Adding Friends Video  --------// 
 
     // ------ Screenshare with self Video  -----------  //
-    navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-    .then((stream)=>{
-      this.setState({stream:stream});
-      const tracks = stream.getTracks();
-      tracks.forEach(track=>{
-        if(track.kind==='audio'){
-          this.setState({audioTrack:track});
-         // pc.addTrack(track,stream);
-        }
-        if(track.kind==='video'){
-          this.setState({videoTrack:track});
-         // pc.addTrack(track,stream);
-        }
-        console.log(track);
-        senders.push(pc.addTrack(track,stream))
-        selfView.srcObject = stream;
-        console.log(this.state.stream.getTracks());
+    if(this.state.loggedIn){
+      navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+      .then((stream) => {
+        this.setState({ stream: stream });
+        const tracks = stream.getTracks();
+        tracks.forEach(track => {
+          if (track.kind === 'audio') {
+            this.setState({ audioTrack: track });
+            // pc.addTrack(track,stream);
+          }
+          if (track.kind === 'video') {
+            this.setState({ videoTrack: track });
+            // pc.addTrack(track,stream);
+          }
+          console.log(track);
+          senders.push(pc.addTrack(track, stream))
+          selfView.srcObject = stream;
+          console.log(this.state.stream.getTracks());
+        })
+        return stream;
       })
-      return stream;
-      })
-      // .then(stream => pc.addStream(stream));
+    }
+    
+    // .then(stream => pc.addStream(stream));
 
-      // pc.ontrack = (event) =>{
-      //   console.log('Now added friends stream' + Date.now())
-      //   friendsVideo.srcObject = event.streams[0];
-      // }
-    
-    
+    // pc.ontrack = (event) =>{
+    //   console.log('Now added friends stream' + Date.now())
+    //   friendsVideo.srcObject = event.streams[0];
+    // }
+
+
     // userMediaStream.getTracks()
     //     .forEach(track => senders.push(pc.addTrack(track, userMediaStream)));
     //   document.getElementById('self-view').srcObject = userMediaStream;
