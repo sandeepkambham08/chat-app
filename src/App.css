@@ -66,7 +66,8 @@ p{
 }
 
 .Side-drawer{
-  width: 30vw;
+  height: 100vh;
+  width: 20vw;
   right: 0;
   position: fixed;
   margin-top: 10vh;
@@ -75,14 +76,8 @@ p{
   box-sizing: border-box;
   transition: transform 0.5s ease-in;
 }
-.Contacts-drawer-button{
-  width: 4vw;
-  height: 6vh;
-  display: block;
-  left:0;
-  margin: 2vh 0vw 0 0.5vw;
-  position: fixed;
-}
+
+
 .Drawer-open{
   transform: translateX(0);
 }
@@ -91,6 +86,36 @@ p{
   transform: translateX(+100%);
 }
 
+.Contacts-drawer-button{
+  width: 45px;
+  height: 45px;
+  display: block;
+  left:0;
+  border-radius: 25px;
+  border: 2px solid rgb(194, 93, 20);
+  margin: 2vh 0vw 0 1vw;
+  position: fixed;
+  cursor: pointer;
+}
+
+.Side-drawer-left{
+  height: 100vh;
+  width: 20vw;
+  right: left;
+  position: fixed;
+  margin-top: 10vh;
+  z-index: 200;
+  background-color: rgba(0, 0, 0, 0.808);
+  box-sizing: border-box;
+  transition: transform 0.5s ease-in;
+}
+
+.Left-Drawer-open{
+  transform: translateX(0);
+}
+.Left-Drawer-close{
+transform: translateX(-100%);
+}
 .caption{
   text-align: center;
 }
@@ -195,7 +220,8 @@ p{
 .Conversation-block{
   padding-top: 0px;
   text-align: center;
-  width: 99%;
+  width: 90%;
+  margin-left: 5%;
   height: 67vh;
   border: 2px solid gray;
   border-radius: 10px;
@@ -212,8 +238,9 @@ color: #313133
 }
 
 .textInput{
-  margin: 5px 0px;
-  border-radius: 5px;
+  margin: 5% 0 0 20%;
+  border-radius: 7px;
+  width: 90%;
 }
 
 .Your-input {
@@ -288,6 +315,7 @@ color: #313133
 .sendButton{
   font-family: 'Syne', sans-serif;
   padding:5px 0px;
+  margin: 5px 0 0 105%;
   border:1px solid rgb(175, 173, 173);
   width: 7em;
   border-radius: 10px;
@@ -360,4 +388,9 @@ display: none;
 .preview{
   width: 10vh;
   height: 10vh;
+}
+
+.logInButton{
+  margin-top: 15vh;
+  text-align: center;
 }
