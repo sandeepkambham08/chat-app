@@ -38,7 +38,14 @@ html *
   margin: 2vh 0.5vw 0 0;
   position: fixed;
   cursor: pointer;
+  border-radius: 60px;
+  transition: box-shadow 300ms ease-in;
+  box-shadow:1px 5px 5px 1px rgb(105, 105, 105);
 }
+.Side-drawer-button:hover{
+  box-shadow:1px 5px 5px 1px rgb(206, 206, 206);
+}
+
 
 .App-link {
   color: #61dafb;
@@ -160,6 +167,7 @@ transform: translateX(-100%);
   position: absolute;
   z-index: 300;
   border: 1px solid white;
+  transition: box-shadow 300ms ease-in;
   transition: background-color 600ms ease-in-out;
 }
 .videoOff:hover, .videoOn:hover{
@@ -168,6 +176,7 @@ transform: translateX(-100%);
   padding: 6px;
   margin-right: 5px;
   cursor: pointer;
+  box-shadow:1px 5px 5px 1px rgb(35, 36, 36);
 }
 
 .videoOn{
@@ -195,6 +204,7 @@ transform: translateX(-100%);
   z-index: 300;
   border: 1px solid white;
   cursor: pointer;
+  transition: box-shadow 300ms ease-in;
   transition: background-color 300ms ease-in-out;
 }
 
@@ -206,6 +216,7 @@ transform: translateX(-100%);
   height: 30px;
   padding: 2px;
   background-color: white;
+  box-shadow:1px 5px 5px 1px rgb(35, 36, 36);
 }
 .Stop-share{
   background-color: rgb(175, 42, 18);
@@ -354,6 +365,7 @@ display: none;
   color: #313133;
   transform: translateY(-6px);
   cursor: pointer;
+  box-shadow:1px 5px 5px 1px rgb(35, 36, 36);
 }
 
 
@@ -385,12 +397,66 @@ display: none;
   }
 }
 
+@media (max-width:500px){
+  .friendsVideo{
+    max-width: 70vw;
+  }
+  .Both-Videos{
+    /* text-align: center; */
+    /* border: 1px solid black; */
+    /* margin-left: 25%; */
+    border-radius: 10px;
+    /* width: 800px;
+    height: 600px; */
+    z-index: 100;
+  }
+  /* .friendsVideo{
+    border-radius: 10px;
+    text-align: center;
+    width: 800px;
+    height: 600px;
+    z-index: 100;
+    position: absolute;
+  } */
+}
+
 .preview{
   width: 10vh;
   height: 10vh;
 }
 
 .logInButton{
-  margin-top: 15vh;
+  width: 20vw;
+  margin: 50vh 0 0 40vw;
   text-align: center;
+  border-radius: 9vw;
+  cursor: pointer;
+  transition: box-shadow 300ms ease-in;
+}
+.logInButton:hover{
+  box-shadow:5px 10px 10px 2px rgb(35, 36, 36);
+}
+
+
+.Contact-list{
+  color: antiquewhite;
+}
+
+.Contact-list p {
+  color: antiquewhite;
+  font-weight: bolder;
+  text-align: center;
+}
+
+#onlinePerson {
+  background-color: rgb(14, 177, 9);
+  border-radius: 5em;
+  padding: .3em;
+  cursor: pointer;
+}
+
+#offlinePerson{
+  background-color: rgb(189, 62, 3);
+  border-radius: 5em;
+  padding: .3em;
 }

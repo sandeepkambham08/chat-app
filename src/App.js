@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import App_holder from './App_holder';
 import * as firebase from 'firebase';
-
+import Login_button from './media/login_button.png';
 
 var firebaseConfig = {
   apiKey: "AIzaSyBw8TC9om3UZO9HPHkOOn0zm0VYjmgmvnc",
@@ -30,6 +30,18 @@ const app = firebase.initializeApp(firebaseConfig,"other");
 const db = app.database();
 const auth = firebase.auth();
 
+// To remember sign-in on browser - testing
+firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+  .then(function() {
+    console.log('Local persistance')
+  })
+  .catch(function(error) {
+    // Handle Errors here.
+    var errorCode = error.code;
+    var errorMessage = error.message;
+  });
+
+
 class App extends Component {
   constructor(props) {
     super(props);
@@ -41,6 +53,8 @@ class App extends Component {
     userId:'',
     userPic:'',
   }
+
+
 
   loginButton=()=>{
     const that = this;
@@ -63,7 +77,20 @@ class App extends Component {
       console.log(err)
       console.log('Login failed')
     })
+  }
 
+  signOut = () =>{
+    const that = this;
+    firebase.auth().signOut().then(function() {
+        // Sign-out successful.
+        console.log('Signed out now');
+        that.setState({loggedIn:false});
+        db.ref("/Users/"+that.state.userId+"/profile_detials").update({isActive:false});
+      }).catch(function(error) {
+        console.log(error);
+      }).then(()=>{
+        window.location.reload();
+      });      
   }
     render(){
       if(this.state.loggedIn){
@@ -72,6 +99,8 @@ class App extends Component {
           userName={this.state.userName}
           userEmail={this.state.userEmail}
           userPic={this.state.userPic}
+          userId={this.state.userId}
+          signOut={this.signOut}
           />
         )
       }
@@ -84,7 +113,7 @@ class App extends Component {
             <p>Have a conversation with privacy</p>
           </div>
           {/* <input type='text'/> */}
-          <button className='logInButton' onClick={()=>this.loginButton()}>Login</button>
+          <img src={Login_button} className='logInButton' onClick={()=>this.loginButton()}/>
           </div>
         )
       }
