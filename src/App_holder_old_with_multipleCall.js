@@ -757,11 +757,6 @@ class App_holder extends Component {
             that.readMessage(snapshot)
             });
 
-        var presenceRef = db.ref('/Users/'+that.props.userId+'/profile_detials/');
-        presenceRef.onDisconnect().update({isActive:false});
-        
-        var deleteIceOfferRef = db.ref('/Users/'+that.props.userId);
-        deleteIceOfferRef.onDisconnect().update({ice:null,offerAnswer:null});
 
         // const myVideo = document.getElementById('myVideo');
         const friendsVideo = document.getElementById('friendsVideo');

@@ -34,7 +34,7 @@ const yourId = Math.floor(Math.random() * 10000);  //  generate a random id
 console.log(yourId)
 
 var servers = { 'iceServers': [{ 'urls': 'stun:stun01.sipphone.com' }, { 'urls': 'stun:stun.services.mozilla.com' }, { 'urls': 'stun:stun.l.google.com:19302' }, { 'urls': 'turn:numb.viagenie.ca', 'credential': 'beaver', 'username': 'webrtc.websitebeaver@gmail.com' }] };
-// const pc = new RTCPeerConnection(servers)
+const pc = new RTCPeerConnection(servers)
 console.log('STEP 1/2 : Created Peer connection - TIME: ' + Date.now());
 //File sharing 
 var chunkLength = 10000;     // To divide file into chunks
@@ -48,7 +48,7 @@ var iceCandidateCount = 1;
 
 
 
-// let dataChannel = pc.createDataChannel("MyApp Channel");
+let dataChannel = pc.createDataChannel("MyApp Channel");
 class App_holder extends Component {
 
     constructor(props) {
@@ -60,8 +60,6 @@ class App_holder extends Component {
 
 
     state = {
-        pc:null,
-        dataChannel:null,
         caller: true,
         receiver: false,
         callingOther: false,
@@ -89,11 +87,7 @@ class App_holder extends Component {
 
     // To start a video call & creating an offer - updated 
     showFriendsFace = (friendId) => {
-        const pc = new RTCPeerConnection(servers);
-        let dataChannel = pc.createDataChannel("MyApp Channel");
-
-        this.setState({friendId:friendId, pc: pc, dataChannel:dataChannel}, ()=>{
-            this.initializeListeners(pc);
+        this.setState({friendId:friendId}, ()=>{
             dataChannel.addEventListener("open", (event) => {
                 //dataChannel.send('hello');
                 console.log('Data Channel is open now!' + Date.now());
@@ -118,81 +112,6 @@ class App_holder extends Component {
             }
         });
 
-    }
-
-
-    initializeListeners = (pc) =>{
-        console.log(' ******************  Inside listener initializer ******************');
-        var that = this;
-
-                // const myVideo = document.getElementById('myVideo');
-            const friendsVideo = document.getElementById('friendsVideo');
-            const selfView = document.getElementById('self-view');
-                navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-                    .then((stream) => {
-                        this.setState({ stream: stream });
-                        const tracks = stream.getTracks();
-                        tracks.forEach(track => {
-                            if (track.kind === 'audio') {
-                                this.setState({ audioTrack: track });
-                                // pc.addTrack(track,stream);
-                            }
-                            if (track.kind === 'video') {
-                                this.setState({ videoTrack: track });
-                                // pc.addTrack(track,stream);
-                            }
-                            // console.log(track);
-                         senders.push(pc.addTrack(track, stream));
-                            // senders.push(pc.addStream(stream));
-                            console.log(senders);
-                            selfView.srcObject = stream;      // Adding self video
-                            // console.log(this.state.stream.getTracks());
-                        })
-                        //return stream;
-                    })
-        // var pc  = this.state.pc;
-
-        pc.onicecandidate = (event) => {
-            //console.log('testing iterations')
-            if (event.candidate) {
-                console.log(iceCandidateCount++);
-                that.sendIceMessage(this.props.userId, JSON.stringify({ 'ice': event.candidate }));
-                console.log('STEP 9/16 - ICE canadidates generated in your device - TIME: ' + Date.now())
-                //console.log(event.candidate);
-            }
-            else {
-                // this.sendMessage(this.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));   // added to check sync
-                console.log("STEP 10/17 - *  *  * *  All Ice candidates are sent *  *  * *  - TIME: " + Date.now())
-            }
-        }
-
-
-        //------  Listener for Adding Friends Video  --------// 
-        pc.addEventListener('track', ({ streams: [stream] }) => {
-            console.log('Now added friends stream' + Date.now())
-            // console.log(stream);
-            friendsVideo.srcObject = stream;
-        })
-
-        pc.onaddStream = ((event) => {
-            console.log('Now added friends stream' + Date.now())
-            friendsVideo.srcObject = event.stream;
-        })
-
-        // ------  Listener for Adding Friends Video  --------// 
-
-        pc.onconnectionstatechange = (event) => {
-            if (pc.connectionState === "disconnected") {
-                console.log('= = = = = Call Ended - - - -  --  ')
-                // pc.close();
-                // pc.onicecandidate = null;
-                // pc.onaddstream = null;
-                //  window.location.reload();
-                //   db.ref('/ice/').remove();
-                //   db.ref('/offerAnswer/').remove();
-                this.endCall();
-            };
-        }
     }
 
     // callPerson = (key) =>{
@@ -224,14 +143,11 @@ class App_holder extends Component {
             that.setState({friendId:sender});
             if (msg.sdp.type === "offer") {
                 that.setState({ messageReceived: msg }, () => {
-                    const pc = new RTCPeerConnection(servers);
-                    let dataChannel = pc.createDataChannel("MyApp Channel");
-                    that.setState({ offerReceived: true, pc: pc, dataChannel:dataChannel }, ()=>{that.initializeListeners(pc)})           //To make ANSWER  button active
+                    that.setState({ offerReceived: true })           //To make ANSWER  button active
                 })
                 console.log('Received message : OFFER' + Date.now())
             }
             else if (msg.sdp.type === "answer") {
-                const pc = that.state.pc;
                 pc.ondatachannel = (event) => {
                     console.log('Listening data channel')
                     var channelRec = event.channel;
@@ -247,7 +163,6 @@ class App_holder extends Component {
                     db.ref('/Users/'+that.props.userId+'/ice/').on('child_added', (snapshot) => {
                         that.readIceMessage(snapshot)
                         that.setState({ callConnected: true }) //Caller side message box active 
-                        console.log(pc);
                     });
                 });
             }
@@ -259,7 +174,6 @@ class App_holder extends Component {
         var that = this;
         this.setState({ offerAccepted: true });
         var msg = this.state.messageReceived;
-        var pc = that.state.pc;
         pc.setRemoteDescription(new RTCSessionDescription(msg.sdp))
             .then(() => {
                 //console.log('Remote description set after receiving OFFER')
@@ -278,7 +192,6 @@ class App_holder extends Component {
                 this.sendMessage(that.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));
                 console.log('STEP 14: Sent ANSWER to you')
                 this.setState({ callConnected: true })  //Receiver side message box active 
-                console.log(pc);
                 pc.ondatachannel = function (event) {
                     var channelReceived = event.channel;
                     var arrayToStoreChunks = [];
@@ -296,7 +209,6 @@ class App_holder extends Component {
         //var path = db.ref('/ice/');
         var msg = JSON.parse(data.val().message);
         var sender = data.val().sender;
-        var pc =  this.state.pc;
         if (sender !== this.props.userId) {
             // console.log(pc.remoteDescription);
             if (msg.ice !== undefined) {
@@ -392,7 +304,7 @@ class App_holder extends Component {
         tag.appendChild(text);
         messageReceived.append(text);
         */
-        var dataChannel  = this.state.dataChannel;
+
         var data = {};
         data.type = 'text';
         data.message = input;
@@ -495,7 +407,6 @@ class App_holder extends Component {
     // To SEND the file once loaded
     onReadAsDataURL = (event, text) => {
         const that = this;
-        var dataChannel  = this.state.dataChannel;
         var file = that.state.fileList;
         //var fileDetailsArray = Object.keys(file).map((key)=>[key,file[key]])
         var data = {}; // data object to transmit over data channel
@@ -550,7 +461,6 @@ class App_holder extends Component {
 
     // To END the call with friend
     endCall = () => {
-        var pc = this.state.pc;
         var ice = db.ref('/Users/'+this.props.userId+'/ice/');
         //console.log(msg);
         ice.remove();
@@ -562,7 +472,7 @@ class App_holder extends Component {
         pc.close();
 
         //window.location.reload();
-        this.setState({ offerReceived: false, callingOther: false, pc:null});
+        this.setState({ offerReceived: false, callingOther: false });
     }
     loginButton = () => {
         const loggedIn = !this.state.loggedIn;
@@ -593,20 +503,29 @@ class App_holder extends Component {
         ContactList = (
 
             <div className='Contact-list'>
-                <p >Your ID : {this.props.userId}  </p>
+                {/* <p>Your ID : {this.state.peopleList[this.props.userId].userName}  </p> */}
                 <p>Contacts</p>
-
+                
                 {Object.keys(this.state.peopleList).map((key) => {
+                    console.log(key);
+                    console.log(this.state.peopleList[key].userEmail);                     
                     if(key!==this.props.userId){
                         // console.log(this.state.peopleList[key]);
-                        if (this.state.peopleList[key]) {
+                        if (this.state.peopleList[key].isActive===true) {
                             return (
-                                <p key={key} className='onlinePerson' id='onlinePerson' onClick={()=>this.showFriendsFace(key)}>  {key} </p>
-                            )
+                                <div className='Contact-list-item-online'>
+                                <img src={this.state.peopleList[key].userPic} className='contactListPic' />
+                                <span>Click to call</span>
+                                <p key={key} className='onlinePerson' id='onlinePerson' onClick={()=>this.showFriendsFace(key)}>  {this.state.peopleList[key].userName} </p>
+                                </div>   )
                         }
-                        else {
+                        else if(this.state.peopleList[key].isActive===false){
                             return (
-                                <p key={key} className='offlinePerson' id='offlinePerson'>  {key} </p>
+                                <div className='Contact-list-item-offline'>
+                                <img src={this.state.peopleList[key].userPic} className='contactListPic' />
+                                <span>User not online</span>
+                                <p key={key} className='offlinePerson' id='offlinePerson'>  {this.state.peopleList[key].userName} </p>
+                                </div>
                             )
                         }
                     }
@@ -655,13 +574,12 @@ class App_holder extends Component {
                     </div>
                 </div> {/*End Videos class */}
                 <div className={sideDrawerClassesLeft.join('  ')}>
-                    <button onClick={() => this.props.signOut()}>Sign out</button>
+                    <div className='All-contacts-div'>
                     {ContactList}
-
-
-
-
-
+                    </div>
+                    <div className='Sign-out-button-div'>
+                    <button className='Sign-out-button' onClick={() => this.props.signOut()}>Sign out</button>
+                    </div>
                 </div>
                 <div className={sideDrawerClasses.join('  ')} style={{ paddingTop: '20px' }}>
                     <div className=' split Conversation-block'>
@@ -713,29 +631,35 @@ class App_holder extends Component {
     }
     componentDidMount() {
         const that = this;
-        var pc =  that.state.pc;
+
         db.ref('/Users/').on('child_added', function (userIdList) {
-            // console.log(userIdList.key.profile_details.val());
             userIdList.forEach(function (profile_details) {
-                // console.log(profile_details.val())
-                // console.log(profile_details.val());
-                if (profile_details.val().isActive === true) {
-                    // console.log(profile_details.val());
-                    // console.log(profile_details.val().userId);
+
                     let userId = profile_details.val().userId;
-                    that.setState({ peopleList: { ...that.state.peopleList, [userId]: true } });
-                }
-                if (profile_details.val().isActive === false) {
-                    // console.log(profile_details.val());
-                    // console.log(profile_details.val().userId);
-                    let userId = profile_details.val().userId;
-                    that.setState({ peopleList: { ...that.state.peopleList, [userId]: false } });
-                }
-                profile_details.forEach(function (names) {
-                    // console.log(names.val());
-                })
+                    let userName = profile_details.val().userName;
+                    let userEmail = profile_details.val().userEmail;
+                    let isActive = profile_details.val().isActive;
+                    let userPic = profile_details.val().userPic;
+                   // that.setState({ peopleList: { ...that.state.peopleList, [userId]: false } });  //old
+                    that.setState(prevState => ({
+                        peopleList: {
+                          ...prevState.peopleList,           // copy all other key-value pairs of peopleList object
+                          [userId]: {                     // specific object/user-detail of peopleList object
+                            ...prevState.peopleList.userId,   // copy all single user key-value pairs
+                            userId : userId,                    // update the name property, assign a new value                 
+                            userName : userName,
+                            userEmail : userEmail,
+                            isActive : isActive,
+                            userPic : userPic, // update value of specific key
+                          }
+                        }
+                      }))  
+                    //}
+                // profile_details.forEach(function (names) {
+                //     // console.log(names.val());
+                // })
             })
-            // console.log(that.state.peopleList);
+            console.log(that.state.peopleList);
         })
         db.ref('/Users/').on('child_changed', function (userIdList) {
             userIdList.forEach(function (profile_details) {
@@ -743,8 +667,25 @@ class App_holder extends Component {
                 // console.log(profile_details.val());
                 // console.log(profile_details.val().userId);
                 let userId = profile_details.val().userId;
-                let IsActive = profile_details.val().isActive;
-                that.setState({ peopleList: { ...that.state.peopleList, [userId]: IsActive } });
+                let userName = profile_details.val().userName;
+                let userEmail = profile_details.val().userEmail;
+                let isActive = profile_details.val().isActive;
+                let userPic = profile_details.val().userPic;
+
+                that.setState(prevState => ({
+                    peopleList: {
+                      ...prevState.peopleList,           // copy all other key-value pairs of peopleList object
+                      [userId]: {                     // specific object/user-detail of peopleList object
+                        ...prevState.peopleList.userId,    // copy all single user key-value pairs
+                        userId : userId,                    // update the name property, assign a new value                 
+                        userName : userName,
+                        userEmail : userEmail,
+                        isActive : isActive,
+                        userPic : userPic, // update value of specific key
+                      }
+                    }
+                  }))    
+                
                 // profile_details.forEach(function (names) {
                 //     // console.log(names.val());
                 // })
@@ -753,94 +694,50 @@ class App_holder extends Component {
         })
 
         // Listen for Offer / Answer on firebase 
-            db.ref("/Users/"+that.props.userId+'/offerAnswer/').on('child_added', (snapshot) => {
-            that.readMessage(snapshot)
+        db.ref("/Users/"+that.props.userId+'/offerAnswer/').on('child_added', (snapshot) => {
+        that.readMessage(snapshot)
             });
 
-        var presenceRef = db.ref('/Users/'+that.props.userId+'/profile_detials/');
-        presenceRef.onDisconnect().update({isActive:false});
-        
-        var deleteIceOfferRef = db.ref('/Users/'+that.props.userId);
-        deleteIceOfferRef.onDisconnect().update({ice:null,offerAnswer:null});
+                
+        pc.onicecandidate = (event) => {
+            //console.log('testing iterations')
+            if (event.candidate) {
+                console.log(iceCandidateCount++);
+                that.sendIceMessage(this.props.userId, JSON.stringify({ 'ice': event.candidate }));
+                console.log('STEP 9/16 - ICE canadidates generated in your device - TIME: ' + Date.now())
+                //console.log(event.candidate);
+            }
+            else {
+                // this.sendMessage(this.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));   // added to check sync
+                console.log("STEP 10/17 - *  *  * *  All Ice candidates are sent *  *  * *  - TIME: " + Date.now())
+            }
+        }
+
+
 
         // const myVideo = document.getElementById('myVideo');
         const friendsVideo = document.getElementById('friendsVideo');
         const selfView = document.getElementById('self-view');
-        // navigator.mediaDevices.getUserMedia({ audio: true, video: true })
-        //     .then((stream) => {
-        //         this.setState({ stream: stream });
-        //         const tracks = stream.getTracks();
-        //         tracks.forEach(track => {
-        //             if (track.kind === 'audio') {
-        //                 this.setState({ audioTrack: track });
-        //                 // pc.addTrack(track,stream);
-        //             }
-        //             if (track.kind === 'video') {
-        //                 this.setState({ videoTrack: track });
-        //                 // pc.addTrack(track,stream);
-        //             }
-        //             // console.log(track);
-        //             //senders.push(pc.addTrack(track, stream))
-        //             //selfView.srcObject = stream;      // Adding self video
-        //             // console.log(this.state.stream.getTracks());
-        //         })
-        //         //return stream;
-        //     })
-
-
-
-        // pc.onicecandidate = (event) => {
-        //     //console.log('testing iterations')
-        //     if (event.candidate) {
-        //         console.log(iceCandidateCount++);
-        //         that.sendIceMessage(this.props.userId, JSON.stringify({ 'ice': event.candidate }));
-        //         console.log('STEP 9/16 - ICE canadidates generated in your device - TIME: ' + Date.now())
-        //         //console.log(event.candidate);
-        //     }
-        //     else {
-        //         // this.sendMessage(this.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));   // added to check sync
-        //         console.log("STEP 10/17 - *  *  * *  All Ice candidates are sent *  *  * *  - TIME: " + Date.now())
-        //     }
-        // }
-
-
-        // // ------  Listener for Adding Friends Video  --------// 
-        // pc.addEventListener('track', ({ streams: [stream] }) => {
-        //     console.log('Now added friends stream' + Date.now())
-        //     // console.log(stream);
-        //     friendsVideo.srcObject = stream;
-        // })
-
-        // // ------  Listener for Adding Friends Video  --------// 
-
-        // pc.onconnectionstatechange = (event) => {
-        //     if (pc.connectionState === "disconnected") {
-        //         console.log('= = = = = Call Ended - - - -  --  ')
-        //         // pc.close();
-        //         // pc.onicecandidate = null;
-        //         // pc.onaddstream = null;
-        //         //  window.location.reload();
-        //         //   db.ref('/ice/').remove();
-        //         //   db.ref('/offerAnswer/').remove();
-        //         this.endCall();
-        //     };
-        // }
-
-
-    }
-
-    // componentWillUnmount() {
-    //     const videoTrack = senders.find(sender => sender.track.kind === 'video');
-    //     videoTrack.track.stop();
-    //     console.log('Video off');
-    // }
-
-}
-
-export default App_holder;
-
-
-
+        navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+            .then((stream) => {
+                this.setState({ stream: stream });
+                const tracks = stream.getTracks();
+                tracks.forEach(track => {
+                    if (track.kind === 'audio') {
+                        this.setState({ audioTrack: track });
+                        // pc.addTrack(track,stream);
+                    }
+                    if (track.kind === 'video') {
+                        this.setState({ videoTrack: track });
+                        // pc.addTrack(track,stream);
+                    }
+                    // console.log(track);
+                    senders.push(pc.addTrack(track, stream))
+                    selfView.srcObject = stream;      // Adding self video
+                    // console.log(this.state.stream.getTracks());
+                })
+                //return stream;
+            })
 
         // ------  Adding self Video  --------//
         // navigator.mediaDevices.getUserMedia({ audio: true, video: true })
@@ -854,7 +751,30 @@ export default App_holder;
         //   .then(stream => pc.addStream(stream));
 
         // ------^^Adding self Video^^--------//
-        
+
+
+        // ------  Listener for Adding Friends Video  --------// 
+        pc.addEventListener('track', ({ streams: [stream] }) => {
+            console.log('Now added friends stream' + Date.now())
+            // console.log(stream);
+            friendsVideo.srcObject = stream;
+        })
+
+        // ------  Listener for Adding Friends Video  --------// 
+
+        pc.onconnectionstatechange = (event) => {
+            if (pc.connectionState === "disconnected") {
+                console.log('= = = = = Call Ended - - - -  --  ')
+                // pc.close();
+                // pc.onicecandidate = null;
+                // pc.onaddstream = null;
+                //  window.location.reload();
+                //   db.ref('/ice/').remove();
+                //   db.ref('/offerAnswer/').remove();
+                this.endCall();
+            };
+        }
+
         // ------ Screenshare with self Video  -----------  //
 
         // .then(stream => pc.addStream(stream));
@@ -871,3 +791,14 @@ export default App_holder;
 
 
         // ------ Screenshare -----------  //
+    }
+
+    componentWillUnmount() {
+        const videoTrack = senders.find(sender => sender.track.kind === 'video');
+        videoTrack.track.stop();
+        console.log('Video off');
+    }
+
+}
+
+export default App_holder;

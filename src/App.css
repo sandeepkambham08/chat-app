@@ -114,6 +114,7 @@ p{
   z-index: 200;
   background-color: rgba(0, 0, 0, 0.808);
   box-sizing: border-box;
+  text-align: center;
   transition: transform 0.5s ease-in;
 }
 
@@ -434,7 +435,7 @@ display: none;
   transition: box-shadow 300ms ease-in;
 }
 .logInButton:hover{
-  box-shadow:5px 10px 10px 2px rgb(35, 36, 36);
+  box-shadow:5px 10px 10px 2px rgb(71, 71, 71);
 }
 
 
@@ -449,14 +450,85 @@ display: none;
 }
 
 #onlinePerson {
-  background-color: rgb(14, 177, 9);
+  /* background-color: rgb(14, 177, 9); */
   border-radius: 5em;
   padding: .3em;
   cursor: pointer;
 }
 
 #offlinePerson{
-  background-color: rgb(189, 62, 3);
+  /* background-color: rgb(189, 62, 3); */
   border-radius: 5em;
   padding: .3em;
+}
+#offlinePerson span {
+  display:none;
+}
+/* #offlinePerson:hover{
+  border: 2px solid beige;
+
+} */
+.Contact-list-item-online span{
+  display: none;
+}
+.Contact-list-item-online:hover span {
+  display: contents;
+  font-size: 1em;
+}
+
+.Contact-list-item-offline span{
+  display: none;
+}
+.Contact-list-item-offline:hover span {
+  display: inline-block;
+  font-size: 1em;
+}
+
+
+.contactListPic{
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+.Contact-list-item-online .contactListPic{
+  border: 2px solid rgb(6, 219, 52);
+}
+
+.Contact-list-item-offline .contactListPic{
+  border: 2px solid rgb(148, 20, 3);
+}
+.Contact-list-item-online{
+  text-align: center;
+  cursor: pointer;
+}
+.Contact-list-item-offline{
+  text-align: center;
+}
+
+.Sign-out-button{
+  background-color:  #282c34;
+  color: antiquewhite;
+  text-align: center;
+  margin-top: 72%;
+  border-radius: 15px;
+  padding: 5px 35%;
+  transition: background-color 300ms ease-in;
+  transition: font-weight 100ms ease-in;
+}
+
+.Sign-out-button:hover {
+  background-color: #a02219;
+  font-weight: bolder;
+}
+
+.All-contact-div{
+  top:0;
+  height: 80vh;
+  overflow: scroll;
+}
+
+.Sign-out-button-div{
+  bottom: 0;
 }
