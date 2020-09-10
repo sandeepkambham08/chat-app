@@ -85,14 +85,13 @@ class App_holder extends Component {
         peopleList: {},
         friendId:null,
         // senderId:null,
-      //  callInitiated:false,            // To display your profile at beginning
     }
 
     // To start a video call & creating an offer - updated 
     showFriendsFace = (friendId) => {
         const pc = new RTCPeerConnection(servers);
         let dataChannel = pc.createDataChannel("MyApp Channel");
-      //  this.setState({callInitiated:true});
+
         this.setState({friendId:friendId, pc: pc, dataChannel:dataChannel}, ()=>{
             this.initializeListeners(pc);
             dataChannel.addEventListener("open", (event) => {
@@ -659,6 +658,10 @@ class App_holder extends Component {
                     <button onClick={() => this.props.signOut()}>Sign out</button>
                     {ContactList}
 
+
+
+
+
                 </div>
                 <div className={sideDrawerClasses.join('  ')} style={{ paddingTop: '20px' }}>
                     <div className=' split Conversation-block'>
@@ -693,6 +696,19 @@ class App_holder extends Component {
             </div> //App end div
         );
 
+        // else if(!this.state.loggedIn){
+        //   return(
+        //     <div className="App">
+        //    <div className="App-header">
+        //       <img className='Contacts-drawer-button' src={rightSide_drawer} onClick={this.drawerToggle} />
+        //       <img className='Side-drawer-button' src={side_drawer} onClick={this.drawerToggle} />
+        //       <p>Have a conversation with privacy</p>
+        //     </div>
+        //     {/* <input type='text'/> */}
+        //     <button className='logInButton' onClick={this.loginButton}>Login</button>
+        //     </div>
+        //   )
+        // }
 
     }
     componentDidMount() {
@@ -741,6 +757,117 @@ class App_holder extends Component {
             that.readMessage(snapshot)
             });
 
+        var presenceRef = db.ref('/Users/'+that.props.userId+'/profile_detials/');
+        presenceRef.onDisconnect().update({isActive:false});
+        
+        var deleteIceOfferRef = db.ref('/Users/'+that.props.userId);
+        deleteIceOfferRef.onDisconnect().update({ice:null,offerAnswer:null});
 
+        // const myVideo = document.getElementById('myVideo');
+        const friendsVideo = document.getElementById('friendsVideo');
+        const selfView = document.getElementById('self-view');
+        // navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+        //     .then((stream) => {
+        //         this.setState({ stream: stream });
+        //         const tracks = stream.getTracks();
+        //         tracks.forEach(track => {
+        //             if (track.kind === 'audio') {
+        //                 this.setState({ audioTrack: track });
+        //                 // pc.addTrack(track,stream);
+        //             }
+        //             if (track.kind === 'video') {
+        //                 this.setState({ videoTrack: track });
+        //                 // pc.addTrack(track,stream);
+        //             }
+        //             // console.log(track);
+        //             //senders.push(pc.addTrack(track, stream))
+        //             //selfView.srcObject = stream;      // Adding self video
+        //             // console.log(this.state.stream.getTracks());
+        //         })
+        //         //return stream;
+        //     })
+
+
+
+        // pc.onicecandidate = (event) => {
+        //     //console.log('testing iterations')
+        //     if (event.candidate) {
+        //         console.log(iceCandidateCount++);
+        //         that.sendIceMessage(this.props.userId, JSON.stringify({ 'ice': event.candidate }));
+        //         console.log('STEP 9/16 - ICE canadidates generated in your device - TIME: ' + Date.now())
+        //         //console.log(event.candidate);
+        //     }
+        //     else {
+        //         // this.sendMessage(this.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));   // added to check sync
+        //         console.log("STEP 10/17 - *  *  * *  All Ice candidates are sent *  *  * *  - TIME: " + Date.now())
+        //     }
+        // }
+
+
+        // // ------  Listener for Adding Friends Video  --------// 
+        // pc.addEventListener('track', ({ streams: [stream] }) => {
+        //     console.log('Now added friends stream' + Date.now())
+        //     // console.log(stream);
+        //     friendsVideo.srcObject = stream;
+        // })
+
+        // // ------  Listener for Adding Friends Video  --------// 
+
+        // pc.onconnectionstatechange = (event) => {
+        //     if (pc.connectionState === "disconnected") {
+        //         console.log('= = = = = Call Ended - - - -  --  ')
+        //         // pc.close();
+        //         // pc.onicecandidate = null;
+        //         // pc.onaddstream = null;
+        //         //  window.location.reload();
+        //         //   db.ref('/ice/').remove();
+        //         //   db.ref('/offerAnswer/').remove();
+        //         this.endCall();
+        //     };
+        // }
+
+
+    }
+
+    // componentWillUnmount() {
+    //     const videoTrack = senders.find(sender => sender.track.kind === 'video');
+    //     videoTrack.track.stop();
+    //     console.log('Video off');
+    // }
+
+}
 
 export default App_holder;
+
+
+
+
+        // ------  Adding self Video  --------//
+        // navigator.mediaDevices.getUserMedia({ audio: true, video: true })
+        //   .then((stream) => {
+        //     console.log(stream.getTracks());
+        //     console.log(stream);
+        //     myVideo.srcObject = stream;
+        //     console.log("STEP 3/4 : Added your video on screen - TIME: " + Date.now());
+        //     return stream;
+        //   })
+        //   .then(stream => pc.addStream(stream));
+
+        // ------^^Adding self Video^^--------//
+        
+        // ------ Screenshare with self Video  -----------  //
+
+        // .then(stream => pc.addStream(stream));
+
+        // pc.ontrack = (event) =>{
+        //   console.log('Now added friends stream' + Date.now())
+        //   friendsVideo.srcObject = event.streams[0];
+        // }
+
+
+        // userMediaStream.getTracks()
+        //     .forEach(track => senders.push(pc.addTrack(track, userMediaStream)));
+        //   document.getElementById('self-view').srcObject = userMediaStream;
+
+
+        // ------ Screenshare -----------  //

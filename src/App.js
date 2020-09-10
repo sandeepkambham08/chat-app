@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import App_holder from './App_holder';
 import * as firebase from 'firebase';
-import Login_button from './media/login_button.png';
+import Login_button from './media/login_button_white.png';
 
 var firebaseConfig = {
   apiKey: "AIzaSyBw8TC9om3UZO9HPHkOOn0zm0VYjmgmvnc",

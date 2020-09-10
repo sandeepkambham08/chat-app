@@ -124,6 +124,15 @@ p{
 .Left-Drawer-close{
 transform: translateX(-100%);
 }
+
+.Hello-name{
+  font-size: small;
+  display: block;
+  right:left;
+  margin: 6vh 0.5vw 0 5vw;
+  position: fixed;
+}
+
 .caption{
   text-align: center;
 }
@@ -473,7 +482,7 @@ display: none;
 }
 .Contact-list-item-online:hover span {
   display: contents;
-  font-size: 1em;
+  font-size: 0.8em;
 }
 
 .Contact-list-item-offline span{
@@ -481,7 +490,7 @@ display: none;
 }
 .Contact-list-item-offline:hover span {
   display: inline-block;
-  font-size: 1em;
+  font-size: 0.7em;
 }
 
 
@@ -493,7 +502,7 @@ display: none;
 }
 
 .Contact-list-item-online .contactListPic{
-  border: 2px solid rgb(6, 219, 52);
+  border: 3px solid rgb(6, 219, 52);
 }
 
 .Contact-list-item-offline .contactListPic{
@@ -503,10 +512,30 @@ display: none;
   text-align: center;
   cursor: pointer;
 }
+.Contact-list-item-online:hover{
+  background-color:  #282c34;
+  border-radius: 25px;
+  text-align: center;
+  /* border: 1px solid rgb(148, 20, 3); */
+  width:90%;
+  margin-left: 5%;
+  border-radius: 25px;
+  box-shadow:5px 10px 10px 2px rgb(19, 26, 16);
+
+}
 .Contact-list-item-offline{
   text-align: center;
 }
+.Contact-list-item-offline:hover{
+  text-align: center;
+  background-color:  #181412d0;
+  /* border: 1px solid rgb(148, 20, 3); */
+  width:90%;
+  margin-left: 5%;
+  border-radius: 25px;
+  box-shadow:5px 10px 10px 2px rgb(26, 16, 16);
 
+}
 .Sign-out-button{
   background-color:  #282c34;
   color: antiquewhite;
@@ -521,6 +550,7 @@ display: none;
 .Sign-out-button:hover {
   background-color: #a02219;
   font-weight: bolder;
+  box-shadow:5px 10px 10px 2px rgb(19, 26, 16);
 }
 
 .All-contact-div{
