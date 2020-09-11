@@ -71,7 +71,7 @@ class App extends Component {
       that.setState({loggedIn:true,userName:user.name, userEmail:user.email,  userId:user.id, userPic: user.picture});
       console.log(that.state);
       // db.ref("/Users/"+this.state.userId+"/profile_Details/").set({ name: profile.getGivenName(), userLogo: profile.getImageUrl(), userEmail: profile.getEmail() })
-      db.ref("/Users/"+user.id+"/profile_detials").set({isActive:true,userName:user.name,userEmail:user.email,userId:user.id,userPic:user.picture});
+      db.ref("/Users/"+user.id+"/profile_detials").set({isActive:true,userName:user.name,userEmail:user.email,userId:user.id,userPic:user.picture,userBusy:false});
 
     }).catch(function(err){
       console.log(err)
@@ -85,7 +85,7 @@ class App extends Component {
         // Sign-out successful.
         console.log('Signed out now');
         that.setState({loggedIn:false});
-        db.ref("/Users/"+that.state.userId+"/profile_detials").update({isActive:false});
+        db.ref("/Users/"+that.state.userId+"/profile_detials").update({isActive:false,userBusy:false});
       }).catch(function(error) {
         console.log(error);
       }).then(()=>{

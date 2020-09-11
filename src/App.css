@@ -31,19 +31,21 @@ html *
 }
 
 .Side-drawer-button{
-  width: 4vw;
-  height: 6vh;
+  width: 40px;
+  height: 40px;
   display: block;
   right:0;
-  margin: 2vh 0.5vw 0 0;
+  margin: 2vh 1vw 0 0;
   position: fixed;
   cursor: pointer;
   border-radius: 60px;
-  transition: box-shadow 300ms ease-in;
-  box-shadow:1px 5px 5px 1px rgb(105, 105, 105);
+  padding:1px;
+  border: 2px solid rgb(194, 93, 20);
+  transition: box-shadow 100ms ease-in;
+  box-shadow:-2px 10px 10px 2px rgb(19, 26, 16);
 }
 .Side-drawer-button:hover{
-  box-shadow:1px 5px 5px 1px rgb(206, 206, 206);
+  box-shadow:-2px 10px 10px 3px rgb(0, 0, 0);
 }
 
 
@@ -81,7 +83,7 @@ p{
   z-index: 200;
   background-color: rgba(0, 0, 0, 0.808);
   box-sizing: border-box;
-  transition: transform 0.5s ease-in;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 
@@ -94,15 +96,22 @@ p{
 }
 
 .Contacts-drawer-button{
-  width: 45px;
-  height: 45px;
+  width: 42px;
+  height: 42px;
   display: block;
   left:0;
   border-radius: 25px;
-  border: 2px solid rgb(194, 93, 20);
+  border: 1px solid rgb(255, 255, 255);
+  /* background-color: rgba(122, 60, 9, 0.808); */
   margin: 2vh 0vw 0 1vw;
   position: fixed;
   cursor: pointer;
+  transition: box-shadow 100ms ease-in;
+  box-shadow:3px 7px 7px 2px rgb(19, 26, 16);
+}
+.Contacts-drawer-button:hover{
+  cursor: pointer;
+  box-shadow:5px 8px 10px 2px rgb(0, 0, 0);
 }
 
 .Side-drawer-left{
@@ -115,8 +124,9 @@ p{
   background-color: rgba(0, 0, 0, 0.808);
   box-sizing: border-box;
   text-align: center;
-  transition: transform 0.5s ease-in;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
 
 .Left-Drawer-open{
   transform: translateX(0);
@@ -139,7 +149,7 @@ transform: translateX(-100%);
 .Both-Videos{
   /* text-align: center; */
   border: 1px solid black;
-  margin-left: 25%;
+  margin-left: 22.5%;
   border-radius: 10px;
   width: 800px;
   height: 600px;
@@ -163,7 +173,7 @@ transform: translateX(-100%);
   border-radius: 10px;
   max-width: 160px;
   max-height: 120px;
-  border: 1px solid black;
+  /* border: 1px solid black; */
   /* transform: scale(-1,1); */
 } 
 
@@ -190,15 +200,15 @@ transform: translateX(-100%);
 }
 
 .videoOn{
-  background-color: rgb(199, 43, 43, 0.9);
+  background-color: rgba(250, 58, 58, 0.329);
   
 }
 .videoOn:hover{
-  background-color: rgb(7, 175, 35);
+  background-color: rgb(43, 199, 56);
 }
 
 .videoOff{
-  background-color: rgb(7, 175, 35 , 0.9);
+  background-color: rgba(7, 175, 35, 0.308);
 }
 .videoOff:hover{
   background-color: rgb(199, 43, 43);
@@ -219,7 +229,7 @@ transform: translateX(-100%);
 }
 
 .Start-share{
-  background-color: rgb(211, 211, 212);
+  background-color: rgba(211, 211, 212, 0.5);
 }
 .Start-share:hover{
   width: 30px;
@@ -229,7 +239,7 @@ transform: translateX(-100%);
   box-shadow:1px 5px 5px 1px rgb(35, 36, 36);
 }
 .Stop-share{
-  background-color: rgb(175, 42, 18);
+  background-color: rgba(175, 42, 18, 0.363);
 }
 .Stop-share:hover{
   width: 30px;
@@ -493,6 +503,15 @@ display: none;
   font-size: 0.7em;
 }
 
+.Contact-list-item-busy span{
+  display: none;
+}
+
+.Contact-list-item-busy:hover span {
+  display: inline-block;
+  font-size: 0.7em;
+}
+
 
 .contactListPic{
   width: 40px;
@@ -502,13 +521,16 @@ display: none;
 }
 
 .Contact-list-item-online .contactListPic{
-  border: 3px solid rgb(6, 219, 52);
+  border: 2px solid rgb(6, 219, 52);
 }
 
 .Contact-list-item-offline .contactListPic{
   border: 2px solid rgb(148, 20, 3);
 }
-.Contact-list-item-online{
+.Contact-list-item-busy .contactListPic{
+  border: 2px dotted rgb(185, 78, 6);
+}
+.Contact-list-item-online, .Contact-list-item-busy, .Contact-list-item-offline {
   text-align: center;
   cursor: pointer;
 }
@@ -523,9 +545,7 @@ display: none;
   box-shadow:5px 10px 10px 2px rgb(19, 26, 16);
 
 }
-.Contact-list-item-offline{
-  text-align: center;
-}
+
 .Contact-list-item-offline:hover{
   text-align: center;
   background-color:  #181412d0;
@@ -540,7 +560,7 @@ display: none;
   background-color:  #282c34;
   color: antiquewhite;
   text-align: center;
-  margin-top: 72%;
+  /* margin-top: 72%; */
   border-radius: 15px;
   padding: 5px 35%;
   transition: background-color 300ms ease-in;
@@ -551,9 +571,10 @@ display: none;
   background-color: #a02219;
   font-weight: bolder;
   box-shadow:5px 10px 10px 2px rgb(19, 26, 16);
+  cursor: pointer;
 }
 
-.All-contact-div{
+.All-contacts-div{
   top:0;
   height: 80vh;
   overflow: scroll;
@@ -561,4 +582,100 @@ display: none;
 
 .Sign-out-button-div{
   bottom: 0;
+}
+
+.Main-profile-pic{
+  width: 200px;
+  height: 200px;
+  border-radius: 80%;
+  
+  /* border: 1px solid rgb(9, 66, 2); */
+  box-shadow:5px 10px 10px 2px rgb(19, 26, 16);
+}
+
+.Welcome-screen{
+  z-index: 100;
+  display: block;
+  margin: 30vh 40vw;
+  position: fixed;
+  text-align: center;
+}
+
+.App-header span{
+display: none;
+transition: display 600ms ease-in;
+}
+
+.App-header:hover span{
+  display: inline-block;
+  font-size: 0.5em;
+  color: antiquewhite;
+}
+
+.Connect-now-button{
+  background-color:  #282c34;
+  color: antiquewhite;
+  text-align: center;
+  border-radius: 15px;
+  padding: 7px;
+  margin:60% 10px;
+  /* display: block;
+  float: left; */
+  border: 1px solid rgb(9, 66, 2);
+  transition: background-color 300ms ease-in;
+/* transition: font-weight 100ms ease-in; */
+}
+.Connect-now-button:hover{
+color: rgb(255, 255, 255);
+background-color: #047209de;
+border: 1px solid  rgb(17, 128, 2);
+font-weight: bolder;
+box-shadow:2px 5px 5px 1px rgb(19, 26, 16);
+cursor: pointer;
+}
+
+.Connect-now-button-block{
+  width: 150px;
+  display: block;
+  float: left;
+}
+.Connect-now-button-offer{
+  width: 150px;
+  margin:10% 10px;
+  display: block;
+  float: left;
+}
+
+.Cannot-connect-now-button{
+  background-color:  #282c34;
+  color: antiquewhite;
+  text-align: center;
+  border-radius: 15px;
+  padding: 7px;
+  margin:60% 10px;
+  /* display: block;
+  float: left; */
+  border: 1px solid rgb(14, 14, 14);
+  transition: background-color 300ms ease-in;
+  cursor: not-allowed;
+}
+.call-other-screen{
+  width: 50%;
+  z-index: 100;
+  display: block;
+  margin: 30vh 30vw;
+  position: fixed;
+  text-align: center;
+}
+
+.self-pic-and-name{
+  width: 200px;
+  display: block;
+  float: left;
+}
+.Friend-pic-and-name{
+  /* margin-left: 90px; */
+  width: 200px;
+  display: block;
+  float: left;
 }

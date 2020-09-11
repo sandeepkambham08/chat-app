@@ -8,8 +8,8 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import video_off from './media/video_off.png';
 import video_on from './media/video_on.png';
-import side_drawer from './media/side_drawer_new.png';
-import rightSide_drawer from './media/rightSide_drawer.png';
+import side_drawer from './media/messages-icon.png';
+import leftSide_drawer from './media/leftSide_drawer.png';
 import screen_share from './media/screen_share.png';
 import Self_video from './SelfVideo.js'
 
@@ -41,7 +41,7 @@ var chunkLength = 10000;     // To divide file into chunks
 var loaded = 0;        // To calculate percentage of downloaded file on receiver side
 
 //Screen share
-const senders = [];
+let senders = [];
 
 var iceCandidateCount = 1;
 
@@ -84,15 +84,18 @@ class App_holder extends Component {
         loggedIn: true,
         peopleList: {},
         friendId:null,
+        callInitiated:false,            // To display your profile at beginning
         // senderId:null,
+        userBusy:false,
     }
 
     // To start a video call & creating an offer - updated 
-    showFriendsFace = (friendId) => {
+    showFriendsFace = () => {
         const pc = new RTCPeerConnection(servers);
         let dataChannel = pc.createDataChannel("MyApp Channel");
-
-        this.setState({friendId:friendId, pc: pc, dataChannel:dataChannel}, ()=>{
+        db.ref('/Users/'+this.props.userId+'/profile_detials/').update({userBusy:true});  // Update DB that the user is busy 
+        this.setState({callInitiated:true,userBusy:true});            // To change screen to call view
+        this.setState({ pc: pc, dataChannel:dataChannel}, ()=>{
             let promise = new Promise(resolve =>{
                 this.initializeListeners(pc,resolve)
             })
@@ -116,7 +119,7 @@ class App_holder extends Component {
                     console.log('STEP 7: Sent offer to peer - TIME: ' + Date.now());
                 });
             })
-            this.setState({ callingOther: true });
+            this.setState({ callingOther: true , CallOtherScreen :false, videoOn:true});
             dataChannel.onmessage = function (event) {
             console.log(event.data);
             }
@@ -133,7 +136,7 @@ class App_holder extends Component {
                 // const myVideo = document.getElementById('myVideo');
             const friendsVideo = document.getElementById('friendsVideo');
             const selfView = document.getElementById('self-view');
-                navigator.mediaDevices.getUserMedia({ audio: false, video: true })
+                navigator.mediaDevices.getUserMedia({ audio: true, video: true })
                     .then((stream) => {
                         this.setState({ stream: stream });
                         const tracks = stream.getTracks();
@@ -153,6 +156,7 @@ class App_holder extends Component {
                             // pc.addTrack(track, stream)
                             // console.log(pc);
                           senders.push(pc.addTrack(track, stream));
+                          console.log(senders);
                             // senders.push(pc.addStream(stream));
                             // console.log(senders);
                             selfView.srcObject = stream;      // Adding self video
@@ -247,7 +251,8 @@ class App_holder extends Component {
                    // const pc = new RTCPeerConnection(servers);
                    // let dataChannel = pc.createDataChannel("MyApp Channel");
                   //  that.setState({ offerReceived: true, pc: pc, dataChannel:dataChannel }, ()=>{that.initializeListeners(pc)})  
-                  that.setState({ offerReceived: true})         //To make ANSWER  button active
+                  that.setState({ offerReceived: true, userBusy: true})         //To make ANSWER  button active
+                //   this.setState({callInitiated:true});          // To make video block active 
                 })
                 console.log('Received message : OFFER' + Date.now())
             }
@@ -280,11 +285,14 @@ class App_holder extends Component {
         var that = this;
         const pc = new RTCPeerConnection(servers);
         let dataChannel = pc.createDataChannel("MyApp Channel");
-        this.setState({ offerAccepted: true,pc:pc, dataChannel:dataChannel})
+        this.setState({callInitiated:true},()=>{
+            this.setState({ offerAccepted: true,pc:pc, dataChannel:dataChannel, videoOn:true})
             // that.initializeListeners(pc)
         let promise = new Promise(resolve =>{
             this.initializeListeners(pc,resolve)
         })
+       
+        
         
         var msg = this.state.messageReceived;
         console.log('Offer is now Accepted')
@@ -321,7 +329,7 @@ class App_holder extends Component {
 
             });
         })
-
+     });  // Inside setState of callInitiated 
     }
 
     //  To read ICE candidates received from other user
@@ -345,8 +353,12 @@ class App_holder extends Component {
     // ^^^^^^^^^^^^^^ Call now Connected ^^^^^^^^^^^^^^^^^ //
     // Stop Video //
     stopVideo = () => {
+        console.log(senders);
         const videoTrack = senders.find(sender => sender.track.kind === 'video');
-        videoTrack.track.stop();
+        console.log(videoTrack);
+        if(videoTrack){
+            videoTrack.track.stop();
+        }
         console.log('Video off');
         this.setState({ videoOn: false }); // Video button toggle
     }
@@ -432,6 +444,8 @@ class App_holder extends Component {
         data.message = input;
         dataChannel.send(JSON.stringify(data));
         document.getElementById('textInput').value = null;  //To clear the input box
+        var objDiv = document.getElementById("Conversation-block");
+        objDiv.scrollTop = objDiv.scrollHeight;
     }
 
     // To enable 'Enter' to send message
@@ -523,6 +537,8 @@ class App_holder extends Component {
             // document.getElementById('messageReceived').append('Friend :' + data.message);
             document.getElementById('messageReceived').innerHTML += "<p class='Friend-input'> <span class='who-tag'>Friend : </span>" + data.message + "</p>"
             // document.getElementById('messageReceived').innerHTML += '<br></br>'
+            var objDiv = document.getElementById("Conversation-block");
+            objDiv.scrollTop = objDiv.scrollHeight;
         }
     }
 
@@ -584,7 +600,14 @@ class App_holder extends Component {
 
     // To END the call with friend
     endCall = () => {
+        this.stopVideo(); //Stop Video;
         var pc = this.state.pc;
+        this.setState({callInitiated:false, userBusy:false});            // To change screen to call view
+        senders=[];                                     // making senders back to null
+        var frienndice = db.ref('/Users/'+this.state.friendId+'/ice/');
+        frienndice.remove();
+        var friendOfferAnswer = db.ref('/Users/'+this.state.friendId+'/offerAnswer/');
+        friendOfferAnswer.remove();
         var ice = db.ref('/Users/'+this.props.userId+'/ice/');
         //console.log(msg);
         ice.remove();
@@ -599,8 +622,9 @@ class App_holder extends Component {
         db.ref('/Users/'+this.props.userId+'/ice/').off();      // Stop listening for ice candidates after call end 
 
         //window.location.reload();
-        this.setState({ offerReceived: false, callingOther: false, pc:null});
-        this.stopVideo();
+        this.setState({ offerReceived: false, callingOther: false, pc:null,friendId:null, callConnected:false});
+        
+        document.getElementById('messageReceived').innerHTML='';
     }
     loginButton = () => {
         const loggedIn = !this.state.loggedIn;
@@ -615,11 +639,30 @@ class App_holder extends Component {
         this.setState({ drawerLeftOpen: updated });
     }
 
+    CallOtherScreen = (key) =>{
+        console.log(key);
+        if(this.state.friendId===null){
+            this.setState(prevState =>({
+                CallOtherScreen:!prevState.CallOtherScreen
+            })) 
+        }
+        this.setState({friendId:key});
+        if(this.state.friendId===key){
+            this.setState(prevState =>({
+                CallOtherScreen:!prevState.CallOtherScreen
+            }))
+        }
+       
+    }
+
 
 
     render() {
         let sideDrawerClasses = ['Side-drawer', 'Drawer-close'];
         let ContactList = null;
+        let WelcomeScreen = null;
+        let CallOtherScreen  = null;
+        let OfferReceivedScreen =null;
         if (this.state.drawerOpen) {
             sideDrawerClasses = ['Side-drawer', 'Drawer-open'];
         }
@@ -640,23 +683,33 @@ class App_holder extends Component {
                     // console.log(this.state.peopleList[key].userEmail);                     
                     if(key!==this.props.userId){
                         // console.log(this.state.peopleList[key]);
-                        if (this.state.peopleList[key].isActive===true) {
+                        if (this.state.peopleList[key].isActive===true && this.state.peopleList[key].userBusy===false) {
                             return (
-                                <div className='Contact-list-item-online' key={key} onClick={()=>this.showFriendsFace(key)}>
+                                <div className='Contact-list-item-online' key={key} onClick={()=>this.CallOtherScreen(key)}>
                                 <img src={this.state.peopleList[key].userPic} className='contactListPic' />
                                 <span>Click to call</span>
                                 <p key={key} className='onlinePerson' id='onlinePerson' >  {this.state.peopleList[key].userName} </p>
                                 </div>   )
                         }
-                        else if(this.state.peopleList[key].isActive===false){
+                        else if(this.state.peopleList[key].isActive===false && this.state.peopleList[key].userBusy===false){
                             return (
-                                <div className='Contact-list-item-offline' key={key}>
+                                <div className='Contact-list-item-offline' key={key} onClick={()=>this.CallOtherScreen(key)} >
                                 <img src={this.state.peopleList[key].userPic} className='contactListPic' />
                                 <span>User not online</span>
                                 <p key={key} className='offlinePerson' id='offlinePerson'>  {this.state.peopleList[key].userName} </p>
                                 </div>
                             )
                         }
+                        else if(this.state.peopleList[key].isActive===true && this.state.peopleList[key].userBusy===true){
+                            return (
+                                <div className='Contact-list-item-busy' key={key} onClick={()=>this.CallOtherScreen(key)} >
+                                <img src={this.state.peopleList[key].userPic} className='contactListPic' />
+                                <span>User is Busy</span>
+                                <p key={key} className='BusyPerson' id='BusyPerson'>  {this.state.peopleList[key].userName} </p>
+                                </div>
+                            )
+                        }
+
                     }
 
                 })}
@@ -664,14 +717,65 @@ class App_holder extends Component {
             </div>
         )
 
+        WelcomeScreen = (
+            !this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived &&
+            <div className='Welcome-screen'>
+                <img className='Main-profile-pic' src={this.props.userPic} />
+                <p>Hello, {this.props.userName}</p>
+            </div>
+        )
+        CallOtherScreen=(
+            this.state.CallOtherScreen &&
+            <div className='call-other-screen'>
+                <div className='self-pic-and-name'>
+                    <img className='Main-profile-pic' src={this.props.userPic} />
+                    <p >You</p>
+                </div>
+                {this.state.peopleList[this.state.friendId].isActive && 
+                <div className='Connect-now-button-block' >
+                <button className='Connect-now-button' onClick={()=>{this.showFriendsFace()}} >Connect now</button>
+                </div>}
+                {!this.state.peopleList[this.state.friendId].isActive && 
+                <div className='Connect-now-button-block' >
+                <button className='Cannot-connect-now-button'  >User not Online </button>
+                </div>}
+                <div className='Friend-pic-and-name'>
+                    <img className='Main-profile-pic' src={this.state.peopleList[this.state.friendId].userPic} />  
+                    <p>{this.state.peopleList[this.state.friendId].userName}</p>   
+                </div>
+            </div>
+        )
+        OfferReceivedScreen=(
+            this.state.offerReceived &&
+            <div className='call-other-screen'>
+                <div className='self-pic-and-name'>
+                    <img className='Main-profile-pic' src={this.props.userPic} />
+                    <p >You</p>
+                </div>
+                {this.state.peopleList[this.state.friendId].isActive && 
+                <div className='Connect-now-button-offer' >
+                {/* <button className='Connect-now-button' onClick={()=>{this.showFriendsFace()}} >Connect now</button> */}
+                <Button className='answerButton' variant="contained" hidden={!this.state.offerReceived} onClick={this.acceptCall} style={{ backgroundColor: 'green', zIndex: '200' }} > Answer </Button>
+                <Button variant="contained" color="secondary" onClick={this.endCall} style={{ margin: '10px', zIndex: '200' }}> Reject </Button>
+                </div>}
+                <div className='Friend-pic-and-name'>
+                    <img className='Main-profile-pic' src={this.state.peopleList[this.state.friendId].userPic} />  
+                    <p>{this.state.peopleList[this.state.friendId].userName}</p>   
+                </div>
+            </div>
+        )
         return (
             <div className="App">
                 <div className="App-header">
-                    <img className='Contacts-drawer-button' src={this.props.userPic} onClick={this.drawerLeftToggle} />
+                    <img className='Contacts-drawer-button' src={leftSide_drawer} onClick={this.drawerLeftToggle} />
                     <img className='Side-drawer-button' src={side_drawer} onClick={this.drawerToggle} />
-                    <p className='Hello-name'>Hello, {this.props.userName}</p>
+                    <span className='Hello-name'>Contacts</span>
                     <p>Have a conversation with privacy</p>
                 </div>
+                {WelcomeScreen}
+                {CallOtherScreen}
+                {OfferReceivedScreen}
+                {this.state.callInitiated && 
                 <div className='Videos-block' >
                     <div className='caption'>
                         <p>Connect with loved ones</p>
@@ -694,15 +798,16 @@ class App_holder extends Component {
                         {/* {!this.state.offerReceived && !this.state.callingOther &&
                             <Button variant="contained" color="primary" onClick={this.showFriendsFace} style={{ margin: '10px', zIndex: '200' }}> Call </Button>
                         } */}
-                        {this.state.offerReceived && !this.state.offerAccepted &&
+                        {/* {this.state.offerReceived && !this.state.offerAccepted &&
                             <Button className='answerButton' variant="contained" hidden={!this.state.offerReceived} onClick={this.acceptCall} style={{ backgroundColor: 'green', zIndex: '200' }} > Answer </Button>
-                        }
+                        } */}
                         {/* {(this.state.offerReceived || this.state.callConnected) && */}
                         <Button variant="contained" color="secondary" onClick={this.endCall} style={{ margin: '10px', zIndex: '200' }}> End Call </Button>
                         {/* } */}
                         <br></br>
                     </div>
-                </div> {/*End Videos class */}
+                    </div> } {/*End Videos class */}
+
                 <div className={sideDrawerClassesLeft.join('  ')}>
                     <div className='All-contacts-div'>
                     {ContactList}
@@ -713,7 +818,7 @@ class App_holder extends Component {
                 </div>
 
                 <div className={sideDrawerClasses.join('  ')} style={{ paddingTop: '20px' }}>
-                    <div className=' split Conversation-block'>
+                    <div className=' split Conversation-block' id='Conversation-block'>
                         <p> Conversation </p>
                         <div id='messageReceived'>
 
@@ -761,6 +866,7 @@ class App_holder extends Component {
                     let userEmail = profile_details.val().userEmail;
                     let isActive = profile_details.val().isActive;
                     let userPic = profile_details.val().userPic;
+                    let userBusy = profile_details.val().userBusy;
                    // that.setState({ peopleList: { ...that.state.peopleList, [userId]: false } });  //old
                     that.setState(prevState => ({
                         peopleList: {
@@ -771,7 +877,8 @@ class App_holder extends Component {
                             userName : userName,
                             userEmail : userEmail,
                             isActive : isActive,
-                            userPic : userPic, // update value of specific key
+                            userPic : userPic,
+                            userBusy: userBusy, // update value of specific key
                           }
                         }
                       }))  
@@ -792,6 +899,7 @@ class App_holder extends Component {
                 let userEmail = profile_details.val().userEmail;
                 let isActive = profile_details.val().isActive;
                 let userPic = profile_details.val().userPic;
+                let userBusy = profile_details.val().userBusy;
 
                 that.setState(prevState => ({
                     peopleList: {
@@ -802,7 +910,8 @@ class App_holder extends Component {
                         userName : userName,
                         userEmail : userEmail,
                         isActive : isActive,
-                        userPic : userPic, // update value of specific key
+                        userPic : userPic, 
+                        userBusy: userBusy,// update value of specific key
                       }
                     }
                   }))    
@@ -827,7 +936,7 @@ class App_holder extends Component {
 
         //  To change status on Disconnect //
         var presenceRef = db.ref('/Users/'+that.props.userId+'/profile_detials/');
-        presenceRef.onDisconnect().update({isActive:false});
+        presenceRef.onDisconnect().update({isActive:false,userBusy:false});
         
         var deleteIceOfferRef = db.ref('/Users/'+that.props.userId);
         deleteIceOfferRef.onDisconnect().update({ice:null,offerAnswer:null});
