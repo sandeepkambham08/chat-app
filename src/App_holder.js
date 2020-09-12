@@ -9,6 +9,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import video_off from './media/video_off.png';
 import video_on from './media/video_on.png';
 import audio_icon from './media/audio_icon.png';
+import audio_icon_off from './media/audio_officon.png';
 import side_drawer from './media/side_drawer_new.png';
 import leftSide_drawer from './media/leftSide_drawer.png';
 import screen_share from './media/screen_share.png';
@@ -99,6 +100,7 @@ class App_holder extends Component {
         let dataChannel = pc.createDataChannel("MyApp Channel");
         db.ref('/Users/'+this.props.userId+'/profile_detials/').update({userBusy:true});  // Update DB that the user is busy 
         this.setState({callInitiated:true,userBusy:true});            // To change screen to call view
+        this.setState({audioOn:true});      
         this.setState({ pc: pc, dataChannel:dataChannel}, ()=>{
             let promise = new Promise(resolve =>{
                 this.initializeListeners(pc,resolve)
@@ -292,6 +294,7 @@ class App_holder extends Component {
         let dataChannel = pc.createDataChannel("MyApp Channel");
         this.setState({callInitiated:true},()=>{
             this.setState({ offerAccepted: true,pc:pc, dataChannel:dataChannel, videoOn:true})
+            this.setState({audioOn:true});  
             // that.initializeListeners(pc)
         let promise = new Promise(resolve =>{
             this.initializeListeners(pc,resolve)
@@ -843,7 +846,7 @@ class App_holder extends Component {
                             <img id="videoOn" className='videoOn' src={video_off} onClick={this.resumeVideo} hidden={this.state.videoOn} alt='Video on' />
                             <img id="videoOff" className='videoOff' src={video_on} onClick={this.stopVideo} hidden={!this.state.videoOn} alt='Video off' />
                             <img id="audioOff" className='audioOff' src={audio_icon} onClick={this.stopAudio} hidden={!this.state.audioOn}alt='Audio off' />
-                            <img id="audioOn" className='audioOn' src={audio_icon} onClick={this.resumeAudio} hidden={this.state.audioOn}alt='Audio on' />
+                            <img id="audioOn" className='audioOn' src={audio_icon_off} onClick={this.resumeAudio} hidden={this.state.audioOn}alt='Audio on' />
                             {/* <img id="audioOff" className='audioOff' src={video_on} onClick={this.stopVideo} hidden={!this.state.videoOn} alt='Video off' /> */}
                             <img id="screenShare" className='Start-share' src={screen_share} hidden={!this.state.callConnected || this.state.screenShare} onClick={this.shareScreenStart} />
                             <img id="screenShare" className='Stop-share' src={screen_share} hidden={!this.state.screenShare} onClick={this.shareScreenStop} />

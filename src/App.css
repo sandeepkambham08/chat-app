@@ -207,11 +207,11 @@ transform: translateX(-100%);
 }
 
 .videoOn{
-  background-color: rgba(250, 58, 58, 0.329);
+  background-color: rgba(250, 58, 58, 0.911);
   
 }
 .videoOn:hover{
-  background-color: rgb(43, 199, 56);
+  background-color: rgba(199, 43, 43, 0.603);
 }
 
 .videoOff{
@@ -240,7 +240,7 @@ transform: translateX(-100%);
   background-color: rgb(199, 43, 43);
 }
 .audioOn{
-  background-color: rgba(250, 58, 58, 0.329);
+  background-color: rgba(228, 1, 1, 0.808);
 }
 .audioOn:hover{
   background-color: rgb(43, 199, 56);
