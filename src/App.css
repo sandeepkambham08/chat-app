@@ -31,16 +31,16 @@ html *
 }
 
 .Side-drawer-button{
-  width: 40px;
-  height: 40px;
+  width: 38px;
+  height: 38px;
   display: block;
   right:0;
   margin: 2vh 1vw 0 0;
   position: fixed;
   cursor: pointer;
   border-radius: 60px;
-  padding:1px;
-  border: 2px solid rgb(194, 93, 20);
+  padding:2px;
+  border: 2px solid rgb(238, 238, 238);
   transition: box-shadow 100ms ease-in;
   box-shadow:-2px 10px 10px 2px rgb(19, 26, 16);
 }
@@ -140,6 +140,13 @@ transform: translateX(-100%);
   display: block;
   right:left;
   margin: 6vh 0.5vw 0 5vw;
+  position: fixed;
+}
+.Hello-name-right{
+  font-size: small;
+  display: block;
+  right:0;
+  margin: 6vh 5vw 0 0vw;
   position: fixed;
 }
 
@@ -370,10 +377,10 @@ display: none;
 
 
 .answerButton {
-
   border: none;
   border-radius: 1000px;
   z-index: 200;
+  color: rgb(255, 251, 251);
   transition: all 0.3s ease-in-out 0s;
   cursor: pointer;
   outline: none;
@@ -394,6 +401,7 @@ display: none;
   content: '';
   width: 30px; height: 30px;
   border-radius: 100%;
+  color: rgb(255, 251, 251);
   border: 6px solid green;
   position: absolute;
   z-index: -1;
@@ -521,14 +529,16 @@ display: none;
 }
 
 .Contact-list-item-online .contactListPic{
-  border: 2px solid rgb(6, 219, 52);
+  border: 2px solid rgba(6, 219, 52, 0.877);
+  box-shadow: 0pt 0 5pt 3pt rgb(4, 206, 37);
 }
 
 .Contact-list-item-offline .contactListPic{
   border: 2px solid rgb(148, 20, 3);
 }
 .Contact-list-item-busy .contactListPic{
-  border: 2px dotted rgb(185, 78, 6);
+  box-shadow: 0pt 0 5pt 3pt rgb(185, 78, 6);
+  border: 2px solid rgb(36, 185, 6);
 }
 .Contact-list-item-online, .Contact-list-item-busy, .Contact-list-item-offline {
   text-align: center;
@@ -613,22 +623,23 @@ transition: display 600ms ease-in;
 }
 
 .Connect-now-button{
-  background-color:  #282c34;
+  background-color:  #01920d;
   color: antiquewhite;
   text-align: center;
   border-radius: 15px;
   padding: 7px;
   margin:60% 10px;
+  font-weight: bolder;
   /* display: block;
   float: left; */
-  border: 1px solid rgb(9, 66, 2);
+  border: 1px solid rgb(189, 185, 185);
   transition: background-color 300ms ease-in;
 /* transition: font-weight 100ms ease-in; */
 }
 .Connect-now-button:hover{
 color: rgb(255, 255, 255);
-background-color: #047209de;
-border: 1px solid  rgb(17, 128, 2);
+background-color: #05ad0d;
+border: 1px solid  rgb(158, 160, 158);
 font-weight: bolder;
 box-shadow:2px 5px 5px 1px rgb(19, 26, 16);
 cursor: pointer;
@@ -647,7 +658,7 @@ cursor: pointer;
 }
 
 .Cannot-connect-now-button{
-  background-color:  #282c34;
+  background-color:  #a50000;
   color: antiquewhite;
   text-align: center;
   border-radius: 15px;
@@ -655,9 +666,14 @@ cursor: pointer;
   margin:60% 10px;
   /* display: block;
   float: left; */
-  border: 1px solid rgb(14, 14, 14);
+  border: 1px solid rgba(196, 196, 196, 0.774);
   transition: background-color 300ms ease-in;
   cursor: not-allowed;
+}
+.Cannot-connect-now-button:hover{
+  background-color:  #df0505;
+  color: rgb(247, 247, 247);
+  font-weight: bolder;
 }
 .call-other-screen{
   width: 50%;
@@ -678,4 +694,8 @@ cursor: pointer;
   width: 200px;
   display: block;
   float: left;
+}
+
+.left-drawer-userBusy{
+  cursor: not-allowed;
 }

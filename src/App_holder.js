@@ -8,10 +8,12 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import video_off from './media/video_off.png';
 import video_on from './media/video_on.png';
-import side_drawer from './media/messages-icon.png';
+import side_drawer from './media/side_drawer_new.png';
 import leftSide_drawer from './media/leftSide_drawer.png';
 import screen_share from './media/screen_share.png';
 import Self_video from './SelfVideo.js'
+
+import swal from '@sweetalert/with-react'
 
 //import adapter from 'webrtc-adapter';
 
@@ -251,7 +253,8 @@ class App_holder extends Component {
                    // const pc = new RTCPeerConnection(servers);
                    // let dataChannel = pc.createDataChannel("MyApp Channel");
                   //  that.setState({ offerReceived: true, pc: pc, dataChannel:dataChannel }, ()=>{that.initializeListeners(pc)})  
-                  that.setState({ offerReceived: true, userBusy: true})         //To make ANSWER  button active
+                  that.setState({ offerReceived: true, userBusy: true, CallOtherScreen:false})         //To make ANSWER  button active
+                  db.ref('/Users/'+this.props.userId+'/profile_detials/').update({userBusy:true});  // Update DB that the user is busy 
                 //   this.setState({callInitiated:true});          // To make video block active 
                 })
                 console.log('Received message : OFFER' + Date.now())
@@ -599,10 +602,17 @@ class App_holder extends Component {
     }
 
     // To END the call with friend
-    endCall = () => {
+    endCall = (rejected) => {
+
+        console.log(rejected);
+        if(rejected === 'true'){
+            db.ref('/Users/'+this.state.friendId+'/rejected/').update({callRejected:true});  // To detect call rejection!
+        }
+        
         this.stopVideo(); //Stop Video;
         var pc = this.state.pc;
         this.setState({callInitiated:false, userBusy:false});            // To change screen to call view
+        db.ref('/Users/'+this.props.userId+'/profile_detials/').update({userBusy:false});
         senders=[];                                     // making senders back to null
         var frienndice = db.ref('/Users/'+this.state.friendId+'/ice/');
         frienndice.remove();
@@ -620,7 +630,7 @@ class App_holder extends Component {
         }
 
         db.ref('/Users/'+this.props.userId+'/ice/').off();      // Stop listening for ice candidates after call end 
-
+        db.ref('/Users/'+this.props.userId+'/rejected/').update({callRejected:false});  // To make rejection call rejection!
         //window.location.reload();
         this.setState({ offerReceived: false, callingOther: false, pc:null,friendId:null, callConnected:false});
         
@@ -641,24 +651,29 @@ class App_holder extends Component {
 
     CallOtherScreen = (key) =>{
         console.log(key);
-        if(this.state.friendId===null){
-            this.setState(prevState =>({
-                CallOtherScreen:!prevState.CallOtherScreen
-            })) 
+        if(!this.state.userBusy){
+            if(this.state.friendId===null){
+                this.setState(prevState =>({
+                    CallOtherScreen:!prevState.CallOtherScreen
+                })) 
+            }
+            this.setState({friendId:key});
+            if(this.state.friendId===key){
+                this.setState(prevState =>({
+                    CallOtherScreen:!prevState.CallOtherScreen
+                }))
+            }
         }
-        this.setState({friendId:key});
-        if(this.state.friendId===key){
-            this.setState(prevState =>({
-                CallOtherScreen:!prevState.CallOtherScreen
-            }))
-        }
-       
     }
 
 
 
     render() {
         let sideDrawerClasses = ['Side-drawer', 'Drawer-close'];
+        let ContactListClasses = ['Contact-list'];
+        let ContactListItemOnline  =  ['Contact-list-item-online'];
+        let ContactListItemOffline  = ['Contact-list-item-offline'];
+        let ContactListItemBusy = ['Contact-list-item-busy'];
         let ContactList = null;
         let WelcomeScreen = null;
         let CallOtherScreen  = null;
@@ -667,13 +682,23 @@ class App_holder extends Component {
             sideDrawerClasses = ['Side-drawer', 'Drawer-open'];
         }
         let sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-close'];
-        if (this.state.drawerLeftOpen) {
+        if (this.state.drawerLeftOpen && !this.state.userBusy) {
             sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-open'];
+        }
+        if (this.state.drawerLeftOpen && this.state.userBusy) {
+            sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-open', 'left-drawer-userBusy'];
+        }
+
+        if(this.state.userBusy){
+            ContactListClasses = ['Contact-list', 'left-drawer-userBusy'];
+            ContactListItemOnline =  ['Contact-list-item-online', 'left-drawer-userBusy'];
+            ContactListItemOffline  = ['Contact-list-item-offline', 'left-drawer-userBusy'];
+            ContactListItemBusy = ['Contact-list-item-busy', 'left-drawer-userBusy'];
         }
 
         ContactList = (
 
-            <div className='Contact-list'>
+            <div className={ContactListClasses.join(' ')}>
                 {/* <p >Your ID : {this.props.userId}  </p> */}
 
                 <p>Contacts</p>
@@ -685,15 +710,15 @@ class App_holder extends Component {
                         // console.log(this.state.peopleList[key]);
                         if (this.state.peopleList[key].isActive===true && this.state.peopleList[key].userBusy===false) {
                             return (
-                                <div className='Contact-list-item-online' key={key} onClick={()=>this.CallOtherScreen(key)}>
+                                <div className={ContactListItemOnline.join('  ')} key={key} disabled={!this.state.userBusy} onClick={()=>this.CallOtherScreen(key)}>
                                 <img src={this.state.peopleList[key].userPic} className='contactListPic' />
-                                <span>Click to call</span>
+                                <span>User Online</span>
                                 <p key={key} className='onlinePerson' id='onlinePerson' >  {this.state.peopleList[key].userName} </p>
                                 </div>   )
                         }
                         else if(this.state.peopleList[key].isActive===false && this.state.peopleList[key].userBusy===false){
                             return (
-                                <div className='Contact-list-item-offline' key={key} onClick={()=>this.CallOtherScreen(key)} >
+                                <div className={ContactListItemOffline.join('  ')} key={key} disabled={!this.state.userBusy} onClick={()=>this.CallOtherScreen(key)} >
                                 <img src={this.state.peopleList[key].userPic} className='contactListPic' />
                                 <span>User not online</span>
                                 <p key={key} className='offlinePerson' id='offlinePerson'>  {this.state.peopleList[key].userName} </p>
@@ -702,7 +727,7 @@ class App_holder extends Component {
                         }
                         else if(this.state.peopleList[key].isActive===true && this.state.peopleList[key].userBusy===true){
                             return (
-                                <div className='Contact-list-item-busy' key={key} onClick={()=>this.CallOtherScreen(key)} >
+                                <div className={ContactListItemBusy.join('  ')} key={key} disabled={!this.state.userBusy} onClick={()=>this.CallOtherScreen(key)} >
                                 <img src={this.state.peopleList[key].userPic} className='contactListPic' />
                                 <span>User is Busy</span>
                                 <p key={key} className='BusyPerson' id='BusyPerson'>  {this.state.peopleList[key].userName} </p>
@@ -725,19 +750,23 @@ class App_holder extends Component {
             </div>
         )
         CallOtherScreen=(
-            this.state.CallOtherScreen &&
+            this.state.CallOtherScreen && !this.state.userBusy&&
             <div className='call-other-screen'>
                 <div className='self-pic-and-name'>
                     <img className='Main-profile-pic' src={this.props.userPic} />
                     <p >You</p>
                 </div>
-                {this.state.peopleList[this.state.friendId].isActive && 
-                <div className='Connect-now-button-block' >
-                <button className='Connect-now-button' onClick={()=>{this.showFriendsFace()}} >Connect now</button>
+                {this.state.peopleList[this.state.friendId].isActive && !this.state.peopleList[this.state.friendId].userBusy &&
+                <div className='Connect-now-button-block' >                 
+                <button className='Connect-now-button' onClick={()=>{this.showFriendsFace()}} >Connect now</button> {/*User online button */}
                 </div>}
                 {!this.state.peopleList[this.state.friendId].isActive && 
                 <div className='Connect-now-button-block' >
-                <button className='Cannot-connect-now-button'  >User not Online </button>
+                <button className='Cannot-connect-now-button'  >User not Online </button>       {/*User not online button */}
+                </div>}
+                {this.state.peopleList[this.state.friendId].isActive && this.state.peopleList[this.state.friendId].userBusy &&
+                <div className='Connect-now-button-block' >    
+                <button className='Cannot-connect-now-button'  >User is Busy </button>       {/*User not online button */}             
                 </div>}
                 <div className='Friend-pic-and-name'>
                     <img className='Main-profile-pic' src={this.state.peopleList[this.state.friendId].userPic} />  
@@ -755,8 +784,8 @@ class App_holder extends Component {
                 {this.state.peopleList[this.state.friendId].isActive && 
                 <div className='Connect-now-button-offer' >
                 {/* <button className='Connect-now-button' onClick={()=>{this.showFriendsFace()}} >Connect now</button> */}
-                <Button className='answerButton' variant="contained" hidden={!this.state.offerReceived} onClick={this.acceptCall} style={{ backgroundColor: 'green', zIndex: '200' }} > Answer </Button>
-                <Button variant="contained" color="secondary" onClick={this.endCall} style={{ margin: '10px', zIndex: '200' }}> Reject </Button>
+                <Button className='answerButton' variant="contained" hidden={!this.state.offerReceived} onClick={this.acceptCall} style={{ backgroundColor: 'green', zIndex: '200', color:'antiquewhite' }} > Answer </Button>
+                <Button variant="contained" color="secondary" onClick={()=>{this.endCall('true')}} style={{ margin: '10px', zIndex: '200' }}> Reject </Button>
                 </div>}
                 <div className='Friend-pic-and-name'>
                     <img className='Main-profile-pic' src={this.state.peopleList[this.state.friendId].userPic} />  
@@ -768,8 +797,9 @@ class App_holder extends Component {
             <div className="App">
                 <div className="App-header">
                     <img className='Contacts-drawer-button' src={leftSide_drawer} onClick={this.drawerLeftToggle} />
-                    <img className='Side-drawer-button' src={side_drawer} onClick={this.drawerToggle} />
                     <span className='Hello-name'>Contacts</span>
+                    <img className='Side-drawer-button' src={side_drawer} onClick={this.drawerToggle} />
+                    <span className='Hello-name-right'>Messages</span>
                     <p>Have a conversation with privacy</p>
                 </div>
                 {WelcomeScreen}
@@ -868,6 +898,7 @@ class App_holder extends Component {
                     let userPic = profile_details.val().userPic;
                     let userBusy = profile_details.val().userBusy;
                    // that.setState({ peopleList: { ...that.state.peopleList, [userId]: false } });  //old
+                   if(userId !== undefined){
                     that.setState(prevState => ({
                         peopleList: {
                           ...prevState.peopleList,           // copy all other key-value pairs of peopleList object
@@ -881,7 +912,8 @@ class App_holder extends Component {
                             userBusy: userBusy, // update value of specific key
                           }
                         }
-                      }))  
+                      }))
+                    }  
                     //}
                 // profile_details.forEach(function (names) {
                 //     // console.log(names.val());
@@ -900,22 +932,23 @@ class App_holder extends Component {
                 let isActive = profile_details.val().isActive;
                 let userPic = profile_details.val().userPic;
                 let userBusy = profile_details.val().userBusy;
-
-                that.setState(prevState => ({
-                    peopleList: {
-                      ...prevState.peopleList,           // copy all other key-value pairs of peopleList object
-                      [userId]: {                     // specific object/user-detail of peopleList object
-                        ...prevState.peopleList.userId,    // copy all single user key-value pairs
-                        userId : userId,                    // update the name property, assign a new value                 
-                        userName : userName,
-                        userEmail : userEmail,
-                        isActive : isActive,
-                        userPic : userPic, 
-                        userBusy: userBusy,// update value of specific key
-                      }
-                    }
-                  }))    
-                
+                if(userId !== undefined){
+                    that.setState(prevState => ({
+                        peopleList: {
+                          ...prevState.peopleList,           // copy all other key-value pairs of peopleList object
+                          [userId]: {                     // specific object/user-detail of peopleList object
+                            ...prevState.peopleList.userId,    // copy all single user key-value pairs
+                            userId : userId,                    // update the name property, assign a new value                 
+                            userName : userName,
+                            userEmail : userEmail,
+                            isActive : isActive,
+                            userPic : userPic, 
+                            userBusy: userBusy,// update value of specific key
+                          }
+                        }
+                      }))  
+                }
+                  
                 // profile_details.forEach(function (names) {
                 //     // console.log(names.val());
                 // })
@@ -941,6 +974,25 @@ class App_holder extends Component {
         var deleteIceOfferRef = db.ref('/Users/'+that.props.userId);
         deleteIceOfferRef.onDisconnect().update({ice:null,offerAnswer:null});
         //  ^^^^^ To change status on Disconnect ^^^^^ //
+
+        // To check if the offer is rejected by other user //
+        db.ref("/Users/"+that.props.userId+'/rejected/').on('child_added', (snapshot) => {
+            console.log(snapshot.val().callRejected);
+            if(snapshot.val().callRejected){
+                swal("Done!", "Call rejected by friend", "error",{buttons: false,timer:1500,});
+                console.log('call is Rejected by other user');
+                that.endCall();
+            };
+            });
+        db.ref("/Users/"+that.props.userId+'/rejected/').on('value', (snapshot) => {
+            console.log(snapshot.val().callRejected);
+            if(snapshot.val().callRejected){
+                swal("Sorry!", "Call rejected by friend", "error",{buttons: false,timer:1500,});
+                console.log('call is Rejected by other user');
+                that.endCall();
+            };
+        });
+        // ^^^^^^^ To check if the offer is rejected by other user ^^^^^^ //
 
     }
 
