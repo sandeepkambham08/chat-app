@@ -72,6 +72,7 @@ class App extends Component {
       console.log(that.state);
       // db.ref("/Users/"+this.state.userId+"/profile_Details/").set({ name: profile.getGivenName(), userLogo: profile.getImageUrl(), userEmail: profile.getEmail() })
       db.ref("/Users/"+user.id+"/profile_detials").set({isActive:true,userName:user.name,userEmail:user.email,userId:user.id,userPic:user.picture,userBusy:false});
+      db.ref("/Users/"+user.id+"/rejected").set({callRejected:false});      //To initialize 
 
     }).catch(function(err){
       console.log(err)

@@ -220,12 +220,37 @@ transform: translateX(-100%);
 .videoOff:hover{
   background-color: rgb(199, 43, 43);
 }
+.audioOff,.audioOn{
+  width: 20px;
+  height: 20px;
+  padding: 6px;
+  margin-top: 60px;
+  margin-left: 0px;
+  border-radius: 5px;
+  position: absolute;
+  z-index: 300;
+  border: 1px solid white;
+  transition: box-shadow 300ms ease-in;
+  transition: background-color 600ms ease-in-out;
+}
+.audioOff{
+  background-color: rgba(7, 175, 35, 0.308);
+}
+.audioOff:hover{
+  background-color: rgb(199, 43, 43);
+}
+.audioOn{
+  background-color: rgba(250, 58, 58, 0.329);
+}
+.audioOn:hover{
+  background-color: rgb(43, 199, 56);
+}
 
 .Start-share, .Stop-share{
   width: 20px;
   height: 20px;
   padding: 6px;
-  margin-top: 60px;
+  margin-top: 10px;
   border-radius: 5px;
   position: absolute;
   z-index: 300;

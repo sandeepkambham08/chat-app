@@ -8,6 +8,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import video_off from './media/video_off.png';
 import video_on from './media/video_on.png';
+import audio_icon from './media/audio_icon.png';
 import side_drawer from './media/side_drawer_new.png';
 import leftSide_drawer from './media/leftSide_drawer.png';
 import screen_share from './media/screen_share.png';
@@ -89,6 +90,7 @@ class App_holder extends Component {
         callInitiated:false,            // To display your profile at beginning
         // senderId:null,
         userBusy:false,
+        audioOn: true,
     }
 
     // To start a video call & creating an offer - updated 
@@ -381,6 +383,27 @@ class App_holder extends Component {
         this.setState({ videoOn: true });   // Video button toggle
     }
 
+    stopAudio = () =>{
+        const audioTrack = senders.find(sender => sender.track.kind === 'audio');
+        console.log(audioTrack);
+        if(audioTrack){
+            audioTrack.track.enabled = false;
+            console.log('Audio off');
+        }
+        
+        this.setState({ audioOn: false }); // Audio stop button
+    }
+
+    resumeAudio = () =>{
+        const audioTrack = senders.find(sender => sender.track.kind === 'audio');
+        console.log(audioTrack);
+        if(audioTrack){
+            audioTrack.track.enabled = true;
+            console.log('Audio on');
+        }
+        this.setState({ audioOn: true }); // Audio button toggle
+    }
+  
     // Share screen 
     shareScreenStart = () => {
         // if (!displayMediaStream) {
@@ -611,6 +634,7 @@ class App_holder extends Component {
         }
         
         this.stopVideo(); //Stop Video;
+        this.stopAudio();  //Stop Video;
         var pc = this.state.pc;
         this.setState({callInitiated:false, userBusy:false});            // To change screen to call view
         db.ref('/Users/'+this.props.userId+'/profile_detials/').update({userBusy:false});
@@ -818,6 +842,9 @@ class App_holder extends Component {
                         <div className='myVideo-and-controls'>
                             <img id="videoOn" className='videoOn' src={video_off} onClick={this.resumeVideo} hidden={this.state.videoOn} alt='Video on' />
                             <img id="videoOff" className='videoOff' src={video_on} onClick={this.stopVideo} hidden={!this.state.videoOn} alt='Video off' />
+                            <img id="audioOff" className='audioOff' src={audio_icon} onClick={this.stopAudio} hidden={!this.state.audioOn}alt='Audio off' />
+                            <img id="audioOn" className='audioOn' src={audio_icon} onClick={this.resumeAudio} hidden={this.state.audioOn}alt='Audio on' />
+                            {/* <img id="audioOff" className='audioOff' src={video_on} onClick={this.stopVideo} hidden={!this.state.videoOn} alt='Video off' /> */}
                             <img id="screenShare" className='Start-share' src={screen_share} hidden={!this.state.callConnected || this.state.screenShare} onClick={this.shareScreenStart} />
                             <img id="screenShare" className='Stop-share' src={screen_share} hidden={!this.state.screenShare} onClick={this.shareScreenStop} />
                             {/* <button className='Stop-share' hidden={!this.state.screenShare} onClick={this.shareScreenStop}>Stop share</button> */}
