@@ -509,7 +509,7 @@ class App_holder extends Component {
 
         console.log(data.type);
         if (data.type === 'file') {
-            this.setState({ progressBar: true });
+            this.setState({ progressBar: true, drawerOpen: true });
             var fileName = data.fileName;
             var fileType = data.fileType;
             var fileSize = data.fileSize;
@@ -534,6 +534,7 @@ class App_holder extends Component {
 
         }
         else if (data.type === 'text') {
+            this.setState({drawerOpen: true});
             console.log(data.message);
             console.log('Friend : ' + data.message);
             // console.log(event.data.size);
