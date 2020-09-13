@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
 import './App.css';
 import * as firebase from 'firebase';
-import Button from '@material-ui/core/Button';
-//import CloudUploadIcon from '@material-ui/icons/CloudUpload';
-import SaveIcon from '@material-ui/icons/Save';
-import IconButton from '@material-ui/core/IconButton';
-import DeleteIcon from '@material-ui/icons/Delete';
+
+// Image imports //
 import video_off from './media/video_off.png';
 import video_on from './media/video_on.png';
 import audio_icon from './media/audio_icon.png';
@@ -13,11 +10,18 @@ import audio_icon_off from './media/audio_officon.png';
 import side_drawer from './media/side_drawer_new.png';
 import leftSide_drawer from './media/leftSide_drawer.png';
 import screen_share from './media/screen_share.png';
-import Self_video from './SelfVideo.js'
+// ^^^ Image imports ^^^ //
 
-import swal from '@sweetalert/with-react'
+// Import Buttons for file sharing options// 
+import Button from '@material-ui/core/Button';
+import SaveIcon from '@material-ui/icons/Save';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+// ^^^ Import Buttons for file sharing options ^^^// 
 
-//import adapter from 'webrtc-adapter';
+// Alert UI //
+import swal from '@sweetalert/with-react';          
+
 
 var firebaseConfig = {
     apiKey: "AIzaSyBw8TC9om3UZO9HPHkOOn0zm0VYjmgmvnc",
@@ -29,83 +33,90 @@ var firebaseConfig = {
     appId: "1:560038737659:web:3d15e56cc2cc98c807225e",
     measurementId: "G-75W8MF9XE9"
 };
+
 // Initialize Firebase
 const app = firebase.initializeApp(firebaseConfig);
 const db = app.database();
 
-
-const yourId = Math.floor(Math.random() * 10000);  //  generate a random id 
-console.log(yourId)
-
+// Servers for webRTC connection establishment
 var servers = { 'iceServers': [{ 'urls': 'stun:stun01.sipphone.com' }, { 'urls': 'stun:stun.services.mozilla.com' }, { 'urls': 'stun:stun.l.google.com:19302' }, { 'urls': 'turn:numb.viagenie.ca', 'credential': 'beaver', 'username': 'webrtc.websitebeaver@gmail.com' }] };
-// const pc = new RTCPeerConnection(servers)
-console.log('STEP 1/2 : Created Peer connection - TIME: ' + Date.now());
-//File sharing 
+
+
+//File sharing variables
 var chunkLength = 10000;     // To divide file into chunks
 var loaded = 0;        // To calculate percentage of downloaded file on receiver side
 
-//Screen share
+//Array to store media tracks  
 let senders = [];
 
+//Counter for ice candidates 
 var iceCandidateCount = 1;
 
-
-
-
-// let dataChannel = pc.createDataChannel("MyApp Channel");
+// Main class begin // 
 class App_holder extends Component {
 
     constructor(props) {
         super(props);
-        // create a ref to store the textInput DOM element
         this.friendsVideo = React.createRef();
-        // var peopleList = new Object();  
     }
 
 
     state = {
-        pc:null,
-        dataChannel:null,
-        caller: true,
-        receiver: false,
-        callingOther: false,
-        offerReceived: false,
-        offerAccepted: false,
-        messageReceived: '',
-        callConnected: false,
-        fileList: null,
-        fileURL: null,
-        fileName: '',
-        downloadButton: false,
-        progressBar: false,
-        screenShare: false,
-        stream: null,
-        audioTrack: null,
-        videoTrack: null,
-        videoOn: true,
-        drawerOpen: false,
-        drawerLeftOpen: true,
-        loggedIn: true,
-        peopleList: {},
-        friendId:null,
-        callInitiated:false,            // To display your profile at beginning
-        // senderId:null,
-        userBusy:false,
-        audioOn: true,
+        pc:null,                       // To  store generated peer connnection    
+        dataChannel:null,              // Store dataChannel        
+        callingOther: false,           // To check if user is calling friend 
+        offerReceived: false,          // To check if user is receiving a call 
+        offerAccepted: false,          // To detect if call is accepted
+        messageReceived: '',           // Store received msg 
+        callConnected: false,          // To maintain if call is connected 
+        fileList: null,                // File sharing - list of files
+        fileURL: null,                 // File sharing - download url
+        fileName: '',                  // File sharing - name
+        downloadButton: false,         // Download button visibility
+        progressBar: false,            // Progress bar visibility 
+        screenShare: false,            // Screenshare state                 
+        videoOn: true,                 // To control video toggle button
+        audioOn: true,                 // To control audio toggle button
+        drawerOpen: false,             // Messages drawer 
+        drawerLeftOpen: true,          // Contacts drawer is initially  open 
+        peopleList: {},                // Store available contacts 
+        friendId:null,                 // Friend ID to connect 
+        callInitiated:false,           // To display your profile at beginning
+        userBusy:false,                // To  maintain user state during a call
+        
+    }
+
+    // Toggle screen to call other screen // 
+    CallOtherScreen = (key) =>{
+        console.log(key);
+        if(!this.state.userBusy){
+            if(this.state.friendId===null){
+                this.setState(prevState =>({
+                    CallOtherScreen:!prevState.CallOtherScreen
+                })) 
+            }
+            this.setState({friendId:key});
+            if(this.state.friendId===key){
+                this.setState(prevState =>({
+                    CallOtherScreen:!prevState.CallOtherScreen
+                }))
+            }
+        }
     }
 
     // To start a video call & creating an offer - updated 
     showFriendsFace = () => {
         const pc = new RTCPeerConnection(servers);
+        console.log('STEP 1/2 : Created Peer connection - TIME: ' + Date.now());
         let dataChannel = pc.createDataChannel("MyApp Channel");
         db.ref('/Users/'+this.props.userId+'/profile_detials/').update({userBusy:true});  // Update DB that the user is busy 
         this.setState({callInitiated:true,userBusy:true});            // To change screen to call view
         this.setState({audioOn:true});      
         this.setState({ pc: pc, dataChannel:dataChannel}, ()=>{
             let promise = new Promise(resolve =>{
-                this.initializeListeners(pc,resolve)
+                this.initializeListeners(pc,resolve)                //Promise to get media tracks before creating offer 
             })
-            
+
             dataChannel.addEventListener("open", (event) => {
                 //dataChannel.send('hello');
                 console.log('Data Channel is open now!' + Date.now());
@@ -133,7 +144,7 @@ class App_holder extends Component {
 
     }
 
-
+// Initialize - Media devices and listerners to  detect iceCandidates / tracks / state changes
     initializeListeners = (pc,resolve) =>{
         console.log(' ******************  Inside listener initializer ******************');
         var that = this;
@@ -144,28 +155,13 @@ class App_holder extends Component {
             const selfView = document.getElementById('self-view');
                 navigator.mediaDevices.getUserMedia({ audio: true, video: true })
                     .then((stream) => {
-                        this.setState({ stream: stream });
+                        // this.setState({ stream: stream });
                         const tracks = stream.getTracks();
                         console.log(tracks);
                         tracks.forEach(track => {
-                            if (track.kind === 'audio') {
-                                this.setState({ audioTrack: track });
-                              //  pc.addTrack(track,stream);
-                            }
-                            if (track.kind === 'video') {
-                                this.setState({ videoTrack: track });
-                              //  pc.addTrack(track,stream);
-                                console.log(track);
-                            }
-                            
-                            // console.log(pc);
-                            // pc.addTrack(track, stream)
-                            // console.log(pc);
-                          senders.push(pc.addTrack(track, stream));
-                          console.log(senders);
-                            // senders.push(pc.addStream(stream));
-                            // console.log(senders);
-                            selfView.srcObject = stream;      // Adding self video
+                             senders.push(pc.addTrack(track, stream));
+                             console.log(senders);
+                             selfView.srcObject = stream;      // Adding self video
                             // console.log(this.state.stream.getTracks());
                         })
                         return stream;
@@ -174,6 +170,7 @@ class App_holder extends Component {
                     })
         // var pc  = this.state.pc;
 
+        // To detect new ice candidates generated after setting local description
         pc.onicecandidate = (event) => {
             //console.log('testing iterations')
             if (event.candidate) {
@@ -196,54 +193,33 @@ class App_holder extends Component {
             friendsVideo.srcObject = stream;
         })
 
-        pc.onaddTrack = ((event) => {
-            console.log('Now added friends stream - Inside Track' + Date.now())
-            // friendsVideo.srcObject = event.stream;
-        })
-        pc.onaddStream = ((event) => {
-            console.log('Now added friends stream - Inside Stream' + Date.now())
-            // friendsVideo.srcObject = event.stream;
-        })
-
         // ------  Listener for Adding Friends Video  --------// 
 
+        // To detect call ended by  friend // 
         pc.onconnectionstatechange = (event) => {
             if (pc.connectionState === "disconnected") {
                 console.log('= = = = = Call Ended - - - -  --  ');
-                // pc.close();
-                // pc.onicecandidate = null;
-                // pc.onaddstream = null;
-                //  window.location.reload();
-                //   db.ref('/ice/').remove();
-                //   db.ref('/offerAnswer/').remove();
                 this.endCall();
             };
         }
-        return 1;
+       // return 1;
     }
 
-    // callPerson = (key) =>{
-    //     console.log(key);
-    // }
 
-
-    // To send Offer Answer - updated 
+    // To send Offer/Answer to friend- updated 
     sendMessage = (friendId, data) => {
         db.ref('/Users/'+friendId+'/offerAnswer/').push({ sender: this.props.userId, message: data });
     }
-    
-    //
+
+    // To send ice candidates to friend
     sendIceMessage=(userId, data)=>{
         db.ref('/Users/'+this.state.friendId+'/ice/').push({ sender: userId, message: data }).then(()=>{
             console.log('STEP 9.5/16.5 - ICE canadidates sent in your device - TIME: ' + Date.now())
         });
-        
-        //console.log(data);
-        //msg.remove();  // Check this  - This is deleting all the ice candidates on single go
     }
     
 
-    // To read messages from signalling server - to receive offer/answer
+    // To read OFFER/ANSWER from signalling server - firebase own node listening
     readMessage = (data) => {
         var that = this;
         //console.log(data.val().message);
@@ -252,7 +228,7 @@ class App_holder extends Component {
         var sender = data.val().sender;
         if (sender !== that.props.userId) {
             that.setState({friendId:sender});
-            if (msg.sdp.type === "offer") {
+            if (msg.sdp.type === "offer") {                         // If read message is OFFER 
                 that.setState({ messageReceived: msg }, () => {
                    // const pc = new RTCPeerConnection(servers);
                    // let dataChannel = pc.createDataChannel("MyApp Channel");
@@ -263,7 +239,7 @@ class App_holder extends Component {
                 })
                 console.log('Received message : OFFER' + Date.now())
             }
-            else if (msg.sdp.type === "answer") {
+            else if (msg.sdp.type === "answer") {                   // If read message is ANSWER after sending offer 
                 const pc = that.state.pc;
                 pc.ondatachannel = (event) => {
                     console.log('Listening data channel')
@@ -297,11 +273,9 @@ class App_holder extends Component {
             this.setState({audioOn:true});  
             // that.initializeListeners(pc)
         let promise = new Promise(resolve =>{
-            this.initializeListeners(pc,resolve)
+            this.initializeListeners(pc,resolve)              //Promise to get media tracks before creating offer 
         })
        
-        
-        
         var msg = this.state.messageReceived;
         console.log('Offer is now Accepted')
         // var pc = that.state.pc;
@@ -340,6 +314,7 @@ class App_holder extends Component {
      });  // Inside setState of callInitiated 
     }
 
+
     //  To read ICE candidates received from other user
     readIceMessage = (data) => {
         //var path = db.ref('/ice/');
@@ -359,6 +334,7 @@ class App_holder extends Component {
     }
 
     // ^^^^^^^^^^^^^^ Call now Connected ^^^^^^^^^^^^^^^^^ //
+
     // Stop Video //
     stopVideo = () => {
         console.log(senders);
@@ -371,6 +347,7 @@ class App_holder extends Component {
         this.setState({ videoOn: false }); // Video button toggle
     }
 
+    // Resume Video //
     resumeVideo = () => {
         console.log(senders);
         navigator.mediaDevices.getUserMedia({ audio: true, video: true })
@@ -386,6 +363,7 @@ class App_holder extends Component {
         this.setState({ videoOn: true });   // Video button toggle
     }
 
+     // Stop Audio //
     stopAudio = () =>{
         const audioTrack = senders.find(sender => sender.track.kind === 'audio');
         console.log(audioTrack);
@@ -397,6 +375,7 @@ class App_holder extends Component {
         this.setState({ audioOn: false }); // Audio stop button
     }
 
+     // Resume Audio //
     resumeAudio = () =>{
         const audioTrack = senders.find(sender => sender.track.kind === 'audio');
         console.log(audioTrack);
@@ -407,7 +386,7 @@ class App_holder extends Component {
         this.setState({ audioOn: true }); // Audio button toggle
     }
   
-    // Share screen 
+    // Start Share screen //
     shareScreenStart = () => {
         // if (!displayMediaStream) {
         //   displayMediaStream = navigator.mediaDevices.getDisplayMedia();
@@ -423,6 +402,7 @@ class App_holder extends Component {
         })
     }
 
+    // Stop Share screen //
     shareScreenStop = () => {
         console.log('Stop share');
         if (!this.state.videoOn) {
@@ -447,26 +427,13 @@ class App_holder extends Component {
     }
 
 
-    // To send messages on chat
+    // To send messages on chat //
     sendInputMessage = () => {
         const input = document.getElementById('textInput').value;
         console.log("You entered : " + input)
-        //const messageReceived = document.getElementById('messageReceived');
-        //messageReceived.innerHTML+="<span class='Your-input' >You : {input}</span>"
-        // old working 
-        //  document.getElementById('messageReceived').append('You :' + input.value);
-        document.getElementById('messageReceived').innerHTML += "<p class='Your-input'><span class='who-tag'>You : </span>" + input + "</p>"
-        // document.getElementById('messageReceived').className='Your-input'
-        // document.getElementById('messageReceived').innerHTML += '<br></br>';
-        //
 
-        /* new working 
-        var tag = document.createElement("p");
-        var text = document.createTextNode('You :' + input.value);
-        //tag.className='Your-input';
-        tag.appendChild(text);
-        messageReceived.append(text);
-        */
+        document.getElementById('messageReceived').innerHTML += "<p class='Your-input'><span class='who-tag'>You : </span>" + input + "</p>"
+
         var dataChannel  = this.state.dataChannel;
         var data = {};
         data.type = 'text';
@@ -477,7 +444,7 @@ class App_holder extends Component {
         objDiv.scrollTop = objDiv.scrollHeight;
     }
 
-    // To enable 'Enter' to send message
+    // To enable 'Enter' to send message  // 
     enterAsInput = (e) => {
         //console.log(e.keyCode)
         if (e.keyCode === 13) {
@@ -487,46 +454,6 @@ class App_holder extends Component {
         }
     }
 
-    // To select and load the file
-    fileSelect = (e) => {
-        this.setState({ progressBar: true });     // Show progress bar
-        var fileList = e.target.files;
-        var file = fileList[0];
-        this.setState({ fileList: file })
-        console.log(fileList);
-        console.log('File name: ' + file.name + '  File type: ' + file.type + ' File size: ' + file.size);
-
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        const img = document.getElementById('preview')     // To show preview
-        // To show the image on screen
-        // reader.addEventListener('load', (event) => {
-        //  img.src = event.target.result;
-        // });
-
-        var progressValue = document.getElementById('progressBar');
-        progressValue.max = 100;
-        // To get % progress of file uploading 
-        reader.addEventListener('progress', (event) => {
-            if (event.loaded && event.total) {
-                const percent = (event.loaded / event.total) * 100;
-                console.log(`Progress: ${Math.round(percent)}`);
-                progressValue.value = percent;
-                progressValue.innerHTML = 'percent';
-            }
-        });
-        reader.onload = this.onReadAsDataURL;
-
-    }
-
-    // To SEND the file after clicking 'SEND' button  - - - NOT IMPLEMENTED YET - - - 
-    sendFileButton = (e) => {
-        var input = document.getElementById('inputFile').value;
-        // var files = this.files[0];
-        // console.log(files);
-        //document.getElementById('downloadSection').innerHTML= '<a href="input" download="inputfile">'
-        console.log(input);
-    }
 
     // To handle received message on chat/file transfer
     handleChatMessage = (event, arrayToStoreChunks) => {
@@ -572,6 +499,44 @@ class App_holder extends Component {
         }
     }
 
+    // To select and load the file
+    fileSelect = (e) => {
+        this.setState({ progressBar: true });     // Show progress bar
+        var fileList = e.target.files;
+        var file = fileList[0];
+        this.setState({ fileList: file })
+        console.log(fileList);
+        console.log('File name: ' + file.name + '  File type: ' + file.type + ' File size: ' + file.size);
+
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        const img = document.getElementById('preview')     // To show preview
+
+        var progressValue = document.getElementById('progressBar');
+        progressValue.max = 100;
+        // To get % progress of file uploading 
+        reader.addEventListener('progress', (event) => {
+            if (event.loaded && event.total) {
+                const percent = (event.loaded / event.total) * 100;
+                console.log(`Progress: ${Math.round(percent)}`);
+                progressValue.value = percent;
+                progressValue.innerHTML = 'percent';
+            }
+        });
+        reader.onload = this.onReadAsDataURL;
+
+    }
+
+    // To SEND the file after clicking 'SEND' button  - - - NOT IMPLEMENTED YET - - - 
+    sendFileButton = (e) => {
+        var input = document.getElementById('inputFile').value;
+        // var files = this.files[0];
+        // console.log(files);
+        //document.getElementById('downloadSection').innerHTML= '<a href="input" download="inputfile">'
+        console.log(input);
+    }
+
+
     // To SEND the file once loaded
     onReadAsDataURL = (event, text) => {
         const that = this;
@@ -605,7 +570,7 @@ class App_holder extends Component {
         }
     }
 
-    // To save the file received during call
+    // To save the file received during call //
     saveToDisk = () => {
         const fileUrl = this.state.fileURL;
         const fileName = this.state.fileName;
@@ -621,7 +586,7 @@ class App_holder extends Component {
         (window.URL || window.webkitURL).revokeObjectURL(save.href);
         this.setState({ downloadButton: false })
     }
-
+    // Delete received file //
     deleteReceivedfile = () => {
         this.setState({ downloadButton: false, fileURL: null, fileName: '' });
         var progressValue = document.getElementById('progressBar');
@@ -631,92 +596,95 @@ class App_holder extends Component {
     // To END the call with friend
     endCall = (rejected) => {
 
-        console.log(rejected);
+        // To detect call rejection by friend!
         if(rejected === 'true'){
-            db.ref('/Users/'+this.state.friendId+'/rejected/').update({callRejected:true});  // To detect call rejection!
+            db.ref('/Users/'+this.state.friendId+'/rejected/').update({callRejected:true});  
+        }
+        // Stop Video / Audio after call  // 
+        this.stopVideo(); 
+        this.stopAudio();  
+
+        // Making senders back to null
+        senders=[];  
+
+        // To change screen to call view               
+        this.setState({callInitiated:false, userBusy:false});  
+
+        // Close peerConnection // 
+        var pc = this.state.pc;
+          //console.log(msg);
+          if(pc){
+            pc.close();
         }
         
-        this.stopVideo(); //Stop Video;
-        this.stopAudio();  //Stop Video;
-        var pc = this.state.pc;
-        this.setState({callInitiated:false, userBusy:false});            // To change screen to call view
         db.ref('/Users/'+this.props.userId+'/profile_detials/').update({userBusy:false});
-        senders=[];                                     // making senders back to null
-        var frienndice = db.ref('/Users/'+this.state.friendId+'/ice/');
-        frienndice.remove();
+
+        // Remove friend offerAnswer / ice  //
         var friendOfferAnswer = db.ref('/Users/'+this.state.friendId+'/offerAnswer/');
         friendOfferAnswer.remove();
+        var frienndice = db.ref('/Users/'+this.state.friendId+'/ice/');
+        frienndice.remove();
+        
+        // Remove self offerAnswer / ice //
+        var offerAnswer = db.ref('/Users/'+this.props.userId+'/offerAnswer/');
+        offerAnswer.remove();
         var ice = db.ref('/Users/'+this.props.userId+'/ice/');
         //console.log(msg);
         ice.remove();
 
-        var offerAnswer = db.ref('/Users/'+this.props.userId+'/offerAnswer/');
-        offerAnswer.remove();
-        //console.log(msg);
-        if(pc){
-            pc.close();
-        }
-
+      
         db.ref('/Users/'+this.props.userId+'/ice/').off();      // Stop listening for ice candidates after call end 
-        db.ref('/Users/'+this.props.userId+'/rejected/').update({callRejected:false});  // To make rejection call rejection!
-        //window.location.reload();
+        db.ref('/Users/'+this.props.userId+'/rejected/').update({callRejected:false});  // To make call rejection back to false after end!
+        
+
         this.setState({ offerReceived: false, callingOther: false, pc:null,friendId:null, callConnected:false});
         
+        // To empty the chat screen after the call 
         document.getElementById('messageReceived').innerHTML='';
+
+        // Make iceCandidate counter value again to initial
+        iceCandidateCount = 1;      
     }
-    loginButton = () => {
-        const loggedIn = !this.state.loggedIn;
-        this.setState({ loggedIn: loggedIn });
-    }
+
+
+    // Message drawer toggle // 
     drawerToggle = () => {
         let updated = !this.state.drawerOpen;
         this.setState({ drawerOpen: updated });
     }
+
+    // Contacts drawer toggle // 
     drawerLeftToggle = () => {
         let updated = !this.state.drawerLeftOpen;
         this.setState({ drawerLeftOpen: updated });
     }
 
-    CallOtherScreen = (key) =>{
-        console.log(key);
-        if(!this.state.userBusy){
-            if(this.state.friendId===null){
-                this.setState(prevState =>({
-                    CallOtherScreen:!prevState.CallOtherScreen
-                })) 
-            }
-            this.setState({friendId:key});
-            if(this.state.friendId===key){
-                this.setState(prevState =>({
-                    CallOtherScreen:!prevState.CallOtherScreen
-                }))
-            }
-        }
-    }
-
-
 
     render() {
-        let sideDrawerClasses = ['Side-drawer', 'Drawer-close'];
+        let sideDrawerClasses = ['Side-drawer', 'Drawer-close'];                    //Message drawer classes 
+        let sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-close'];      //Contact drawer classes 
+
+        // Contact drawer items classes //
         let ContactListClasses = ['Contact-list'];
         let ContactListItemOnline  =  ['Contact-list-item-online'];
         let ContactListItemOffline  = ['Contact-list-item-offline'];
         let ContactListItemBusy = ['Contact-list-item-busy'];
         let ContactList = null;
+
+        // Different screen classes // 
         let WelcomeScreen = null;
         let CallOtherScreen  = null;
         let OfferReceivedScreen =null;
+
         if (this.state.drawerOpen) {
             sideDrawerClasses = ['Side-drawer', 'Drawer-open'];
         }
-        let sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-close'];
         if (this.state.drawerLeftOpen && !this.state.userBusy) {
             sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-open'];
         }
         if (this.state.drawerLeftOpen && this.state.userBusy) {
             sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-open', 'left-drawer-userBusy'];
         }
-
         if(this.state.userBusy){
             ContactListClasses = ['Contact-list', 'left-drawer-userBusy'];
             ContactListItemOnline =  ['Contact-list-item-online', 'left-drawer-userBusy'];
@@ -724,6 +692,7 @@ class App_holder extends Component {
             ContactListItemBusy = ['Contact-list-item-busy', 'left-drawer-userBusy'];
         }
 
+        // List of people available - to fill contacts drawer// 
         ContactList = (
 
             <div className={ContactListClasses.join(' ')}>
@@ -762,14 +731,13 @@ class App_holder extends Component {
                                 </div>
                             )
                         }
-
                     }
-
                 })}
 
             </div>
         )
-
+        
+        // Welcome screen to user after login // 
         WelcomeScreen = (
             !this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived &&
             <div className='Welcome-screen'>
@@ -777,6 +745,8 @@ class App_holder extends Component {
                 <p>Hello, {this.props.userName}</p>
             </div>
         )
+
+        // Screen after selecting a contact from the list //  
         CallOtherScreen=(
             this.state.CallOtherScreen && !this.state.userBusy&&
             <div className='call-other-screen'>
@@ -802,6 +772,8 @@ class App_holder extends Component {
                 </div>
             </div>
         )
+
+        // Screen during receving a offer from a friend // 
         OfferReceivedScreen=(
             this.state.offerReceived &&
             <div className='call-other-screen'>
@@ -821,6 +793,8 @@ class App_holder extends Component {
                 </div>
             </div>
         )
+
+        // Main return of the class // 
         return (
             <div className="App">
                 <div className="App-header">
@@ -854,15 +828,7 @@ class App_holder extends Component {
                             <video id="self-view" className='self-view' autoPlay muted ></video>
                             {/* <Self_video/> */}
                         </div>
-
                         <br></br>
-                        {/* {!this.state.offerReceived && !this.state.callingOther &&
-                            <Button variant="contained" color="primary" onClick={this.showFriendsFace} style={{ margin: '10px', zIndex: '200' }}> Call </Button>
-                        } */}
-                        {/* {this.state.offerReceived && !this.state.offerAccepted &&
-                            <Button className='answerButton' variant="contained" hidden={!this.state.offerReceived} onClick={this.acceptCall} style={{ backgroundColor: 'green', zIndex: '200' }} > Answer </Button>
-                        } */}
-                        {/* {(this.state.offerReceived || this.state.callConnected) && */}
                         <Button variant="contained" color="secondary" onClick={this.endCall} style={{ margin: '10px', zIndex: '200' }}> End Call </Button>
                         {/* } */}
                         <br></br>
@@ -911,14 +877,12 @@ class App_holder extends Component {
             </div> //App end div
         );
 
-      
 
     }
     componentDidMount() {
         const that = this;
-        var pc =  that.state.pc;
        
-
+        // To get the details of the contacts // 
         db.ref('/Users/').on('child_added', function (userIdList) {
             userIdList.forEach(function (profile_details) {
 
@@ -950,8 +914,10 @@ class App_holder extends Component {
                 //     // console.log(names.val());
                 // })
             })
-            console.log(that.state.peopleList);
+            // console.log(that.state.peopleList);
         })
+
+        // To get updated details of the contacts once loggedIn// 
         db.ref('/Users/').on('child_changed', function (userIdList) {
             userIdList.forEach(function (profile_details) {
                 // console.log(profile_details.val());
@@ -979,26 +945,24 @@ class App_holder extends Component {
                         }
                       }))  
                 }
-                  
-                // profile_details.forEach(function (names) {
-                //     // console.log(names.val());
-                // })
             })
-            console.log(that.state.peopleList);
+           // console.log(that.state.peopleList);
         })
 
 
-        // Listen for Offer / Answer on firebase 
+        // Listen for Offer/Answer on firebase  // 
         db.ref("/Users/"+that.props.userId+'/offerAnswer/').on('child_added', (snapshot) => {
         that.readMessage(snapshot)
         });
 
+        // Listen for new Offer/Answer on firebase  // 
         db.ref("/Users/"+that.props.userId+'/offerAnswer/').on('child_changed', (snapshot) => {
             that.readMessage(snapshot)
             console.log('new change');
             });
 
-        //  To change status on Disconnect //
+
+        //  To change status on call Disconnect //
         var presenceRef = db.ref('/Users/'+that.props.userId+'/profile_detials/');
         presenceRef.onDisconnect().update({isActive:false,userBusy:false});
         
@@ -1006,17 +970,19 @@ class App_holder extends Component {
         deleteIceOfferRef.onDisconnect().update({ice:null,offerAnswer:null});
         //  ^^^^^ To change status on Disconnect ^^^^^ //
 
+
         // To check if the offer is rejected by other user //
         db.ref("/Users/"+that.props.userId+'/rejected/').on('child_added', (snapshot) => {
-            console.log(snapshot.val().callRejected);
+        //    console.log(snapshot.val().callRejected);
             if(snapshot.val().callRejected){
                 swal("Done!", "Call rejected by friend", "error",{buttons: false,timer:1500,});
                 console.log('call is Rejected by other user');
                 that.endCall();
             };
             });
+            // To check new rejections // 
         db.ref("/Users/"+that.props.userId+'/rejected/').on('value', (snapshot) => {
-            console.log(snapshot.val().callRejected);
+          //  console.log(snapshot.val().callRejected);
             if(snapshot.val().callRejected){
                 swal("Sorry!", "Call rejected by friend", "error",{buttons: false,timer:1500,});
                 console.log('call is Rejected by other user');

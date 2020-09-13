@@ -30,46 +30,33 @@ const app = firebase.initializeApp(firebaseConfig,"other");
 const db = app.database();
 const auth = firebase.auth();
 
-// To remember sign-in on browser - testing
-firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL)
-  .then(function() {
-    console.log('Local persistance')
-  })
-  .catch(function(error) {
-    // Handle Errors here.
-    var errorCode = error.code;
-    var errorMessage = error.message;
-  });
-
 
 class App extends Component {
   constructor(props) {
     super(props);
   }
   state =  {
-    loggedIn:false,
-    userName:'',
-    userEmail:'',
-    userId:'',
-    userPic:'',
+    loggedIn:false,       // To maintain login status
+    userName:'',          // Store user name 
+    userEmail:'',         // Store user email
+    userId:'',            // Store user Id
+    userPic:'',           // Store user image
   }
 
 
-
+  // To Login // 
   loginButton=()=>{
     const that = this;
     // const loggedIn = !this.state.loggedIn;
     // this.setState({loggedIn:true});
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).then(function(result){
-      console.log(result);
+     // console.log(result);
       const user = result.additionalUserInfo.profile;
       console.log('Logged in successfully')
-      console.log(user);
-      // console.log(user.name + user.email );
-      // console.log(user.picture)
+ 
       that.setState({loggedIn:true,userName:user.name, userEmail:user.email,  userId:user.id, userPic: user.picture});
-      console.log(that.state);
+      // console.log(that.state);
       // db.ref("/Users/"+this.state.userId+"/profile_Details/").set({ name: profile.getGivenName(), userLogo: profile.getImageUrl(), userEmail: profile.getEmail() })
       db.ref("/Users/"+user.id+"/profile_detials").set({isActive:true,userName:user.name,userEmail:user.email,userId:user.id,userPic:user.picture,userBusy:false});
       db.ref("/Users/"+user.id+"/rejected").set({callRejected:false});      //To initialize 
@@ -80,6 +67,7 @@ class App extends Component {
     })
   }
 
+  // Signout from the app 
   signOut = () =>{
     const that = this;
     firebase.auth().signOut().then(function() {
@@ -94,7 +82,8 @@ class App extends Component {
       });      
   }
     render(){
-      if(this.state.loggedIn){
+      // If the user is logged in // 
+      if(this.state.loggedIn){            
         return(
           <App_holder
           userName={this.state.userName}
@@ -105,6 +94,7 @@ class App extends Component {
           />
         )
       }
+       // If the user is not logged in // 
       else if(!this.state.loggedIn){
         return(
           <div className="App">
