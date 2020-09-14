@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import App_holder from './App_holder';
 import * as firebase from 'firebase';
 import Login_button from './media/login_button_white.png';
+import chat_app_logo from './media/chat_app_logo.png';
 
 var firebaseConfig = {
   apiKey: "AIzaSyBw8TC9om3UZO9HPHkOOn0zm0VYjmgmvnc",
@@ -97,14 +98,17 @@ class App extends Component {
        // If the user is not logged in // 
       else if(!this.state.loggedIn){
         return(
-          <div className="App">
+        <div className="App">
          <div className="App-header">
-            {/* <img className='Contacts-drawer-button' src={rightSide_drawer} onClick={this.drawerToggle} /> */}
-            {/* <img className='Side-drawer-button' src={side_drawer} onClick={this.drawerToggle} /> */}
             <p>Have a conversation with privacy</p>
           </div>
           {/* <input type='text'/> */}
+          <div className='App-body'> </div>
+          <img src={chat_app_logo} className='chat-app-logo'/>
           <img src={Login_button} className='logInButton' onClick={()=>this.loginButton()}/>
+          <div className='App-footer'>
+          <p>Developed by Sandeep ©</p>
+          </div>
           </div>
         )
       }

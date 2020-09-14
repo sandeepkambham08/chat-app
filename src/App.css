@@ -29,6 +29,21 @@ html *
   text-align: center;
   color: antiquewhite;
 }
+.App-body{
+  text-align: center;
+}
+.App-footer{
+  margin-top: 28vh;
+  margin-left: auto;
+  text-align: center;
+}
+
+.App-footer p{
+  color: antiquewhite;
+  padding: 0.5vh 0;
+  background-color: rgba(121, 118, 118, 0.651);
+}
+
 
 .Side-drawer-button{
   width: 38px;
@@ -477,10 +492,19 @@ display: none;
   width: 10vh;
   height: 10vh;
 }
+.chat-app-logo{
+  width: 14vw;
+  margin: 30vh 0 0 43vw;
+  text-align: center;
+  border-radius: 9vw;
+  border: 1.5px solid antiquewhite;
+  transition: box-shadow 300ms ease-in;
+  box-shadow:5px 10px 10px 2px rgb(71, 71, 71);
+}
 
 .logInButton{
-  width: 20vw;
-  margin: 50vh 0 0 40vw;
+  width: 14vw;
+  margin: 5vh 0 0 43vw;
   text-align: center;
   border-radius: 9vw;
   cursor: pointer;
