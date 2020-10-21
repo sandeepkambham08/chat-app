@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
+import './All-person-and-friends.css';
 import * as firebase from 'firebase';
 
 // Image imports //
@@ -83,6 +84,8 @@ class App_holder extends Component {
         friendId:null,                 // Friend ID to connect 
         callInitiated:false,           // To display your profile at beginning
         userBusy:false,                // To  maintain user state during a call
+        friendRequestsSent:{},         // To maintain friend requests sent data 
+        friendRequestsReceived:{},     // To maintain friend requests received data
         
     }
 
@@ -657,6 +660,27 @@ class App_holder extends Component {
     drawerLeftToggle = () => {
         let updated = !this.state.drawerLeftOpen;
         this.setState({ drawerLeftOpen: updated });
+        console.log(this.state.friendRequestsSent);
+        console.log(this.state.friendRequestsReceived);
+        console.log(this.state.peopleList);
+    }
+
+    // Friend request function //
+
+    sendFriendRequest = (key, details) =>{
+        console.log('Person ID : ',key, details);
+        // db.ref('/Users/'+key+'/friend_requests/').push({friendId:this.props.userId});
+        // db.ref('/Users/'+this.props.userId+'/friend_request_sent/').push({friendId:key});
+        db.ref('/Users/'+this.props.userId+'/friend_requests_sent/'+key).set({ userId:details.userId,userEmail:details.userEmail,userName:details.userName,userPic:details.userPic});  
+        db.ref('/Users/'+key+'/friend_requests_received/'+this.props.userId).set({userId:this.props.userId,userEmail:this.props.userEmail,userName:this.props.userName,userPic:this.props.userPic});  
+
+        // db.ref('/Users/'+this.props.userId+'/profile_detials/').update({userBusy:true}); 
+    }
+
+    acceptFriendRequest = (key,details)  =>{
+        console.log(key);
+        db.ref('/Users/'+this.props.userId+'/friend_requests_received/'+key).remove();  
+
     }
 
 
@@ -675,6 +699,9 @@ class App_holder extends Component {
         let WelcomeScreen = null;
         let CallOtherScreen  = null;
         let OfferReceivedScreen =null;
+        let Discover  = null;
+        let FriendRequestsSent = null;
+        let FriendRequestsReceived = null;  
 
         if (this.state.drawerOpen) {
             sideDrawerClasses = ['Side-drawer', 'Drawer-open'];
@@ -708,7 +735,7 @@ class App_holder extends Component {
                         if (this.state.peopleList[key].isActive===true && this.state.peopleList[key].userBusy===false) {
                             return (
                                 <div className={ContactListItemOnline.join('  ')} key={key} disabled={!this.state.userBusy} onClick={()=>this.CallOtherScreen(key)}>
-                                <img src={this.state.peopleList[key].userPic} className='contactListPic' />
+                                <img src={this.state.peopleList[key].userPic} alt="contactListPic" className='contactListPic' />
                                 <span>User Online</span>
                                 <p key={key} className='onlinePerson' id='onlinePerson' >  {this.state.peopleList[key].userName} </p>
                                 </div>   )
@@ -716,7 +743,7 @@ class App_holder extends Component {
                         else if(this.state.peopleList[key].isActive===false && this.state.peopleList[key].userBusy===false){
                             return (
                                 <div className={ContactListItemOffline.join('  ')} key={key} disabled={!this.state.userBusy} onClick={()=>this.CallOtherScreen(key)} >
-                                <img src={this.state.peopleList[key].userPic} className='contactListPic' />
+                                <img src={this.state.peopleList[key].userPic} alt="contactListPic" className='contactListPic' />
                                 <span>User not online</span>
                                 <p key={key} className='offlinePerson' id='offlinePerson'>  {this.state.peopleList[key].userName} </p>
                                 </div>
@@ -725,7 +752,7 @@ class App_holder extends Component {
                         else if(this.state.peopleList[key].isActive===true && this.state.peopleList[key].userBusy===true){
                             return (
                                 <div className={ContactListItemBusy.join('  ')} key={key} disabled={!this.state.userBusy} onClick={()=>this.CallOtherScreen(key)} >
-                                <img src={this.state.peopleList[key].userPic} className='contactListPic' />
+                                <img src={this.state.peopleList[key].userPic} alt="contactListPic" className='contactListPic' />
                                 <span>User is Busy</span>
                                 <p key={key} className='BusyPerson' id='BusyPerson'>  {this.state.peopleList[key].userName} </p>
                                 </div>
@@ -736,13 +763,87 @@ class App_holder extends Component {
 
             </div>
         )
+
+        // To show the people who sent you friend request
+             FriendRequestsReceived = (
+                !this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived && 
+                <div>
+                    <p>Friend requests received:</p>
+                    {Object.keys(this.state.friendRequestsReceived).map((key) => {                    
+                        if(key!==this.props.userId){
+                            // console.log(this.state.peopleList[key]);
+                                return (
+                                    <div key={key} disabled={!this.state.userBusy} >
+                                    <img src={this.state.friendRequestsReceived[key].userPic} alt="contactListPic" className='contactListPic' />
+                                    {/* <span>User Online</span> */}
+                                    <p key={key} className='onlinePerson' id='onlinePerson' >  {this.state.friendRequestsReceived[key].userName} </p>
+                                    <p className='Accept-Friendrequest' onClick={()=>{this.acceptFriendRequest(key,this.state.peopleList[key])}} >Accept</p>
+                                    </div>   )
+                        }
+                    })}
+                </div>
+            )
+
+                // To show the people in your friend list
+        Discover  =  (
+            !this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived && 
+            <div>
+                <br></br>
+                <p>Discover here :</p>
+                {Object.keys(this.state.peopleList).map((key) => {
+                    // console.log(key);
+                    // console.log(this.state.peopleList[key].userEmail);                     
+                    if(key!==this.props.userId){
+                        // console.log(this.state.peopleList[key]);
+                        
+                            return (
+                                <div style={{float:'left'}} className="All-person-list" key={key} disabled={!this.state.userBusy} >
+                                <img src={this.state.peopleList[key].userPic} alt="contactListPic" className='contactListPic' />
+                                {/* <span>User Online</span> */}
+                                <p key={key} className='onlinePerson' id='onlinePerson' >  {this.state.peopleList[key].userName} </p>
+                                <p className='Send-Friendrequest' onClick={()=>{this.sendFriendRequest(key,this.state.peopleList[key])}} >Send request</p>
+                                </div>   )
+                        
+                    }
+                })}
+            </div>
+        )
+        
+        // To show the people who sent you friend request
+        FriendRequestsSent = (
+            !this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived && 
+            <div>
+                <p>Friend requests sent :</p>
+                {Object.keys(this.state.friendRequestsSent).map((key) => {
+                    // console.log(key);
+                    // console.log(this.state.peopleList[key].userEmail);                     
+                    if(key!==this.props.userId){
+                        // console.log(this.state.peopleList[key]);
+                            return (
+                                <div style={{float:'left'}} className="All-person-list" key={key} disabled={!this.state.userBusy} >
+                                <img src={this.state.friendRequestsSent[key].userPic} alt="contactListPic" className='contactListPic' />
+                                {/* <span>User Online</span> */}
+                                <p key={key} className='onlinePerson' id='onlinePerson' >  {this.state.friendRequestsSent[key].userName} </p>
+                                <p className='Send-Friendrequest' onClick={()=>{this.sendFriendRequest(key)}} >Request sent</p>
+                                </div>   )
+                    }
+                })}
+            </div>
+        )
+
+
         
         // Welcome screen to user after login // 
         WelcomeScreen = (
             !this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived &&
             <div className='Welcome-screen'>
-                <img className='Main-profile-pic' src={this.props.userPic} />
+                <img className='Main-profile-pic' alt="Main-profile-pic" src={this.props.userPic} />
                 <p>Hello, {this.props.userName}</p>
+                {/* For friend request and available people */}
+                {/* <p>List of people you can connect with : </p> */}
+                {FriendRequestsReceived}
+                {Discover}
+                {FriendRequestsSent} 
             </div>
         )
 
@@ -751,7 +852,7 @@ class App_holder extends Component {
             this.state.CallOtherScreen && !this.state.userBusy&&
             <div className='call-other-screen'>
                 <div className='self-pic-and-name'>
-                    <img className='Main-profile-pic' src={this.props.userPic} />
+                    <img className='Main-profile-pic' alt="Main-profile-pic"  src={this.props.userPic} />
                     <p >You</p>
                 </div>
                 {this.state.peopleList[this.state.friendId].isActive && !this.state.peopleList[this.state.friendId].userBusy &&
@@ -767,7 +868,7 @@ class App_holder extends Component {
                 <button className='Cannot-connect-now-button'  >User is Busy </button>       {/*User not online button */}             
                 </div>}
                 <div className='Friend-pic-and-name'>
-                    <img className='Main-profile-pic' src={this.state.peopleList[this.state.friendId].userPic} />  
+                    <img className='Main-profile-pic' alt="Main-profile-pic"  src={this.state.peopleList[this.state.friendId].userPic} />  
                     <p>{this.state.peopleList[this.state.friendId].userName}</p>   
                 </div>
             </div>
@@ -778,7 +879,7 @@ class App_holder extends Component {
             this.state.offerReceived &&
             <div className='call-other-screen'>
                 <div className='self-pic-and-name'>
-                    <img className='Main-profile-pic' src={this.props.userPic} />
+                    <img className='Main-profile-pic' alt="Main-profile-pic"  src={this.props.userPic} />
                     <p >You</p>
                 </div>
                 {this.state.peopleList[this.state.friendId].isActive && 
@@ -794,19 +895,23 @@ class App_holder extends Component {
             </div>
         )
 
+        
+
         // Main return of the class // 
         return (
             <div className="App">
                 <div className="App-header">
-                    <img className='Contacts-drawer-button' src={leftSide_drawer} onClick={this.drawerLeftToggle} />
+                    <img className='Contacts-drawer-button' alt="Contacts-drawer-button"  src={leftSide_drawer} onClick={this.drawerLeftToggle} />
                     <span className='Hello-name'>Contacts</span>
-                    <img className='Side-drawer-button' src={side_drawer} onClick={this.drawerToggle} />
+                    <img className='Side-drawer-button' alt="Side-drawer-button" src={side_drawer} onClick={this.drawerToggle} />
                     <span className='Hello-name-right'>Messages</span>
                     <p>Have a conversation with privacy</p>
                 </div>
                 {WelcomeScreen}
                 {CallOtherScreen}
                 {OfferReceivedScreen}
+                {/* {Friends} */}
+                {/* {FriendRequest} */}
                 {this.state.callInitiated && 
                 <div className='Videos-block' >
                     <div className='caption'>
@@ -819,11 +924,11 @@ class App_holder extends Component {
                         <div className='myVideo-and-controls'>
                             <img id="videoOn" className='videoOn' src={video_off} onClick={this.resumeVideo} hidden={this.state.videoOn} alt='Video on' />
                             <img id="videoOff" className='videoOff' src={video_on} onClick={this.stopVideo} hidden={!this.state.videoOn} alt='Video off' />
-                            <img id="audioOff" className='audioOff' src={audio_icon} onClick={this.stopAudio} hidden={!this.state.audioOn}alt='Audio off' />
-                            <img id="audioOn" className='audioOn' src={audio_icon_off} onClick={this.resumeAudio} hidden={this.state.audioOn}alt='Audio on' />
+                            <img id="audioOff" className='audioOff' src={audio_icon} onClick={this.stopAudio} hidden={!this.state.audioOn} alt='Audio off' />
+                            <img id="audioOn" className='audioOn' src={audio_icon_off} onClick={this.resumeAudio} hidden={this.state.audioOn} alt='Audio on' />
                             {/* <img id="audioOff" className='audioOff' src={video_on} onClick={this.stopVideo} hidden={!this.state.videoOn} alt='Video off' /> */}
-                            <img id="screenShare" className='Start-share' src={screen_share} hidden={!this.state.callConnected || this.state.screenShare} onClick={this.shareScreenStart} />
-                            <img id="screenShare" className='Stop-share' src={screen_share} hidden={!this.state.screenShare} onClick={this.shareScreenStop} />
+                            <img id="screenShare" className='Start-share' src={screen_share} hidden={!this.state.callConnected || this.state.screenShare} alt='Screenshare-start'  onClick={this.shareScreenStart} />
+                            <img id="screenShare" className='Stop-share' src={screen_share} hidden={!this.state.screenShare} alt='Screenshare-stop'  onClick={this.shareScreenStop} />
                             {/* <button className='Stop-share' hidden={!this.state.screenShare} onClick={this.shareScreenStop}>Stop share</button> */}
                             <video id="self-view" className='self-view' autoPlay muted ></video>
                             {/* <Self_video/> */}
@@ -949,6 +1054,67 @@ class App_holder extends Component {
            // console.log(that.state.peopleList);
         })
 
+        // Friend requests sent by you - pending requests// 
+        db.ref("/Users/"+that.props.userId+'/friend_requests_sent/').on('child_added', (snapshot) => {
+            console.log(snapshot.val());
+            let userId = snapshot.val().userId;
+            let userName = snapshot.val().userName;
+            let userEmail = snapshot.val().userEmail;
+            let userPic = snapshot.val().userPic;
+            that.setState(prevState=>({
+                friendRequestsSent: {...prevState.friendRequestsSent,
+                    [userId]: {                     // specific object/user-detail of peopleList object
+                        ...prevState.friendRequestsSent.userId,    // copy all single user key-value pairs
+                        userId : userId,                    // update the name property, assign a new value                 
+                        userName : userName,
+                        userEmail : userEmail,
+                        userPic : userPic,          // update value of specific key
+                      }}
+            }),()=>{
+                console.log(that.state.friendRequestsSent)
+            })
+        });
+
+         // Friend requests received by you - pending requests// 
+         db.ref("/Users/"+that.props.userId+'/friend_requests_received/').on('child_added', (snapshot) => {
+            console.log(snapshot.val());
+            let userId = snapshot.val().userId;
+            let userName = snapshot.val().userName;
+            let userEmail = snapshot.val().userEmail;
+            let userPic = snapshot.val().userPic;
+            that.setState(prevState=>({
+                friendRequestsReceived: {...prevState.friendRequestsReceived,
+                    [userId]: {                     // specific object/user-detail of peopleList object
+                        ...prevState.friendRequestsReceived.userId,    // copy all single user key-value pairs
+                        userId : userId,                    // update the name property, assign a new value                 
+                        userName : userName,
+                        userEmail : userEmail,
+                        userPic : userPic,          // update value of specific key
+                      }}
+            }),()=>{
+                console.log(that.state.friendRequestsReceived)
+            })
+        });
+         // Friend requests received by you - pending requests// 
+         db.ref("/Users/"+that.props.userId+'/friend_requests_received/').on('child_changed', (snapshot) => {
+            console.log(snapshot.val());
+            let userId = snapshot.val().userId;
+            let userName = snapshot.val().userName;
+            let userEmail = snapshot.val().userEmail;
+            let userPic = snapshot.val().userPic;
+            that.setState(prevState=>({
+                friendRequestsReceived: {...prevState.friendRequestsReceived,
+                    [userId]: {                     // specific object/user-detail of peopleList object
+                        ...prevState.friendRequestsReceived.userId,    // copy all single user key-value pairs
+                        userId : userId,                    // update the name property, assign a new value                 
+                        userName : userName,
+                        userEmail : userEmail,
+                        userPic : userPic,          // update value of specific key
+                      }}
+            }),()=>{
+                console.log(that.state.friendRequestsReceived)
+            })
+        });
 
         // Listen for Offer/Answer on firebase  // 
         db.ref("/Users/"+that.props.userId+'/offerAnswer/').on('child_added', (snapshot) => {

@@ -1,0 +1,44 @@
+.All-person-list{
+    float: left;
+    
+}
+
+.Send-Friendrequest{
+    border: 1px solid rgb(105, 102, 102);
+    padding: 0.5em;
+    margin: 0.5em;
+    cursor: pointer;
+    border-radius: 1em;
+    background-color: #fefffe;
+    transition: background-color 200ms ease;
+
+}
+
+.Send-Friendrequest:hover{
+    color: rgb(255, 255, 255);
+    background-color: #212221;
+    border: 1px solid  rgb(158, 160, 158);
+    font-weight: bolder;
+    box-shadow:2px 5px 5px 1px rgb(19, 26, 16);
+    cursor: pointer;
+    }
+
+.Accept-Friendrequest{
+    border: 1px solid rgb(105, 102, 102);
+    padding: 0.5em;
+    margin: auto;
+    cursor: pointer;
+    width: 20vw;
+    border-radius: 1em;
+    background-color: rgb(53, 104, 2);
+    box-shadow:2px 5px 5px 1px rgb(47, 66, 39);  
+    transition: background-color 300ms ease-in; 
+}
+.Accept-Friendrequest:hover{
+    color: rgb(255, 255, 255);
+    background-color: #05ad0d;
+    border: 1px solid  rgb(158, 160, 158);
+    font-weight: bolder;
+    box-shadow:2px 5px 5px 1px rgb(19, 26, 16);
+    cursor: pointer;
+    }

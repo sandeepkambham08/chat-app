@@ -38,10 +38,10 @@ class App extends Component {
   }
   state =  {
     loggedIn:false,       // To maintain login status
-    userName:'',          // Store user name 
-    userEmail:'',         // Store user email
-    userId:'',            // Store user Id
-    userPic:'',           // Store user image
+    userName:'Sandeep Kambham',          // Store user name 
+    userEmail:'sandeepkambham08@gmail.com',         // Store user email
+    userId:'103367997627556847006',           // Store user Id
+    userPic:'https://lh3.googleusercontent.com/a-/AOh14GjJETeloChBdhKhROIyTxOZKiUCuccwNh0JxxpiGY0',           // Store user image
   }
 
 
@@ -54,7 +54,7 @@ class App extends Component {
     firebase.auth().signInWithPopup(provider).then(function(result){
      // console.log(result);
       const user = result.additionalUserInfo.profile;
-      console.log('Logged in successfully')
+      console.log('Logged in successfully', user)
  
       that.setState({loggedIn:true,userName:user.name, userEmail:user.email,  userId:user.id, userPic: user.picture});
       // console.log(that.state);

@@ -655,7 +655,7 @@ display: none;
 .Welcome-screen{
   z-index: 100;
   display: block;
-  margin: 30vh 40vw;
+  margin: 12vh 0 0 30vw;
   position: fixed;
   text-align: center;
 }
