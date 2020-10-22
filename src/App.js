@@ -55,11 +55,13 @@ class App extends Component {
      // console.log(result);
       const user = result.additionalUserInfo.profile;
       console.log('Logged in successfully', user)
- 
-      that.setState({loggedIn:true,userName:user.name, userEmail:user.email,  userId:user.id, userPic: user.picture});
+      let picture_low = user.picture;
+      let picture = picture_low.replace("=s96-c","=s400");
+      console.log(picture);
+      that.setState({loggedIn:true,userName:user.name, userEmail:user.email,  userId:user.id, userPic: picture});
       // console.log(that.state);
       // db.ref("/Users/"+this.state.userId+"/profile_Details/").set({ name: profile.getGivenName(), userLogo: profile.getImageUrl(), userEmail: profile.getEmail() })
-      db.ref("/Users/"+user.id+"/profile_detials").set({isActive:true,userName:user.name,userEmail:user.email,userId:user.id,userPic:user.picture,userBusy:false});
+      db.ref("/Users/"+user.id+"/profile_detials").set({isActive:true,userName:user.name,userEmail:user.email,userId:user.id,userPic:picture,userBusy:false});
       db.ref("/Users/"+user.id+"/rejected").set({callRejected:false});      //To initialize 
 
     }).catch(function(err){

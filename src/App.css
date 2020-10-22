@@ -5,6 +5,15 @@ html *
    font-family: 'Syne', sans-serif !important ;
 }
 
+img{
+  /* user-drag: none;  */
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
 .App {
   font-family: 'Syne', sans-serif !important ;
   
