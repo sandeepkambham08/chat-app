@@ -3,7 +3,7 @@ import React from 'react';
  // Screen after selecting a contact from the list //  
 
 const CallOtherScreen = (props) => {
-    if(props.CallOtherScreen && !props.userBusy){
+    // if(props.CallOtherScreen && !props.userBusy){
         return(
             <div className='call-other-screen'>
                 <div className='self-pic-and-name'>
@@ -31,8 +31,8 @@ const CallOtherScreen = (props) => {
                 </div>
             </div>
         )
-    }
-    else return null;
+    // }
+    // else return null;
 }
 
 export default CallOtherScreen;

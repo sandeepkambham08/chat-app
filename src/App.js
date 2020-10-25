@@ -37,7 +37,7 @@ class App extends Component {
     super(props);
   }
   state =  {
-    loggedIn:true,       // To maintain login status
+    loggedIn:false,       // To maintain login status
     userName:'Sandeep Kambham',          // Store user name 
     userEmail:'sandeepkambham08@gmail.com',         // Store user email
     userId:'103367997627556847006',           // Store user Id

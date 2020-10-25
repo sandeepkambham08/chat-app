@@ -1,8 +1,9 @@
 import React from 'react';
-
+import './FriendList.css';
 // To show the people who sent you friend request
 
 const FriendList = (props) =>{
+    // Contact drawer items classes //
     let ContactListClasses = ['Contact-list'];
     let ContactListItemOnline  =  ['Contact-list-item-online'];
     let ContactListItemOffline  = ['Contact-list-item-offline'];
@@ -17,7 +18,7 @@ const FriendList = (props) =>{
     }
 
     return (
-        <div>
+        <div className='Friend-list'>
                 <p>Friends :</p>
                 {Object.keys(props.peopleList).map((key) => {        
                     

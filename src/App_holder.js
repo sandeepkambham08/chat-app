@@ -25,6 +25,7 @@ import swal from '@sweetalert/with-react';
 import AllContacts from './AllContacts/AllContacts';
 import FriendsList from './FriendList/FriendList';
 import CallOthersScreen from './CallOtherScreen/CallOtherScreen';
+import Discover from './Discover/Discover';
 
 
 
@@ -56,6 +57,9 @@ let senders = [];
 
 //Counter for ice candidates 
 var iceCandidateCount = 1;
+
+const ScreenWidth = window.screen.width;
+const ScreenHeight = window.screen.height;
 
 // Main class begin // 
 class App_holder extends Component {
@@ -716,26 +720,26 @@ class App_holder extends Component {
         this.setState({CallOtherScreen:false});
     }
 
+    getScreenResolution =()=>{
+        console.log('Screen Resolution: ',  window.screen.width ,  window.screen.height)
+        console.log(ScreenWidth, ScreenHeight);
+    }
+
 
     render() {
         let sideDrawerClasses = ['Side-drawer', 'Drawer-close'];                    //Message drawer classes 
         let sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-close'];      //Contact drawer classes 
 
-        // Contact drawer items classes //
-        let ContactListClasses = ['Contact-list'];
-        let ContactListItemOnline  =  ['Contact-list-item-online'];
-        let ContactListItemOffline  = ['Contact-list-item-offline'];
-        let ContactListItemBusy = ['Contact-list-item-busy'];
-        let ContactList = null;
+        
 
         // Different screen classes // 
         let WelcomeScreen = null;
-        let CallOtherScreen  = null;
+        // let CallOtherScreen  = null;
         let OfferReceivedScreen =null;
-        let Discover  = null;
+        // let Discover  = null;
         let FriendRequestsSent = null;
         let FriendRequestsReceived = null;  
-        let FriendList = null;
+        // let FriendList = null;
 
         if (this.state.drawerOpen) {
             sideDrawerClasses = ['Side-drawer', 'Drawer-open'];
@@ -746,15 +750,6 @@ class App_holder extends Component {
         if (this.state.drawerLeftOpen && this.state.userBusy) {
             sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-open', 'left-drawer-userBusy'];
         }
-        if(this.state.userBusy){
-            ContactListClasses = ['Contact-list', 'left-drawer-userBusy'];
-            ContactListItemOnline =  ['Contact-list-item-online', 'left-drawer-userBusy'];
-            ContactListItemOffline  = ['Contact-list-item-offline', 'left-drawer-userBusy'];
-            ContactListItemBusy = ['Contact-list-item-busy', 'left-drawer-userBusy'];
-        }
-
-       
-
 
         // To show the people who sent you friend request
              FriendRequestsReceived = (
@@ -776,30 +771,6 @@ class App_holder extends Component {
                 </div>
             )
 
-                // To show the people in your friend list
-        Discover  =  (
-            !this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived && 
-            <div>
-                <br></br>
-                <p>Discover here :</p>
-                {Object.keys(this.state.peopleList).map((key) => {
-                    // console.log(key);
-                    // console.log(this.state.peopleList[key].userEmail);                 
-                    if(key!==this.props.userId){
-                        // console.log(this.state.peopleList[key]);
-                        
-                            return (
-                                <div style={{float:'left'}} className="All-person-list" key={key} disabled={!this.state.userBusy} >
-                                <img src={this.state.peopleList[key].userPic} alt="contactListPic" className='contactListPic' />
-                                {/* <span>User Online</span> */}
-                                <p key={key} className='onlinePerson' id='onlinePerson' >  {this.state.peopleList[key].userName} </p>
-                                <p className='Send-Friendrequest' onClick={()=>{this.sendFriendRequest(key,this.state.peopleList[key])}} >Send request</p>
-                                </div>   )  
-                    }
-                })}
-            </div>
-        )
-        
         // To show the people who sent you friend request
         FriendRequestsSent = (
             !this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived && 
@@ -828,18 +799,12 @@ class App_holder extends Component {
         WelcomeScreen = (
             !this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived &&
             <div className='Welcome-screen'>
-                <img className='Main-profile-pic' alt="Main-profile-pic" src={this.props.userPic} />
+                <img className='Main-profile-pic' alt="Main-profile-pic" onClick={()=>{this.getScreenResolution()}}  src={this.props.userPic} />
                 <p>Hello, {this.props.userName}</p>
                 {/* For friend request and available people */}
                 {/* <p>List of people you can connect with : </p> */}
-                <FriendsList
-                peopleList={this.state.peopleList}
-                friendListIds = {this.state.friendListIds}
-                userBusy = {this.props.userBusy}
-                CallOtherScreen = {this.CallOtherScreen}
-                />
-                {FriendRequestsReceived}
-                {Discover}
+                {FriendRequestsReceived} 
+                
                 {FriendRequestsSent} 
             </div>
         )
@@ -878,8 +843,17 @@ class App_holder extends Component {
                     <p>Have a conversation with privacy</p>
                 </div>
                 {WelcomeScreen}
+                {/* {
+                !this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived &&
+                <Discover
+                peopleList = {this.state.peopleList}
+                userId={this.props.userId}
+                userBusy={this.state.userBusy}
+                /> */}
+                
+                
                 {/* {CallOtherScreen} */}
-                <CallOthersScreen
+                {this.state.CallOtherScreen && !this.state.userBusy  && <CallOthersScreen
                 peopleList={this.state.peopleList}
                 friendId={this.state.friendId}
                 CallOtherScreen ={this.state.CallOtherScreen}
@@ -887,6 +861,12 @@ class App_holder extends Component {
                 userPic={this.props.userPic}
                 backFromCallOtherScreen = {this.backFromCallOtherScreen}
                 showFriendsFace={this.showFriendsFace}
+                />}
+                <FriendsList
+                peopleList={this.state.peopleList}
+                friendListIds = {this.state.friendListIds}
+                userBusy = {this.props.userBusy}
+                CallOtherScreen = {this.CallOtherScreen}
                 />
                 {OfferReceivedScreen}
                 {this.state.callInitiated && 
@@ -896,7 +876,7 @@ class App_holder extends Component {
                     </div>
 
                     <div className='Both-Videos'>
-                        <video id="friendsVideo" className='friendsVideo' ref={this.friendsVideo} autoPlay > sdfsf</video>
+                        <video id="friendsVideo" className='friendsVideo' style={{width:ScreenWidth, height:ScreenHeight}} ref={this.friendsVideo} autoPlay >sdfsf</video>
 
                         <div className='myVideo-and-controls'>
                             <img id="videoOn" className='videoOn' src={video_off} onClick={this.resumeVideo} hidden={this.state.videoOn} alt='Video on' />
@@ -919,11 +899,17 @@ class App_holder extends Component {
 
                 <div className={sideDrawerClassesLeft.join('  ')}>
                     <div className='All-contacts-div'>
-                    <AllContacts
+                    {/* <AllContacts
                     peopleList = {this.state.peopleList}
                     userId = {this.props.userId}
                     userBusy = {this.state.userBusy}
                     CallOtherScreen = {this.CallOtherScreen}
+                    /> */}
+                    <Discover
+                     peopleList = {this.state.peopleList}
+                     userId={this.props.userId}
+                     userBusy={this.state.userBusy}
+                     sendFriendRequest={this.sendFriendRequest}
                     />
                     {/* {FriendList} */}
                     </div>

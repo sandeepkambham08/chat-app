@@ -180,7 +180,7 @@ transform: translateX(-100%);
 .Both-Videos{
   /* text-align: center; */
   border: 1px solid black;
-  margin-left: 22.5%;
+  /* margin-left: 22.5%; */
   border-radius: 10px;
   width: 800px;
   height: 600px;
@@ -191,7 +191,7 @@ transform: translateX(-100%);
   text-align: center;
   width: 800px;
   height: 600px;
-  z-index: 100;
+  z-index: 700;
   position: absolute;
 }
 .myVideo-and-controls{

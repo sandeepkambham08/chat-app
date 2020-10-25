@@ -1,0 +1,61 @@
+.Discover{
+    margin: 0vh 0 0 0vw;
+    /* position: fixed; */
+    overflow: scroll;
+}
+.Discover p{
+    color: antiquewhite;
+}
+
+.Discover-contact-card{
+
+    text-align: center;
+    width: 90%;
+    margin: 0 0 2%  5%;
+    padding: 0.5em 0;
+    border-radius: 1em;
+    /* border: 1px solid red; */
+    color: rgb(255, 255, 255);
+}
+
+.Discover-contact-card:hover{
+    box-shadow:5px 10px 10px 2px rgb(0, 0, 0);
+    background-color: rgb(255, 255, 255);
+    color: antiquewhite;
+}
+.Discover-contact-card:hover p{
+    color: rgb(0, 0, 0);
+}
+
+.Discover-contact-name{
+    color: antiquewhite;
+    font-weight: bolder;
+}
+
+.Send-Friendrequest{
+    border: 1px solid rgb(105, 102, 102);
+    padding: 0.5em;
+    margin: 0.5em;
+    cursor: pointer;
+    border-radius: 1em;
+    background-color: #302f2f;
+    color: rgb(255, 255, 255) !important;
+    transition: background-color 200ms ease;
+
+}
+
+.Send-Friendrequest:hover{
+    color: rgb(255, 255, 255);
+    background-color: #056601; 
+    border: 1px solid  rgb(158, 160, 158);
+    font-weight: bolder;
+    box-shadow:2px 5px 4px 2px rgb(19, 26, 16);
+    cursor: pointer;
+    }
+
+.Discover-contactListPic{
+    width: 50px;
+    height: 50px;
+    border-radius: 20px;
+    text-align: center;
+  }
