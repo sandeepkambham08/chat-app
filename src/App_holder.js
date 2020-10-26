@@ -10,6 +10,7 @@ import audio_icon from './media/audio_icon.png';
 import audio_icon_off from './media/audio_officon.png';
 import side_drawer from './media/side_drawer_new.png';
 import leftSide_drawer from './media/leftSide_drawer.png';
+import friendRequest from './media/leftSide_drawer1.png';
 import screen_share from './media/screen_share.png';
 // ^^^ Image imports ^^^ //
 
@@ -26,6 +27,7 @@ import AllContacts from './AllContacts/AllContacts';
 import FriendsList from './FriendList/FriendList';
 import CallOthersScreen from './CallOtherScreen/CallOtherScreen';
 import Discover from './Discover/Discover';
+import FriendRequestsReceived from './FriendRequestsReceived/FriendRequestsReceived';
 
 
 
@@ -86,7 +88,7 @@ class App_holder extends Component {
         screenShare: false,            // Screenshare state                 
         videoOn: true,                 // To control video toggle button
         audioOn: true,                 // To control audio toggle button
-        drawerOpen: false,             // Messages drawer 
+        drawerOpen: true,             // Messages drawer 
         drawerLeftOpen: true,          // Contacts drawer is initially  open 
         peopleList: {},                // Store available contacts 
         friendId:null,                 // Friend ID to connect 
@@ -738,7 +740,7 @@ class App_holder extends Component {
         let OfferReceivedScreen =null;
         // let Discover  = null;
         let FriendRequestsSent = null;
-        let FriendRequestsReceived = null;  
+        // let FriendRequestsReceived = null;  
         // let FriendList = null;
 
         if (this.state.drawerOpen) {
@@ -751,25 +753,26 @@ class App_holder extends Component {
             sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-open', 'left-drawer-userBusy'];
         }
 
-        // To show the people who sent you friend request
-             FriendRequestsReceived = (
-                !this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived && 
-                <div>
-                    <p>Friend requests received:</p>
-                    {Object.keys(this.state.friendRequestsReceived).map((key) => {                    
-                        if(key!==this.props.userId){
-                            // console.log(this.state.peopleList[key]);
-                                return (
-                                    <div key={key} disabled={!this.state.userBusy} >
-                                    <img src={this.state.friendRequestsReceived[key].userPic} alt="contactListPic" className='contactListPic' />
-                                    {/* <span>User Online</span> */}
-                                    <p key={key} className='onlinePerson' id='onlinePerson' >  {this.state.friendRequestsReceived[key].userName} </p>
-                                    <p className='Accept-Friendrequest' onClick={()=>{this.acceptFriendRequest(key,this.state.peopleList[key])}} >Accept</p>
-                                    </div>   )
-                        }
-                    })}
-                </div>
-            )
+        // // To show the people who sent you friend request
+        //     FriendRequestsReceived = (
+        //         !this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived && 
+        //         <div>
+        //             <p>Friend requests received:</p>
+        //             {Object.keys(this.state.friendRequestsReceived).map((key) => {                    
+        //                 if(key!==this.props.userId){
+        //                     // console.log(this.state.peopleList[key]);
+        //                         return (
+        //                             <div key={key} disabled={!this.state.userBusy} >
+        //                             <img src={this.state.friendRequestsReceived[key].userPic} alt="contactListPic" className='contactListPic' />
+        //                             {/* <span>User Online</span> */}
+        //                             <p key={key} className='onlinePerson' id='onlinePerson' >  {this.state.friendRequestsReceived[key].userName} </p>
+        //                             <p className='Accept-Friendrequest' onClick={()=>{this.acceptFriendRequest(key,this.state.peopleList[key])}} >Accept</p>
+        //                             <p className='Accept-Friendrequest' >Decline</p>
+        //                             </div>   )
+        //                 }
+        //             })}
+        //         </div>
+        //     )
 
         // To show the people who sent you friend request
         FriendRequestsSent = (
@@ -803,7 +806,7 @@ class App_holder extends Component {
                 <p>Hello, {this.props.userName}</p>
                 {/* For friend request and available people */}
                 {/* <p>List of people you can connect with : </p> */}
-                {FriendRequestsReceived} 
+                
                 
                 {FriendRequestsSent} 
             </div>
@@ -838,7 +841,11 @@ class App_holder extends Component {
                 <div className="App-header">
                     <img className='Contacts-drawer-button' alt="Contacts-drawer-button"  src={leftSide_drawer} onClick={this.drawerLeftToggle} />
                     <span className='Hello-name'>Contacts</span>
+                    {this.state.callInitiated && 
                     <img className='Side-drawer-button' alt="Side-drawer-button" src={side_drawer} onClick={this.drawerToggle} />
+                    }
+                    {!this.state.callInitiated && 
+                    <img className='Side-drawer-button' alt="Side-drawer-button" src={friendRequest} onClick={this.drawerToggle} />}
                     <span className='Hello-name-right'>Messages</span>
                     <p>Have a conversation with privacy</p>
                 </div>
@@ -919,6 +926,7 @@ class App_holder extends Component {
                 </div>
 
                 <div className={sideDrawerClasses.join('  ')} style={{ paddingTop: '20px' }}>
+                  {this.state.callConnected && <div>
                     <div className=' split Conversation-block' id='Conversation-block'>
                         <p> Conversation </p>
                         <div id='messageReceived'>
@@ -935,18 +943,26 @@ class App_holder extends Component {
                     {/* <label htmlFor="inputFile" hidden={this.state.callConnected} className="custom-file-upload" > Custom Upload </label>
             <input id='inputFile' disabled={!this.state.callConnected} onChange={(e) => { this.fileSelect(e) }} type="file"/>  */}
                     <br></br>
-                    {this.state.callConnected &&
+                    
                         <div className='File-options' >
                             <input id='inputFile' className='inputFile' type='file' disabled={!this.state.callConnected} onChange={(e) => { this.fileSelect(e) }} size="60" style={{ display: 'block', float: 'left', padding: '22px 15px 0 15px' }}></input>
                             <progress id='progressBar' hidden={!this.state.progressBar} value='0' max='0'></progress>
                             <Button className='Save-button' size='small' onClick={this.saveToDisk} hidden={!this.state.downloadButton} disabled={!this.state.downloadButton} variant="contained" color="default" startIcon={<SaveIcon />} style={{ marginLeft: '15px', padding: '5px', borderRadius: '10px' }}>Save</Button>
                             <IconButton aria-label="delete" onClick={this.deleteReceivedfile} disabled={!this.state.downloadButton}> <DeleteIcon /> </IconButton>
-                        </div>}
+                        </div>
                     {/* <button  onClick={(e)=>{this.sendFileButton(e)}}  style={{display:'block', float:'left', marginLeft:'20px'}} >Send file</button> */}
                     {/* <div id='downloadSection' className='downloadSection'>
               <img id='preview' className='preview' />
             </div> */}
-
+                </div>}
+                {!this.state.callInitiated  && !this.state.CallOtherScreen &&  !this.state.offerReceived && 
+                <FriendRequestsReceived
+                friendRequestsReceived={this.state.friendRequestsReceived}
+                userBusy= {this.state.userBusy}
+                peopleList={this.state.peopleList}
+                userId={this.props.userId}
+                />
+                }
                 </div>
             </div> //App end div
         );
