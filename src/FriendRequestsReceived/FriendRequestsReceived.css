@@ -1,3 +1,54 @@
+.Friend-request-header{
+    text-align: center;
+    color: rgb(199, 166, 123);
+    font-weight: bolder;
+    font-size: larger;
+}
+.Friend-request-card p{
+    color: antiquewhite;
+}
 .Friend-request-card{
-    border: 1px solid white;
+    text-align: center;
+    width: 90%;
+    margin: 0 0 2%  5%;
+    padding: 0.5em 0;
+    border-radius: 1em;
+    /* border: 1px solid red; */
+    color: rgb(255, 255, 255);
+}
+
+.Friend-request-card:hover{
+    box-shadow:5px 10px 10px 2px rgb(0, 0, 0);
+    background-color: rgb(255, 255, 255);
+    
+}
+.Friend-request-card:hover p{
+    color: rgb(2, 1, 0);
+}
+
+.Friendrequest{
+    border: 1px solid rgb(105, 102, 102);
+    padding: 0.5em;
+    cursor: pointer;
+    width: 40%;
+    margin-left: 5%;
+    float: left;
+    border-radius: 1em;
+    background-color: rgb(53, 104, 2);
+    box-shadow:2px 5px 5px 1px rgb(47, 66, 39);  
+    transition: background-color 300ms ease-in; 
+}
+.Friendrequest:hover{
+    color: rgb(255, 255, 255);
+    border: 1px solid  rgb(158, 160, 158);
+    font-weight: bolder;
+    box-shadow:2px 5px 5px 1px rgb(19, 26, 16);
+    cursor: pointer;
+}
+
+.Decline{
+    background-color: #ad3a05;
+}
+.Decline:hover{
+    background-color: #b10b05;
 }
