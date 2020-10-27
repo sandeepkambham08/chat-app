@@ -1,14 +1,22 @@
+.Friends-block{
+    margin-top: 60vh;
+    position: absolute;
+    width: 100%;
+}
+
 .Friend-list{
-    margin: 60vh 0 0 25vw;
-    width: 45%;
-    height: 23vh;
-    position: fixed;
-    border: 1px solid rgb(209, 205, 205);
+    margin: auto;
+    width: fit-content;
+    height: fit-content;
+    /* display: block; */
+    border: 1px solid rgb(204, 202, 202);
     border-radius: 40px;
     background-color: rgba(221, 224, 224, 0.466);
     text-align: center;
+    align-content: center;
     overflow: scroll;
-    padding: 0 2.5%;
+    padding: 0 2.5% 0 2.5%;
+    transition: height 300ms ease-in-out;
 }
 
 .Friends-title{
@@ -31,29 +39,33 @@
     float: left;
     display: block;
     padding-top: 1em;
-    width:10vw;
-    margin-left:1em ;
+    margin-bottom: 1em;
+    /* width:13vw; */
+    /* margin-left:1em ; */
+    margin-right:1.5em ;
     text-align: center;
-    cursor: pointer;
-    transition: background-color 200ms ease-in-out;
+    cursor: pointer; 
+    border-radius: 25px;
+    transition: background-color 300ms ease-in-out;
 }
 .Contact-list-item-online:hover{
     text-align: center;
-    background-color:  #ffffff;
+    /* background-color:  #ffffff; */
+    /* padding-top: 0em; */
     /* border: 1px solid rgb(148, 20, 3); */
     border-radius: 25px;
     /* margin-left: 3%; */
-    box-shadow:5px 10px 10px 2px rgb(26, 16, 16);
+    /* box-shadow:3px 7px 7px 2px rgb(26, 16, 16); */
 }
 
 .Contact-list-item-offline:hover{
     text-align: center;
-    background-color:  #ffffff;
+    /* background-color:  #ffffff; */
     /* border: 1px solid rgb(148, 20, 3); */
-    
+    /* padding-top: 0em; */
     border-radius: 25px;
     /* margin-left: 3%; */
-    box-shadow:5px 10px 10px 2px rgb(26, 16, 16);
+    /* box-shadow:3px 7px 7px 2px rgb(26, 16, 16); */
 }
 
 
@@ -71,9 +83,17 @@
     border: 3px solid rgba(6, 219, 52, 0.877);
     box-shadow: 0pt 0 5pt 3pt rgb(4, 206, 37);
 }
+.Contact-list-item-online .Friend-pic:hover{
+    background-color:  #ffffff;
+    box-shadow: 0pt 0 8pt 4pt rgb(4, 206, 37);
+}
   
 .Contact-list-item-offline .Friend-pic{
     border: 3px solid rgb(192, 33, 12);
+}
+.Contact-list-item-offline .Friend-pic:hover{
+    border: 3px solid rgb(192, 33, 12);
+    box-shadow: 0pt 0 8pt 4pt rgb(161, 55, 41);
 }
 .Contact-list-item-busy .Friend-pic{
     box-shadow: 0pt 0 5pt 3pt rgb(185, 78, 6);
@@ -94,14 +114,18 @@
 
 .Add-friends-block{
     float: left;
-    margin-left: 2vw;
+    margin-left: 0vw;
 }
 
 .Add-friends-button{
     float: left;
     margin: 15px 0 20px 0;
     width: 90px;
-    border-radius: 7em;
+    border-radius: 9em;
+    transition: box-shadow 200ms ease-in-out;
+}
+.Add-friends-button:hover{
+    box-shadow:3px 7px 7px 2px rgb(66, 66, 66);
 }
 
 .blurred-out{

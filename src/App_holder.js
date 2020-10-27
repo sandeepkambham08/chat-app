@@ -12,6 +12,7 @@ import side_drawer from './media/side_drawer_new.png';
 import leftSide_drawer from './media/leftSide_drawer.png';
 import friendRequest from './media/leftSide_drawer1.png';
 import screen_share from './media/screen_share.png';
+import notification_dot from './media/notification_dot.png'
 // ^^^ Image imports ^^^ //
 
 // Import Buttons for file sharing options// 
@@ -89,7 +90,7 @@ class App_holder extends Component {
         videoOn: true,                 // To control video toggle button
         audioOn: true,                 // To control audio toggle button
         drawerOpen: false,             // Messages drawer 
-        drawerLeftOpen: true,          // Contacts drawer is initially  open 
+        drawerLeftOpen: false,          // Contacts drawer is initially  open 
         peopleList: {},                // Store available contacts 
         friendId: null,                 // Friend ID to connect 
         callInitiated: false,           // To display your profile at beginning
@@ -375,7 +376,8 @@ class App_holder extends Component {
         const videoTrack = senders.find(sender => sender.track.kind === 'video');
         console.log(videoTrack);
         if (videoTrack) {
-            videoTrack.track.stop();
+            videoTrack.track.enabled = false;
+            // videoTrack.track.stop();
         }
         console.log('Video off');
         this.setState({ videoOn: false }); // Video button toggle
@@ -730,6 +732,14 @@ class App_holder extends Component {
         }))
     }
 
+    declineFriendRequest = (key, details) =>{
+        db.ref('/Users/' + this.props.userId + '/friend_requests_received/' + key).remove();
+        db.ref('/Users/' + key + '/friend_requests_sent/' + this.props.userId).remove();
+        this.setState(prevState => ({
+            friendRequestsReceived: prevState.friendRequestsReceived.filter((id) => id !== key)
+        }))
+    }
+
     backFromCallOtherScreen = () => {
         this.setState({ CallOtherScreen: false });
     }
@@ -797,17 +807,21 @@ class App_holder extends Component {
 
         // Main return of the class // 
         if (!this.state.callInitiatedNew) {
+            let notification_show = this.state.friendRequestsReceived.length - 1 > 0;
+            console.log(notification_show)
             return (
                 <div className="App">
                     <div className="App-header">
                         <img className='Contacts-drawer-button' alt="Contacts-drawer-button" src={leftSide_drawer} onClick={this.drawerLeftToggle} />
-                        <span className='Hello-name'>Contacts</span>
-                        {this.state.callInitiated &&
-                            <img className='Side-drawer-button' alt="Side-drawer-button" src={side_drawer} onClick={this.drawerToggle} />
-                        }
+                        <span className='Hello-name'>Discover</span>
                         {!this.state.callInitiated &&
-                            <img className='Side-drawer-button' alt="Side-drawer-button" src={friendRequest} onClick={this.drawerToggle} />}
-                        <span className='Hello-name-right'>Messages</span>
+                            <div>
+                            <img className='Side-drawer-button' alt="Side-drawer-button" src={friendRequest} onClick={this.drawerToggle} />
+                            </div>}
+                        {notification_show && 
+                        <img className='notification-icon' alt="Side-drawer-button" src={notification_dot}/>
+                        }
+                        <span className='Hello-name-right'>Notifications</span>
                         <p>Have a conversation with privacy</p>
                     </div>
 
@@ -823,6 +837,7 @@ class App_holder extends Component {
                             backFromCallOtherScreen={this.backFromCallOtherScreen}
                             showFriendsFace={this.showFriendsFace}
                         />}
+                    {!this.state.CallOtherScreen && 
                     <FriendsList
                         peopleList={this.state.peopleList}
                         friendListIds={this.state.friendListIds}
@@ -830,7 +845,8 @@ class App_holder extends Component {
                         CallOtherScreen={this.CallOtherScreen}
                         drawerLeftOpen={this.state.drawerLeftOpen}
                         drawerLeftToggle={this.drawerLeftToggle}
-                    />
+                    />}    
+                    
                     {OfferReceivedScreen}
                     {/* {this.state.callInitiated &&
                         <div className='Videos-block' >
@@ -885,6 +901,7 @@ class App_holder extends Component {
                                 peopleList={this.state.peopleList}
                                 userId={this.props.userId}
                                 acceptFriendRequest={this.acceptFriendRequest}
+                                declineFriendRequest={this.declineFriendRequest}
                             />
                         }
                     </div>

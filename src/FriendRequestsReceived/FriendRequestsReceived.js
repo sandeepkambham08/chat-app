@@ -15,7 +15,7 @@ return(
                                     {/* <span>User Online</span> */}
                                     <p key={key} className='onlinePerson' id='onlinePerson' >  {props.peopleList[key].userName} </p>
                                     <p className='Accept Friendrequest' onClick={()=>{props.acceptFriendRequest(key,props.peopleList[key])}} >Accept</p>
-                                    <p className='Decline Friendrequest' >Decline</p>
+                                    <p className='Decline Friendrequest'onClick={()=>{props.declineFriendRequest(key,props.peopleList[key])}}  >Decline</p>
                                     </div>   )
                         }
                     })}
