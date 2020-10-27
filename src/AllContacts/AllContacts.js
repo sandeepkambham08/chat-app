@@ -9,7 +9,7 @@ const AllContacts = (props) =>{
     let ContactListItemOnline  =  ['Contact-list-item-online'];
     let ContactListItemOffline  = ['Contact-list-item-offline'];
     let ContactListItemBusy = ['Contact-list-item-busy'];
-    let ContactList = null;
+    // let ContactList = null;
 
     if(props.userBusy){
         ContactListClasses = ['Contact-list', 'left-drawer-userBusy'];

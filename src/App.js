@@ -29,13 +29,11 @@ var firebaseConfig = {
 // });
 const app = firebase.initializeApp(firebaseConfig,"other");
 const db = app.database();
-const auth = firebase.auth();
+// const auth = firebase.auth();
 
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-  }
+  
   state =  {
     loggedIn:false,       // To maintain login status
     userName:null,          // Store user name 
@@ -54,10 +52,9 @@ class App extends Component {
     firebase.auth().signInWithPopup(provider).then(function(result){
      // console.log(result);
       const user = result.additionalUserInfo.profile;
-      console.log('Logged in successfully', user)
+      console.log('Logged in successfully')
       let picture_low = user.picture;
       let picture = picture_low.replace("=s96-c","=s400");
-      console.log(picture);
       that.setState({loggedIn:true,userName:user.name, userEmail:user.email,  userId:user.id, userPic: picture});
       // console.log(that.state);
       // db.ref("/Users/"+this.state.userId+"/profile_Details/").set({ name: profile.getGivenName(), userLogo: profile.getImageUrl(), userEmail: profile.getEmail() })
@@ -106,8 +103,8 @@ class App extends Component {
           </div>
           {/* <input type='text'/> */}
           <div className='App-body'> </div>
-          <img src={chat_app_logo} className='chat-app-logo'/>
-          <img src={Login_button} className='logInButton' onClick={()=>this.loginButton()}/>
+          <img src={chat_app_logo} alt='Chat-app-logo' className='chat-app-logo'/>
+          <img src={Login_button} alt='Login-button' className='logInButton' onClick={()=>this.loginButton()}/>
           <div className='App-footer'>
           <p>Developed by Sandeep ©</p>
           </div>

@@ -24,7 +24,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 // Alert UI //
 import swal from '@sweetalert/with-react';
-import AllContacts from './AllContacts/AllContacts';
+// import AllContacts from './AllContacts/AllContacts';
 import FriendsList from './FriendList/FriendList';
 import CallOthersScreen from './CallOtherScreen/CallOtherScreen';
 import Discover from './Discover/Discover';
@@ -62,7 +62,7 @@ let senders = [];
 var iceCandidateCount = 1;
 
 const ScreenWidth = window.screen.width;
-const ScreenHeight = window.screen.height;
+// const ScreenHeight = window.screen.height;
 
 // Main class begin // 
 class App_holder extends Component {
@@ -108,7 +108,7 @@ class App_holder extends Component {
     // Toggle screen to call other screen // 
     CallOtherScreen = (key) => {
         if (key) {
-            console.log(key);
+            // console.log(key);
             if (!this.state.userBusy) {
                 if (this.state.friendId === null) {
                     this.setState(prevState => ({
@@ -165,8 +165,6 @@ class App_holder extends Component {
                 })
                 .then(() => {
                     console.log("STEP 6: Added offer on my PC local Description - TIME: " + Date.now());
-                    //console.log('Local Description')
-                    //console.log(pc.localDescription);
                     this.sendMessage(this.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));
                     console.log('STEP 7: Sent offer to peer - TIME: ' + Date.now());
                 });
@@ -192,12 +190,10 @@ class App_holder extends Component {
             .then((stream) => {
                 // this.setState({ stream: stream });
                 const tracks = stream.getTracks();
-                console.log(tracks);
                 tracks.forEach(track => {
                     senders.push(pc.addTrack(track, stream));
-                    console.log(senders);
                     selfView.srcObject = stream;      // Adding self video
-                    // console.log(this.state.stream.getTracks());
+                    
                 })
                 return stream;
             }).then(() => {
@@ -207,12 +203,10 @@ class App_holder extends Component {
 
         // To detect new ice candidates generated after setting local description
         pc.onicecandidate = (event) => {
-            //console.log('testing iterations')
             if (event.candidate) {
-                console.log(iceCandidateCount++);
+                console.log(iceCandidateCount++)
                 console.log('STEP 9/16 - ICE canadidates generated in your device - TIME: ' + Date.now())
                 that.sendIceMessage(this.props.userId, JSON.stringify({ 'ice': event.candidate }));
-                //console.log(event.candidate);
             }
             else {
                 // this.sendMessage(this.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));   // added to check sync
@@ -224,7 +218,6 @@ class App_holder extends Component {
         //------  Listener for Adding Friends Video  --------// 
         pc.addEventListener('track', ({ streams: [stream] }) => {
             console.log('Now added friends stream' + Date.now())
-            // console.log(stream);
             friendsVideo.srcObject = stream;
         })
 
@@ -257,9 +250,7 @@ class App_holder extends Component {
     // To read OFFER/ANSWER from signalling server - firebase own node listening
     readMessage = (data) => {
         var that = this;
-        //console.log(data.val().message);
         var msg = JSON.parse(data.val().message);
-        //console.log(msg);
         var sender = data.val().sender;
         if (sender !== that.props.userId) {
             that.setState({ friendId: sender });
@@ -291,7 +282,7 @@ class App_holder extends Component {
                     db.ref('/Users/' + that.props.userId + '/ice/').on('child_added', (snapshot) => {
                         that.readIceMessage(snapshot)
                         that.setState({ callConnected: true }) //Caller side message box active 
-                        console.log(pc);
+                        // console.log(pc);
                     });
                 });
             }
@@ -388,11 +379,9 @@ class App_holder extends Component {
         console.log(senders);
         navigator.mediaDevices.getUserMedia({ audio: true, video: true })
             .then((stream) => {
-                // console.log(stream.getTracks());
-                // console.log(senders);
+                
                 senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[1]);
-                // console.log(senders);
-                // console.log(stream.getTracks());
+                
                 document.getElementById('self-view').srcObject = stream;
             })
         console.log(senders.find(sender => sender.track.kind === 'video'));
@@ -451,11 +440,9 @@ class App_holder extends Component {
             shareTrack.track.stop();
             navigator.mediaDevices.getUserMedia({ audio: true, video: true })
                 .then((stream) => {
-                    // console.log(stream.getTracks());
-                    // console.log(senders);
+                    
                     senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[1]);
-                    // console.log(senders);
-                    // console.log(stream.getTracks());
+                    
                     document.getElementById('self-view').srcObject = stream;
                     this.setState({ screenShare: false });
                 })
@@ -466,7 +453,7 @@ class App_holder extends Component {
     // To send messages on chat //
     sendInputMessage = () => {
         const input = document.getElementById('textInput').value;
-        console.log("You entered : " + input)
+        // console.log("You entered : " + input)
 
         document.getElementById('messageReceived').innerHTML += "<p class='Your-input'><span class='who-tag'>You : </span>" + input + "</p>"
 
@@ -484,7 +471,7 @@ class App_holder extends Component {
     enterAsInput = (e) => {
         //console.log(e.keyCode)
         if (e.keyCode === 13) {
-            console.log('You clicked enter')
+            // console.log('You clicked enter')
             this.sendInputMessage();
             //  e.target.value =null;
         }
@@ -546,7 +533,7 @@ class App_holder extends Component {
 
         const reader = new FileReader();
         reader.readAsDataURL(file);
-        const img = document.getElementById('preview')     // To show preview
+        // const img = document.getElementById('preview')     // To show preview
 
         var progressValue = document.getElementById('progressBar');
         progressValue.max = 100;
@@ -699,9 +686,6 @@ class App_holder extends Component {
         this.setState(prevState => ({
             drawerLeftOpen: !prevState.drawerLeftOpen
         }));
-        console.log(this.state.friendRequestsSent);
-        // console.log(this.state.friendRequestsReceived);
-        console.log(this.state.peopleList);
     }
 
     // Friend request function //
@@ -718,15 +702,11 @@ class App_holder extends Component {
 
     acceptFriendRequest = (key, details) => {
         const myDetails = this.state.peopleList[this.props.userId];
-        console.log(key);
+        
         db.ref('/Users/' + this.props.userId + '/friend_list/' + key).update({ userId: details.userId, userEmail: details.userEmail, userName: details.userName, userPic: details.userPic, userBusy: details.userBusy, isActive: details.isActive });
         db.ref('/Users/' + key + '/friend_list/' + this.props.userId).update({ userId: myDetails.userId, userEmail: myDetails.userEmail, userName: myDetails.userName, userPic: myDetails.userPic, userBusy: myDetails.userBusy, isActive: myDetails.isActive });
         db.ref('/Users/' + this.props.userId + '/friend_requests_received/' + key).remove();
         db.ref('/Users/' + key + '/friend_requests_sent/' + this.props.userId).remove();
-        // this.setState({friendRequestsReceived: Object.values(this.state.friendRequestsReceived).filter(function(person) { 
-        //     // console.log(person.userId);
-        //     return person.userId !== key
-        // })});
         this.setState(prevState => ({
             friendRequestsReceived: prevState.friendRequestsReceived.filter((id) => id !== key)
         }))
@@ -742,11 +722,6 @@ class App_holder extends Component {
 
     backFromCallOtherScreen = () => {
         this.setState({ CallOtherScreen: false });
-    }
-
-    getScreenResolution = () => {
-        console.log('Screen Resolution: ', window.screen.width, window.screen.height)
-        console.log(ScreenWidth, ScreenHeight);
     }
 
 
@@ -777,7 +752,7 @@ class App_holder extends Component {
         WelcomeScreen = (
             !this.state.callInitiated && !this.state.CallOtherScreen && !this.state.offerReceived && !this.state.callInitiatedNew &&
             <div className='Welcome-screen'>
-                <img className='Main-profile-pic' alt="Main-profile-pic" onClick={() => { this.getScreenResolution() }} src={this.props.userPic} />
+                <img className='Main-profile-pic' alt="Main-profile-pic"  src={this.props.userPic} />
                 <p>Hello, {this.props.userName}</p>
             </div>
         )
@@ -797,7 +772,7 @@ class App_holder extends Component {
                         <Button variant="contained" color="secondary" onClick={() => { this.endCall('true') }} style={{ margin: '10px', zIndex: '200' }}> Reject </Button>
                     </div>}
                 <div className='Friend-pic-and-name'>
-                    <img className='Main-profile-pic' src={this.state.peopleList[this.state.friendId].userPic} />
+                    <img className='Main-profile-pic' alt='Main-profile-pic' src={this.state.peopleList[this.state.friendId].userPic} />
                     <p>{this.state.peopleList[this.state.friendId].userName}</p>
                 </div>
             </div>
@@ -808,7 +783,7 @@ class App_holder extends Component {
         // Main return of the class // 
         if (!this.state.callInitiatedNew) {
             let notification_show = this.state.friendRequestsReceived.length - 1 > 0;
-            console.log(notification_show)
+            // console.log(notification_show)
             return (
                 <div className="App">
                     <div className="App-header">
@@ -837,7 +812,7 @@ class App_holder extends Component {
                             backFromCallOtherScreen={this.backFromCallOtherScreen}
                             showFriendsFace={this.showFriendsFace}
                         />}
-                    {!this.state.CallOtherScreen && 
+                    {!this.state.CallOtherScreen && !this.state.offerReceived &&
                     <FriendsList
                         peopleList={this.state.peopleList}
                         friendListIds={this.state.friendListIds}
@@ -848,31 +823,6 @@ class App_holder extends Component {
                     />}    
                     
                     {OfferReceivedScreen}
-                    {/* {this.state.callInitiated &&
-                        <div className='Videos-block' >
-                            <div className='caption'>
-                                <p>Connect with loved ones</p>
-                            </div>
-
-                            <div className='Both-Videos'>
-                                <video id="friendsVideo" className='friendsVideo' style={{ width: ScreenWidth, height: ScreenHeight }} ref={this.friendsVideo} autoPlay >sdfsf</video>
-
-                                <div className='myVideo-and-controls'>
-                                    <img id="videoOn" className='videoOn' src={video_off} onClick={this.resumeVideo} hidden={this.state.videoOn} alt='Video on' />
-                                    <img id="videoOff" className='videoOff' src={video_on} onClick={this.stopVideo} hidden={!this.state.videoOn} alt='Video off' />
-                                    <img id="audioOff" className='audioOff' src={audio_icon} onClick={this.stopAudio} hidden={!this.state.audioOn} alt='Audio off' />
-                                    <img id="audioOn" className='audioOn' src={audio_icon_off} onClick={this.resumeAudio} hidden={this.state.audioOn} alt='Audio on' />
-                                    <img id="screenShare" className='Start-share' src={screen_share} hidden={!this.state.callConnected || this.state.screenShare} alt='Screenshare-start' onClick={this.shareScreenStart} />
-                                    <img id="screenShare" className='Stop-share' src={screen_share} hidden={!this.state.screenShare} alt='Screenshare-stop' onClick={this.shareScreenStop} />
-                                    <video id="self-view" className='self-view' autoPlay muted ></video>
-                                </div>
-                                <br></br>
-                                <Button variant="contained" color="secondary" onClick={this.endCall} style={{ margin: '10px', zIndex: '200' }}> End Call </Button>
-                                
-                                <br></br>
-                            </div>
-                        </div>}  */}
-                        {/*End Videos class */}
 
                     <div className={sideDrawerClassesLeft.join('  ')}>
                         <div className='All-contacts-div'>
@@ -908,6 +858,7 @@ class App_holder extends Component {
                 </div> //App end div
             )
         };
+        // ******* If the call is started ******* // 
         if (this.state.callInitiatedNew) {
             return (
                 <div>
@@ -1001,20 +952,14 @@ class App_holder extends Component {
                         }
                     }))
                 }
-                //}
-                // profile_details.forEach(function (names) {
-                //     // console.log(names.val());
-                // })
+                
             })
-            // console.log(that.state.peopleList);
+            
         })
 
         // To get updated details of the contacts once loggedIn// 
         db.ref('/Users/').on('child_changed', function (userIdList) {
             userIdList.forEach(function (profile_details) {
-                // console.log(profile_details.val());
-                // console.log(profile_details.val());
-                // console.log(profile_details.val().userId);
                 let userId = profile_details.val().userId;
                 let userName = profile_details.val().userName;
                 let userEmail = profile_details.val().userEmail;
@@ -1038,12 +983,11 @@ class App_holder extends Component {
                     }))
                 }
             })
-            // console.log(that.state.peopleList);
         })
 
         // Friends list - current friends// 
         db.ref("/Users/" + that.props.userId + '/friend_list/').on('child_added', (snapshot) => {
-            console.log(snapshot.val());
+           
             let userId = snapshot.val().userId;
             that.setState(prevState => ({
                 friendListIds: [...prevState.friendListIds, userId]
@@ -1051,7 +995,7 @@ class App_holder extends Component {
         });
         // Friends list - current friends  - check for updates// 
         db.ref("/Users/" + that.props.userId + '/friend_list/').on('child_changed', (snapshot) => {
-            console.log(snapshot.val());
+         
             let userId = snapshot.val().userId;
             that.setState(prevState => ({
                 friendListIds: [...prevState.friendListIds, userId]
@@ -1060,7 +1004,7 @@ class App_holder extends Component {
 
         // Friend requests sent by you // 
         db.ref("/Users/" + that.props.userId + '/friend_requests_sent/').on('child_added', (snapshot) => {
-            console.log(snapshot.val());
+            
             let userId = snapshot.val().userId;
             that.setState(prevState => ({
                 friendRequestsSent: [...prevState.friendRequestsSent, userId]
@@ -1068,7 +1012,7 @@ class App_holder extends Component {
         });
         // Friend requests sent by you - check for updates// 
         db.ref("/Users/" + that.props.userId + '/friend_requests_sent/').on('child_changed', (snapshot) => {
-            console.log(snapshot.val());
+            
             let userId = snapshot.val().userId;
             that.setState(prevState => ({
                 friendRequestsSent: [...prevState.friendRequestsSent, userId]
@@ -1077,46 +1021,15 @@ class App_holder extends Component {
 
         // Friend requests received by you // 
         db.ref("/Users/" + that.props.userId + '/friend_requests_received/').on('child_added', (snapshot) => {
-            console.log(snapshot.val());
             let userId = snapshot.val().userId;
-            let userName = snapshot.val().userName;
-            let userEmail = snapshot.val().userEmail;
-            let userPic = snapshot.val().userPic;
-            // that.setState(prevState=>({
-            //     friendRequestsReceived: {...prevState.friendRequestsReceived,
-            //         [userId]: {                     // specific object/user-detail of peopleList object
-            //             ...prevState.friendRequestsReceived.userId,    // copy all single user key-value pairs
-            //             userId : userId,                    // update the name property, assign a new value                 
-            //             userName : userName,
-            //             userEmail : userEmail,
-            //             userPic : userPic,          // update value of specific key
-            //           }}
-            // }),()=>{
-            //     console.log(that.state.friendRequestsReceived)
-            // })
             that.setState(prevState => ({
                 friendRequestsReceived: [prevState.friendRequestsReceived, userId]
             }))
         });
         // Friend requests received by you - check for updates// 
         db.ref("/Users/" + that.props.userId + '/friend_requests_received/').on('child_changed', (snapshot) => {
-            console.log(snapshot.val());
+            
             let userId = snapshot.val().userId;
-            let userName = snapshot.val().userName;
-            let userEmail = snapshot.val().userEmail;
-            let userPic = snapshot.val().userPic;
-            // that.setState(prevState=>({
-            //     friendRequestsReceived: {...prevState.friendRequestsReceived,
-            //         [userId]: {                     // specific object/user-detail of peopleList object
-            //             ...prevState.friendRequestsReceived.userId,    // copy all single user key-value pairs
-            //             userId : userId,                    // update the name property, assign a new value                 
-            //             userName : userName,
-            //             userEmail : userEmail,
-            //             userPic : userPic,          // update value of specific key
-            //           }}
-            // }),()=>{
-            //     console.log(that.state.friendRequestsReceived)
-            // })
             that.setState(prevState => ({
                 friendRequestsReceived: [prevState.friendRequestsReceived, userId]
             }))
@@ -1145,10 +1058,10 @@ class App_holder extends Component {
 
         // To check if the offer is rejected by other user //
         db.ref("/Users/" + that.props.userId + '/rejected/').on('child_added', (snapshot) => {
-            //    console.log(snapshot.val().callRejected);
+           
             if (snapshot.val().callRejected) {
                 swal("Done!", "Call rejected by friend", "error", { buttons: false, timer: 1500, });
-                console.log('call is Rejected by other user');
+                console.log('Call is Rejected by other user');
                 that.endCall();
             };
         });
@@ -1157,7 +1070,7 @@ class App_holder extends Component {
             //  console.log(snapshot.val().callRejected);
             if (snapshot.val().callRejected) {
                 swal("Sorry!", "Call rejected by friend", "error", { buttons: false, timer: 1500, });
-                console.log('call is Rejected by other user');
+                console.log('Call is Rejected by other user');
                 that.endCall();
             };
         });
@@ -1165,11 +1078,11 @@ class App_holder extends Component {
 
     }
 
-    // componentWillUnmount() {
-    //     const videoTrack = senders.find(sender => sender.track.kind === 'video');
-    //     videoTrack.track.stop();
-    //     console.log('Video off');
-    // }
+    componentWillUnmount() {
+        const videoTrack = senders.find(sender => sender.track.kind === 'video');
+        videoTrack.track.stop();
+        console.log('Video off');
+    }
 
 }
 

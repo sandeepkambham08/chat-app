@@ -5,18 +5,18 @@ import add_friend from '../media/add_friend_icon.png'
 
 const FriendList = (props) =>{
     // Contact drawer items classes //
-    let ContactListClasses = ['Contact-list'];
+    // let ContactListClasses = ['Contact-list'];
     let ContactListItemOnline  =  ['Contact-list-item-online'];
     let ContactListItemOffline  = ['Contact-list-item-offline'];
     let ContactListItemBusy = ['Contact-list-item-busy'];
-    let ContactList = null;
+    // let ContactList = null;
     let AddFriendsBlock  = ['Add-friends-block'];
 
     if(props.drawerLeftOpen){
         AddFriendsBlock  = ['Add-friends-block', 'blurred-out'];
     }
     if(props.userBusy){
-        ContactListClasses = ['Contact-list', 'left-drawer-userBusy'];
+        // ContactListClasses = ['Contact-list', 'left-drawer-userBusy'];
         ContactListItemOnline =  ['Contact-list-item-online', 'left-drawer-userBusy'];
         ContactListItemOffline  = ['Contact-list-item-offline', 'left-drawer-userBusy'];
         ContactListItemBusy = ['Contact-list-item-busy', 'left-drawer-userBusy'];
@@ -61,7 +61,7 @@ const FriendList = (props) =>{
                 })}
                 {/* <button className='Discover-button-friends'>+</button> */}
                 <div className={AddFriendsBlock.join(' ')}  onClick={()=>props.drawerLeftToggle()} >
-                <img className='Add-friends-button' src={add_friend}/>
+                <img className='Add-friends-button' alt='Add-friends-button' src={add_friend}/>
                 <p >Add friends</p>
                 </div>
                 
