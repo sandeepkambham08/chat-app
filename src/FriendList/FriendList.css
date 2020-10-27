@@ -1,4 +1,111 @@
 .Friend-list{
-    margin: 60vh 0 0 20vw;
+    margin: 60vh 0 0 25vw;
+    width: 45%;
+    height: 23vh;
     position: fixed;
+    border: 1px solid rgb(209, 205, 205);
+    border-radius: 40px;
+    background-color: rgba(221, 224, 224, 0.466);
+    text-align: center;
+    overflow: scroll;
+    padding: 0 2.5%;
+}
+
+.Friends-title{
+    width: fit-content;
+    margin: auto;
+    text-align: center;
+    padding-top: 1em;
+    font-size: 1.3em;
+    text-shadow:2px 2px 4px  rgb(167, 167, 164);
+}
+
+.Friend-pic{
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  text-align: center;
+}
+
+.Contact-list-item-online, .Contact-list-item-busy, .Contact-list-item-offline {
+    float: left;
+    display: block;
+    padding-top: 1em;
+    width:10vw;
+    margin-left:1em ;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 200ms ease-in-out;
+}
+.Contact-list-item-online:hover{
+    text-align: center;
+    background-color:  #ffffff;
+    /* border: 1px solid rgb(148, 20, 3); */
+    border-radius: 25px;
+    /* margin-left: 3%; */
+    box-shadow:5px 10px 10px 2px rgb(26, 16, 16);
+}
+
+.Contact-list-item-offline:hover{
+    text-align: center;
+    background-color:  #ffffff;
+    /* border: 1px solid rgb(148, 20, 3); */
+    
+    border-radius: 25px;
+    /* margin-left: 3%; */
+    box-shadow:5px 10px 10px 2px rgb(26, 16, 16);
+}
+
+
+.Contact-list-item-online span{
+    display: none;
+}
+
+.Contact-list-item-online:hover span {
+    display: contents;
+    font-size: 0.8em;
+}
+
+
+.Contact-list-item-online .Friend-pic{
+    border: 3px solid rgba(6, 219, 52, 0.877);
+    box-shadow: 0pt 0 5pt 3pt rgb(4, 206, 37);
+}
+  
+.Contact-list-item-offline .Friend-pic{
+    border: 3px solid rgb(192, 33, 12);
+}
+.Contact-list-item-busy .Friend-pic{
+    box-shadow: 0pt 0 5pt 3pt rgb(185, 78, 6);
+    border: 2px solid rgb(36, 185, 6);
+}
+  
+  
+
+
+.Contact-list-item-offline span{
+    display: none;
+}
+
+.Contact-list-item-offline:hover span {
+    display: contents;
+    font-size: 0.7em;
+}
+
+.Add-friends-block{
+    float: left;
+    margin-left: 2vw;
+}
+
+.Add-friends-button{
+    float: left;
+    margin: 15px 0 20px 0;
+    width: 90px;
+    border-radius: 7em;
+}
+
+.blurred-out{
+    opacity: 0.2;
+    cursor: not-allowed;
+    pointer-events: none;
 }

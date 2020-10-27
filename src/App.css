@@ -3,6 +3,7 @@
 html *
 {
    font-family: 'Syne', sans-serif !important ;
+   overscroll-behavior-y: none;
 }
 
 img{
@@ -16,7 +17,6 @@ img{
 
 .App {
   font-family: 'Syne', sans-serif !important ;
-  
   /* text-align: center; */
   
 }
@@ -71,7 +71,26 @@ img{
 .Side-drawer-button:hover{
   box-shadow:-2px 10px 10px 3px rgb(0, 0, 0);
 }
+.Messages-button{
+  width: 38px;
+  height: 38px;
+  display: block;
+  left:0;
+  margin: 92vh 0vw 0 5vw;
+  position: fixed;
+  cursor: pointer;
+  border-radius: 60px;
+  z-index: 400;
+  padding:2px;
+  background-color: rgb(5, 0, 0);
+  border: 2px solid rgb(238, 238, 238);
+  transition: box-shadow 100ms ease-in;
+  box-shadow:-2px 10px 10px 2px rgb(19, 26, 16);
+}
 
+.Messages-button:hover{
+  box-shadow:-2px 10px 10px 3px rgb(0, 0, 0);
+}
 
 .App-link {
   color: #61dafb;
@@ -93,9 +112,10 @@ p{
   /* background: lightblue; */
   width: 100vw;
   float: left;
-  margin-top: 10vh;
+  height: 100vh;
+  /* margin-top: 10vh; */
   z-index: 100;
-  background-color: azure;
+  background-color: rgb(0, 0, 0);
 }
 
 .Side-drawer{
@@ -117,6 +137,22 @@ p{
 
 .Drawer-close{
   transform: translateX(+100%);
+}
+.Side-drawer-messages{
+  height: 100vh;
+  width: 20vw;
+  left: 0;
+  position: fixed;
+  z-index: 200;
+  background-color: rgba(221, 221, 221, 0.808);
+  box-sizing: border-box;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.Drawer-open-messages{
+  transform: translateX(0);
+}
+.Drawer-close-messages{
+  transform: translateX(-100%);
 }
 
 .Contacts-drawer-button{
@@ -179,7 +215,7 @@ transform: translateX(-100%);
 }
 .Both-Videos{
   /* text-align: center; */
-  border: 1px solid black;
+  border: 1px solid rgb(0, 0, 0);
   /* margin-left: 22.5%; */
   border-radius: 10px;
   width: 800px;
@@ -189,15 +225,15 @@ transform: translateX(-100%);
 .friendsVideo{
   border-radius: 10px;
   text-align: center;
-  width: 800px;
-  height: 600px;
-  z-index: 700;
+  height: 100vh;
+  overflow: hidden;
+  z-index: 200;
   position: absolute;
 }
 .myVideo-and-controls{
-  position: relative;
-  margin: 54% 0 0 73%;
-  z-index: 200;
+  position: fixed;
+  margin: 75vh 0 0 85vw;
+  z-index: 300;
 }
  .self-view{
   margin: 30px 0px 0px 40px;
@@ -309,7 +345,7 @@ transform: translateX(-100%);
   text-align: center;
   width: 90%;
   margin-left: 5%;
-  height: 67vh;
+  height: 75vh;
   border: 2px solid gray;
   border-radius: 10px;
   background: lavenderblush;
@@ -553,21 +589,8 @@ display: none;
   border: 2px solid beige;
 
 } */
-.Contact-list-item-online span{
-  display: none;
-}
-.Contact-list-item-online:hover span {
-  display: contents;
-  font-size: 0.8em;
-}
 
-.Contact-list-item-offline span{
-  display: none;
-}
-.Contact-list-item-offline:hover span {
-  display: inline-block;
-  font-size: 0.7em;
-}
+
 
 .Contact-list-item-busy span{
   display: none;
@@ -586,44 +609,9 @@ display: none;
   text-align: center;
 }
 
-.Contact-list-item-online .contactListPic{
-  border: 2px solid rgba(6, 219, 52, 0.877);
-  box-shadow: 0pt 0 5pt 3pt rgb(4, 206, 37);
-}
 
-.Contact-list-item-offline .contactListPic{
-  border: 2px solid rgb(148, 20, 3);
-}
-.Contact-list-item-busy .contactListPic{
-  box-shadow: 0pt 0 5pt 3pt rgb(185, 78, 6);
-  border: 2px solid rgb(36, 185, 6);
-}
-.Contact-list-item-online, .Contact-list-item-busy, .Contact-list-item-offline {
-  text-align: center;
-  cursor: pointer;
-}
-.Contact-list-item-online:hover{
-  background-color:  #282c34;
-  border-radius: 25px;
-  text-align: center;
-  /* border: 1px solid rgb(148, 20, 3); */
-  width:90%;
-  margin-left: 5%;
-  border-radius: 25px;
-  box-shadow:5px 10px 10px 2px rgb(19, 26, 16);
 
-}
 
-.Contact-list-item-offline:hover{
-  text-align: center;
-  background-color:  #181412d0;
-  /* border: 1px solid rgb(148, 20, 3); */
-  width:90%;
-  margin-left: 5%;
-  border-radius: 25px;
-  box-shadow:5px 10px 10px 2px rgb(26, 16, 16);
-
-}
 .Sign-out-button{
   background-color:  #282c34;
   color: antiquewhite;
@@ -649,6 +637,7 @@ display: none;
 }
 
 .Sign-out-button-div{
+  margin-top: 4vh;
   bottom: 0;
 }
 
@@ -664,7 +653,7 @@ display: none;
 .Welcome-screen{
   z-index: 100;
   display: block;
-  margin: 12vh 0 0 30vw;
+  margin: 30vh 0 0 45vw;
   position: fixed;
   text-align: center;
 }
@@ -774,4 +763,21 @@ cursor: pointer;
 
 .left-drawer-userBusy{
   cursor: not-allowed;
+}
+
+
+.End-call-button{
+  padding:1em;
+  background-color: rgb(241, 4, 135);
+  color: antiquewhite;
+  margin: 92vh 0 0 88vw;
+  z-Index: 400; 
+  width: 5vw;
+  border-radius: 0.5em;
+  border: 0.5px solid rgb(141, 141, 140);
+  cursor: pointer;
+}
+
+.End-call-button:hover{
+  background-color: rgb(241, 4, 4);
 }

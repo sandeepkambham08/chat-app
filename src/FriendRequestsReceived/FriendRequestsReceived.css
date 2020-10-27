@@ -14,6 +14,7 @@
     padding: 0.5em 0;
     border-radius: 1em;
     /* border: 1px solid red; */
+    transition: background-color 200ms ease-in-out;
     color: rgb(255, 255, 255);
 }
 
@@ -39,7 +40,7 @@
     transition: background-color 300ms ease-in; 
 }
 .Friendrequest:hover{
-    color: rgb(255, 255, 255);
+    color: rgb(255, 255, 255) !important;
     border: 1px solid  rgb(158, 160, 158);
     font-weight: bolder;
     box-shadow:2px 5px 5px 1px rgb(19, 26, 16);
