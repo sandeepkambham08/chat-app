@@ -1,68 +1,54 @@
+Chat app 
+
+
+## This is a video call app which is developed using webRTC technology
+
+## Features in app :
+  - Login with google 
+  - Discover people who have signed up 
+  - Send friend request 
+  - Respond to a friend request(accept/decline)
+  - Start a video call with a friend
+  - Share your screen to your friend  
+  - Call controls : Video/audio ON/OFF
+  - Send messages/files inside call 
+  - Save or delete received files 
+  - End the call and start a new call
+
+## Experiences gained by developing this project 
+1. *[React](https://reactjs.org/)* : Project is developed using React as the main focus.
+  - Great understanding of working with states and props.
+  - Writing class/function compoenents.
+  - Working with stateful/stateless components.
+  - Writing more stateless components and less stateful components (makes module easily reusable)
+  - Lifecycle methods like compoenentDidMount,componentWillUnmount.
+  - Event listeners to create an interactive user experience.
+  - Rendering of specific components based on states.
+  - Inline conditional rendering where a single element(rather than component) is to be rendered depending on state.
+  - Working with arrays/objects methods like map,findIndexOf,forEach.
+  - Writing in JSX.
+  - Updating the state immutabily. 
+  - Use of *promises*. 
+    
+2. *[webRTC](https://webrtc.org/)* : This open-source project is used to capture and stream the audio/video media during the call. Once a connection is established it is also used to exchanges text data and also files.
+  - Capture data from media devices like audio/video
+  - Creating a peerConnection
+  - Creating a offer/answer
+  - Adding offer to description(local/remote)
+  - Sending offer/answer to peer
+  - Exchange of ICE candidates
+  - Creating a dataChannel for text/file exchange
+  
+3. *[Firebase](https://firebase.google.com/)* : Three main services are used in this project 
+  - RTDB (Real Time Database) : This is used have a realtime user status(offline/online/busy) and also to store user profiles, friendlist and requests data. 
+  - Authentication : This is used to help users login/signup using a google account. 
+  - Hosting : The website is hosted using Firebase hosting and can be accessed using the link below.
+  
+ To access the developed website, visit : .....
+
+
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
-
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
-
-### Analyzing the Bundle Size
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
-
-### Making a Progressive Web App
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
-
-### Advanced Configuration
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
