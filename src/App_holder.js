@@ -367,8 +367,8 @@ class App_holder extends Component {
         const videoTrack = senders.find(sender => sender.track.kind === 'video');
         console.log(videoTrack);
         if (videoTrack) {
-            videoTrack.track.enabled = false;
-            // videoTrack.track.stop();
+            // videoTrack.track.enabled = false;
+            videoTrack.track.stop();
         }
         console.log('Video off');
         this.setState({ videoOn: false }); // Video button toggle

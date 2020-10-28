@@ -29,7 +29,7 @@ var firebaseConfig = {
 // });
 const app = firebase.initializeApp(firebaseConfig,"other");
 const db = app.database();
-// const auth = firebase.auth();
+const auth = firebase.auth();
 
 
 class App extends Component {
@@ -42,6 +42,7 @@ class App extends Component {
     userPic:'',           // Store user image
   }
 
+  
 
   // To Login // 
   loginButton=()=>{
@@ -81,7 +82,9 @@ class App extends Component {
         window.location.reload();
       });      
   }
-    render(){
+    render()
+    {
+      
       // If the user is logged in // 
       if(this.state.loggedIn){            
         return(
@@ -111,6 +114,26 @@ class App extends Component {
           </div>
         )
       }
+    }
+    componentDidMount(){
+      // To keep user logged in once signed in
+      auth.onAuthStateChanged(user =>{
+        if(user){
+          console.log("User is already logged in",user);
+          console.log(user.email, user.displayName, user.photoURL, user.providerData[0].uid)
+          this.setState({loggedIn:true,userName:user.displayName, userEmail:user.email,  userId:user.providerData[0].uid, userPic:user.photoURL});
+          db.ref("/Users/"+user.providerData[0].uid+"/profile_detials").set({isActive:true,userName:user.displayName,userEmail:user.email,userId:user.providerData[0].uid,userPic:user.photoURL,userBusy:false});
+          db.ref("/Users/"+user.providerData[0].uid+"/rejected").set({callRejected:false});      //To initialize 
+          // this.setState({userEmail:user.email},()=>{
+          //   console.log(this.state.userEmail)
+          // })
+
+        }
+        else {
+          console.log('User logged out');
+        }
+        ;
+      })
     }
 }
 

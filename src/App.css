@@ -268,7 +268,7 @@ transform: translateX(-100%);
 }
 .myVideo-and-controls{
   position: fixed;
-  margin: 75vh 0 0 85vw;
+  margin: 80vh 0 0 85vw;
   z-index: 300;
 }
  .self-view{
@@ -307,14 +307,14 @@ transform: translateX(-100%);
   
 }
 .videoOn:hover{
-  background-color: rgba(199, 43, 43, 0.603);
+  background-color: rgba(90, 89, 89);
 }
 
 .videoOff{
-  background-color: rgba(7, 175, 35, 0.308);
+  background-color: rgba(2, 92, 17, 0.527);
 }
 .videoOff:hover{
-  background-color: rgb(199, 43, 43);
+  background-color: rgb(90, 89, 89);
 }
 .audioOff,.audioOn{
   width: 20px;
@@ -330,16 +330,16 @@ transform: translateX(-100%);
   transition: background-color 600ms ease-in-out;
 }
 .audioOff{
-  background-color: rgba(7, 175, 35, 0.308);
+  background-color: rgba(2, 92, 17, 0.527);
 }
 .audioOff:hover{
-  background-color: rgb(199, 43, 43);
+  background-color: rgb(90, 89, 89);
 }
 .audioOn{
   background-color: rgba(228, 1, 1, 0.808);
 }
 .audioOn:hover{
-  background-color: rgb(43, 199, 56);
+  background-color: rgb(90, 89, 89);
 }
 
 .Start-share, .Stop-share{
@@ -808,14 +808,16 @@ cursor: pointer;
   padding:1em;
   background-color: rgb(241, 4, 135);
   color: antiquewhite;
-  margin: 92vh 0 0 88vw;
+  margin: 90vh 0 0 45vw;
   z-Index: 400; 
   width: 5vw;
   border-radius: 0.5em;
   border: 0.5px solid rgb(141, 141, 140);
   cursor: pointer;
+  position: absolute;
 }
 
 .End-call-button:hover{
   background-color: rgb(241, 4, 4);
+  font-weight: bolder;
 }
