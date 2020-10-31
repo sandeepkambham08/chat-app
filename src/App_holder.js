@@ -99,9 +99,10 @@ class App_holder extends Component {
         friendRequestsSent: [],         // To maintain friend requests sent data 
         friendRequestsReceived: [],     // To maintain friend requests received data
         friendList: {},                 // To maintain friend list 
-        // peopleListLoaded:false         // To make sure that the people list is fully loaded with data 
+        // peopleListLoaded:false       // To make sure that the people list is fully loaded with data 
         friendListIds: [],              // To maintain friend list Ids
         CallOtherScreen: false,         // To show connect now screen 
+        friendScreenSharing:false,      // To detect if friend is Screensharing 
 
     }
 
@@ -159,15 +160,15 @@ class App_holder extends Component {
 
             promise.then(() => {
                 pc.createOffer()
-                .then(offer => {
-                    console.log("STEP 5: Created offer on my computer - TIME: " + Date.now());
-                    pc.setLocalDescription(offer)
-                })
-                .then(() => {
-                    console.log("STEP 6: Added offer on my PC local Description - TIME: " + Date.now());
-                    this.sendMessage(this.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));
-                    console.log('STEP 7: Sent offer to peer - TIME: ' + Date.now());
-                });
+                    .then(offer => {
+                        console.log("STEP 5: Created offer on my computer - TIME: " + Date.now());
+                        pc.setLocalDescription(offer)
+                    })
+                    .then(() => {
+                        console.log("STEP 6: Added offer on my PC local Description - TIME: " + Date.now());
+                        this.sendMessage(this.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));
+                        console.log('STEP 7: Sent offer to peer - TIME: ' + Date.now());
+                    });
             })
             this.setState({ callingOther: true, CallOtherScreen: false, videoOn: true });
             dataChannel.onmessage = function (event) {
@@ -193,7 +194,7 @@ class App_holder extends Component {
                 tracks.forEach(track => {
                     senders.push(pc.addTrack(track, stream));
                     selfView.srcObject = stream;      // Adding self video
-                    
+
                 })
                 return stream;
             }).then(() => {
@@ -285,6 +286,29 @@ class App_holder extends Component {
                         // console.log(pc);
                     });
                 });
+                // To detect if friend is sharing the screen //
+                db.ref('/Users/' + that.state.friendId + '/ScreenSharing/').on('child_added', (snapshot) => {
+                    if(snapshot.val()){
+                        that.setState({friendScreenSharing:true})
+                        console.log('Friend is sharing the screen');
+                    }
+                    else{
+                        that.setState({friendScreenSharing:false})
+                        console.log('Friend is not sharing the screen');
+                    } 
+                })
+
+                db.ref('/Users/' + that.state.friendId + '/ScreenSharing/').on('child_changed', (snapshot) => {
+                    if(snapshot.val()){
+                        that.setState({friendScreenSharing:true})
+                        console.log('Friend is sharing the screen');
+                    }
+                    else{
+                        that.setState({friendScreenSharing:false})
+                        console.log('Friend is not sharing the screen');
+                    } 
+                })
+
             }
         }
     };
@@ -338,6 +362,29 @@ class App_holder extends Component {
                     });
             })
         });  // Inside setState of callInitiated 
+        // To detect if friend is sharing the screen //
+        db.ref('/Users/' + that.state.friendId + '/ScreenSharing/').on('child_added', (snapshot) => {
+            if(snapshot.val()){
+                that.setState({friendScreenSharing:true})
+                console.log('Friend is sharing the screen');
+            }
+            else{
+                that.setState({friendScreenSharing:false})
+                console.log('Friend is not sharing the screen');
+            } 
+        })
+
+        db.ref('/Users/' + that.state.friendId + '/ScreenSharing/').on('child_changed', (snapshot) => {
+            if(snapshot.val()){
+                that.setState({friendScreenSharing:true})
+                console.log('Friend is sharing the screen');
+            }
+            else{
+                that.setState({friendScreenSharing:false})
+                console.log('Friend is not sharing the screen');
+            } 
+        })
+
     }
 
 
@@ -379,9 +426,9 @@ class App_holder extends Component {
         console.log(senders);
         navigator.mediaDevices.getUserMedia({ audio: true, video: true })
             .then((stream) => {
-                
+
                 senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[1]);
-                
+
                 document.getElementById('self-view').srcObject = stream;
             })
         console.log(senders.find(sender => sender.track.kind === 'video'));
@@ -424,6 +471,7 @@ class App_holder extends Component {
             console.log(stream.getTracks());
             document.getElementById('self-view').srcObject = stream;
             this.setState({ screenShare: true });
+            db.ref('/Users/' + this.props.userId + '/ScreenSharing/').set({ sharing: true });
         })
     }
 
@@ -434,17 +482,19 @@ class App_holder extends Component {
             const screenTrack = senders.find(sender => sender.track.kind === 'video');
             screenTrack.track.stop();
             this.setState({ screenShare: false });
+            db.ref('/Users/' + this.props.userId + '/ScreenSharing/').set({ sharing: false });
         }
         else {
             const shareTrack = senders.find(sender => sender.track.kind === 'video');
             shareTrack.track.stop();
             navigator.mediaDevices.getUserMedia({ audio: true, video: true })
                 .then((stream) => {
-                    
+
                     senders.find(sender => sender.track.kind === 'video').replaceTrack(stream.getTracks()[1]);
-                    
+
                     document.getElementById('self-view').srcObject = stream;
                     this.setState({ screenShare: false });
+                    db.ref('/Users/' + this.props.userId + '/ScreenSharing/').set({ sharing: false });
                 })
         }
     }
@@ -618,12 +668,12 @@ class App_holder extends Component {
 
     // To END the call with friend
     endCall = (rejected) => {
-        
+
         // To empty the chat screen after the call 
-        if(rejected === 'false'){
+        if (rejected === 'false') {
             document.getElementById('messageReceived').innerHTML = '';
         }
-        
+
 
         // To detect call rejection by friend!
         if (rejected === 'true') {
@@ -637,7 +687,7 @@ class App_holder extends Component {
         senders = [];
 
         // To change screen to call view               
-        this.setState({ callInitiated: false, userBusy: false, callInitiatedNew: false });
+        this.setState({ callInitiated: false, userBusy: false, callInitiatedNew: false , friendScreenSharing:false});
 
         // Close peerConnection // 
         var pc = this.state.pc;
@@ -647,7 +697,7 @@ class App_holder extends Component {
         }
 
         db.ref('/Users/' + this.props.userId + '/profile_detials/').update({ userBusy: false });
-
+        db.ref('/Users/' + this.props.userId + '/ScreenSharing/').set({ sharing: false });  // make screenshare to false after call
         // Remove friend offerAnswer / ice  //
         var friendOfferAnswer = db.ref('/Users/' + this.state.friendId + '/offerAnswer/');
         friendOfferAnswer.remove();
@@ -677,8 +727,9 @@ class App_holder extends Component {
 
     // Message drawer toggle // 
     drawerToggle = () => {
-        this.setState(prevState=>({ 
-            drawerOpen: !prevState.drawerOpen }));
+        this.setState(prevState => ({
+            drawerOpen: !prevState.drawerOpen
+        }));
     }
 
     // Contacts drawer toggle // 
@@ -702,7 +753,7 @@ class App_holder extends Component {
 
     acceptFriendRequest = (key, details) => {
         const myDetails = this.state.peopleList[this.props.userId];
-        
+
         db.ref('/Users/' + this.props.userId + '/friend_list/' + key).update({ userId: details.userId, userEmail: details.userEmail, userName: details.userName, userPic: details.userPic, userBusy: details.userBusy, isActive: details.isActive });
         db.ref('/Users/' + key + '/friend_list/' + this.props.userId).update({ userId: myDetails.userId, userEmail: myDetails.userEmail, userName: myDetails.userName, userPic: myDetails.userPic, userBusy: myDetails.userBusy, isActive: myDetails.isActive });
         db.ref('/Users/' + this.props.userId + '/friend_requests_received/' + key).remove();
@@ -712,7 +763,7 @@ class App_holder extends Component {
         }))
     }
 
-    declineFriendRequest = (key, details) =>{
+    declineFriendRequest = (key, details) => {
         db.ref('/Users/' + this.props.userId + '/friend_requests_received/' + key).remove();
         db.ref('/Users/' + key + '/friend_requests_sent/' + this.props.userId).remove();
         this.setState(prevState => ({
@@ -729,6 +780,8 @@ class App_holder extends Component {
         let sideDrawerClasses = ['Side-drawer', 'Drawer-close'];                    //Friend request drawer classes 
         let sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-close'];      //Contact drawer classes 
         let sideDrawerClassesMessages = ['Side-drawer-messages', 'Drawer-close-messages'];                    //Friend request drawer classes 
+        let friendsVideoClasses = ['friendsVideo', 'mirror-video']   // Friends video initial - if not screensharing 
+        let selfVideoClasses = ['self-view', 'mirror-video']         // self video mirrored 
 
         // Different screen classes // 
         let WelcomeScreen = null;
@@ -745,14 +798,19 @@ class App_holder extends Component {
             sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-open', 'left-drawer-userBusy'];
         }
 
+        if(this.state.friendScreenSharing){
+            friendsVideoClasses = ['friendsVideo' ]; 
+        }
 
-
+        if(this.state.screenShare){
+            selfVideoClasses = ['self-view'];
+        }
 
         // Welcome screen to user after login // 
         WelcomeScreen = (
             !this.state.callInitiated && !this.state.CallOtherScreen && !this.state.offerReceived && !this.state.callInitiatedNew &&
             <div className='Welcome-screen'>
-                <img className='Main-profile-pic' alt="Main-profile-pic"  src={this.props.userPic} />
+                <img className='Main-profile-pic' alt="Main-profile-pic" src={this.props.userPic} />
                 <p>Hello, {this.props.userName}</p>
             </div>
         )
@@ -791,10 +849,10 @@ class App_holder extends Component {
                         <span className='Hello-name'>Discover</span>
                         {!this.state.callInitiated &&
                             <div>
-                            <img className='Side-drawer-button' alt="Side-drawer-button" src={friendRequest} onClick={this.drawerToggle} />
+                                <img className='Side-drawer-button' alt="Side-drawer-button" src={friendRequest} onClick={this.drawerToggle} />
                             </div>}
-                        {notification_show && 
-                        <img className='notification-icon' alt="Side-drawer-button" src={notification_dot}/>
+                        {notification_show &&
+                            <img className='notification-icon' alt="Side-drawer-button" src={notification_dot} />
                         }
                         <span className='Hello-name-right'>Notifications</span>
                         <p>Have a conversation with privacy</p>
@@ -813,15 +871,15 @@ class App_holder extends Component {
                             showFriendsFace={this.showFriendsFace}
                         />}
                     {!this.state.CallOtherScreen && !this.state.offerReceived &&
-                    <FriendsList
-                        peopleList={this.state.peopleList}
-                        friendListIds={this.state.friendListIds}
-                        userBusy={this.props.userBusy}
-                        CallOtherScreen={this.CallOtherScreen}
-                        drawerLeftOpen={this.state.drawerLeftOpen}
-                        drawerLeftToggle={this.drawerLeftToggle}
-                    />}    
-                    
+                        <FriendsList
+                            peopleList={this.state.peopleList}
+                            friendListIds={this.state.friendListIds}
+                            userBusy={this.props.userBusy}
+                            CallOtherScreen={this.CallOtherScreen}
+                            drawerLeftOpen={this.state.drawerLeftOpen}
+                            drawerLeftToggle={this.drawerLeftToggle}
+                        />}
+
                     {OfferReceivedScreen}
 
                     <div className={sideDrawerClassesLeft.join('  ')}>
@@ -865,7 +923,7 @@ class App_holder extends Component {
                     <div className='Videos-block' >
 
                         <div className='Both-Videos'>
-                            <video id="friendsVideo" className='friendsVideo' style={{ width: ScreenWidth }} ref={this.friendsVideo} autoPlay >sdfsf</video>
+                            <video id="friendsVideo" className={friendsVideoClasses.join(' ')} style={{ width: ScreenWidth }} ref={this.friendsVideo} autoPlay >sdfsf</video>
                             <img className='Messages-button' alt="Side-drawer-button" src={side_drawer} onClick={this.drawerToggle} />
                             <div className='myVideo-and-controls'>
                                 <img id="videoOn" className='videoOn' src={video_off} onClick={this.resumeVideo} hidden={this.state.videoOn} alt='Video on' />
@@ -876,7 +934,7 @@ class App_holder extends Component {
                                 <img id="screenShare" className='Start-share' src={screen_share} hidden={!this.state.callConnected || this.state.screenShare} alt='Screenshare-start' onClick={this.shareScreenStart} />
                                 <img id="screenShare" className='Stop-share' src={screen_share} hidden={!this.state.screenShare} alt='Screenshare-stop' onClick={this.shareScreenStop} />
                                 {/* <button className='Stop-share' hidden={!this.state.screenShare} onClick={this.shareScreenStop}>Stop share</button> */}
-                                <video id="self-view" className='self-view' autoPlay muted ></video>
+                                <video id="self-view" className={selfVideoClasses.join(' ')} autoPlay muted ></video>
                                 {/* <Self_video/> */}
                             </div>
                             <br></br>
@@ -886,36 +944,36 @@ class App_holder extends Component {
                         </div>
                     </div>
                     <div className={sideDrawerClassesMessages.join('  ')} style={{ paddingTop: '20px' }}>
-                  {this.state.callConnected && <div>
-                    <div className=' split Conversation-block' id='Conversation-block'>
-                        <p> Conversation </p>
-                        <div id='messageReceived'>
+                        {this.state.callConnected && <div>
+                            <div className=' split Conversation-block' id='Conversation-block'>
+                                <p> Conversation </p>
+                                <div id='messageReceived'>
 
-                        </div>
-                    </div>
+                                </div>
+                            </div>
 
-                    <div className='Message-input-box'>
-                        <input type='text' id='textInput' className='textInput' placeholder="Enter your message here " disabled={!this.state.callConnected} onKeyDown={(e) => { this.enterAsInput(e) }} style={{ width: '150%', height: '1.75em' }}></input>
-                        <br></br>
-                        <button variant="contained" className='sendButton' disabled={!this.state.callConnected} onClick={this.sendInputMessage}>SEND</button>
-                        <br></br>
-                    </div>
-                    {/* <label htmlFor="inputFile" hidden={this.state.callConnected} className="custom-file-upload" > Custom Upload </label>
+                            <div className='Message-input-box'>
+                                <input type='text' id='textInput' className='textInput' placeholder="Enter your message here " disabled={!this.state.callConnected} onKeyDown={(e) => { this.enterAsInput(e) }} style={{ width: '150%', height: '1.75em' }}></input>
+                                <br></br>
+                                <button variant="contained" className='sendButton' disabled={!this.state.callConnected} onClick={this.sendInputMessage}>SEND</button>
+                                <br></br>
+                            </div>
+                            {/* <label htmlFor="inputFile" hidden={this.state.callConnected} className="custom-file-upload" > Custom Upload </label>
             <input id='inputFile' disabled={!this.state.callConnected} onChange={(e) => { this.fileSelect(e) }} type="file"/>  */}
-                    <br></br>
-                    
-                        <div className='File-options' >
-                            <input id='inputFile' className='inputFile' type='file' disabled={!this.state.callConnected} onChange={(e) => { this.fileSelect(e) }} size="60" style={{ display: 'block', float: 'left', padding: '22px 15px 0 15px' }}></input>
-                            <progress id='progressBar' hidden={!this.state.progressBar} value='0' max='0'></progress>
-                            <Button className='Save-button' size='small' onClick={this.saveToDisk} hidden={!this.state.downloadButton} disabled={!this.state.downloadButton} variant="contained" color="default" startIcon={<SaveIcon />} style={{ marginLeft: '15px', padding: '5px', borderRadius: '10px' }}>Save</Button>
-                            <IconButton aria-label="delete" onClick={this.deleteReceivedfile} disabled={!this.state.downloadButton}> <DeleteIcon /> </IconButton>
-                        </div>
-                    {/* <button  onClick={(e)=>{this.sendFileButton(e)}}  style={{display:'block', float:'left', marginLeft:'20px'}} >Send file</button> */}
-                    {/* <div id='downloadSection' className='downloadSection'>
+                            <br></br>
+
+                            <div className='File-options' >
+                                <input id='inputFile' className='inputFile' type='file' disabled={!this.state.callConnected} onChange={(e) => { this.fileSelect(e) }} size="60" style={{ display: 'block', float: 'left', padding: '22px 15px 0 15px' }}></input>
+                                <progress id='progressBar' hidden={!this.state.progressBar} value='0' max='0'></progress>
+                                <Button className='Save-button' size='small' onClick={this.saveToDisk} hidden={!this.state.downloadButton} disabled={!this.state.downloadButton} variant="contained" color="default" startIcon={<SaveIcon />} style={{ marginLeft: '15px', padding: '5px', borderRadius: '10px' }}>Save</Button>
+                                <IconButton aria-label="delete" onClick={this.deleteReceivedfile} disabled={!this.state.downloadButton}> <DeleteIcon /> </IconButton>
+                            </div>
+                            {/* <button  onClick={(e)=>{this.sendFileButton(e)}}  style={{display:'block', float:'left', marginLeft:'20px'}} >Send file</button> */}
+                            {/* <div id='downloadSection' className='downloadSection'>
               <img id='preview' className='preview' />
             </div> */}
-                </div>}
-                </div>
+                        </div>}
+                    </div>
                 </div>
             )
         }
@@ -952,9 +1010,9 @@ class App_holder extends Component {
                         }
                     }))
                 }
-                
+
             })
-            
+
         })
 
         // To get updated details of the contacts once loggedIn// 
@@ -987,7 +1045,7 @@ class App_holder extends Component {
 
         // Friends list - current friends// 
         db.ref("/Users/" + that.props.userId + '/friend_list/').on('child_added', (snapshot) => {
-           
+
             let userId = snapshot.val().userId;
             that.setState(prevState => ({
                 friendListIds: [...prevState.friendListIds, userId]
@@ -995,7 +1053,7 @@ class App_holder extends Component {
         });
         // Friends list - current friends  - check for updates// 
         db.ref("/Users/" + that.props.userId + '/friend_list/').on('child_changed', (snapshot) => {
-         
+
             let userId = snapshot.val().userId;
             that.setState(prevState => ({
                 friendListIds: [...prevState.friendListIds, userId]
@@ -1004,7 +1062,7 @@ class App_holder extends Component {
 
         // Friend requests sent by you // 
         db.ref("/Users/" + that.props.userId + '/friend_requests_sent/').on('child_added', (snapshot) => {
-            
+
             let userId = snapshot.val().userId;
             that.setState(prevState => ({
                 friendRequestsSent: [...prevState.friendRequestsSent, userId]
@@ -1012,7 +1070,7 @@ class App_holder extends Component {
         });
         // Friend requests sent by you - check for updates// 
         db.ref("/Users/" + that.props.userId + '/friend_requests_sent/').on('child_changed', (snapshot) => {
-            
+
             let userId = snapshot.val().userId;
             that.setState(prevState => ({
                 friendRequestsSent: [...prevState.friendRequestsSent, userId]
@@ -1028,7 +1086,7 @@ class App_holder extends Component {
         });
         // Friend requests received by you - check for updates// 
         db.ref("/Users/" + that.props.userId + '/friend_requests_received/').on('child_changed', (snapshot) => {
-            
+
             let userId = snapshot.val().userId;
             that.setState(prevState => ({
                 friendRequestsReceived: [prevState.friendRequestsReceived, userId]
@@ -1047,6 +1105,7 @@ class App_holder extends Component {
         });
 
 
+
         //  To change status on call Disconnect //
         var presenceRef = db.ref('/Users/' + that.props.userId + '/profile_detials/');
         presenceRef.onDisconnect().update({ isActive: false, userBusy: false });
@@ -1058,7 +1117,7 @@ class App_holder extends Component {
 
         // To check if the offer is rejected by other user //
         db.ref("/Users/" + that.props.userId + '/rejected/').on('child_added', (snapshot) => {
-           
+
             if (snapshot.val().callRejected) {
                 swal("Done!", "Call rejected by friend", "error", { buttons: false, timer: 1500, });
                 console.log('Call is Rejected by other user');

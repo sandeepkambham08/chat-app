@@ -15,6 +15,16 @@ img{
   -ms-user-select: none;
 }
 
+/* video {
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+} */
+
+.mirror-video{
+  -webkit-transform: scaleX(-1);
+  transform: scaleX(-1);
+}
+
 .App {
   font-family: 'Syne', sans-serif !important ;
   /* text-align: center; */
