@@ -1,4 +1,5 @@
 import React,{Component} from 'react';
+import Backdrop from '../Backdrop/Backdrop.js';
 import './Discover.css';
 
 class  Discover extends Component {
@@ -7,6 +8,9 @@ class  Discover extends Component {
     // if(!this.state.callInitiated && !this.state.CallOtherScreen &&  !this.state.offerReceived )
     return(
         <div className="Discover">
+        {/* <Backdrop
+                    isopen={this.props.drawerLeftOpen}
+                    backdropClicked={this.props.drawerLeftToggle} /> */}
         <p className='Discover-header'>Discover here</p>
         {Object.keys(this.props.peopleList).map((key) => {
             // console.log(key);

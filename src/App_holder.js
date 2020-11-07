@@ -30,7 +30,8 @@ import CallOthersScreen from './CallOtherScreen/CallOtherScreen';
 import Discover from './Discover/Discover';
 import FriendRequestsReceived from './FriendRequestsReceived/FriendRequestsReceived';
 
-
+import Backdrop from './Backdrop/Backdrop.js';
+import BackdropRight from './BackdropRight/BackdropRight.js';
 
 var firebaseConfig = {
     apiKey: "AIzaSyBw8TC9om3UZO9HPHkOOn0zm0VYjmgmvnc",
@@ -857,6 +858,9 @@ class App_holder extends Component {
                         <span className='Hello-name-right'>Notifications</span>
                         <p>Have a conversation with privacy</p>
                     </div>
+                    <BackdropRight
+                                isopen={this.state.drawerOpen}
+                                backdropClicked={this.drawerToggle} />
 
                     {WelcomeScreen}
 
@@ -884,7 +888,9 @@ class App_holder extends Component {
 
                     <div className={sideDrawerClassesLeft.join('  ')}>
                         <div className='All-contacts-div'>
-
+                        <Backdrop
+                                isopen={this.state.drawerLeftOpen}
+                                backdropClicked={this.drawerLeftToggle} />
                             <Discover
                                 peopleList={this.state.peopleList}
                                 userId={this.props.userId}
@@ -893,6 +899,8 @@ class App_holder extends Component {
                                 friendListIds={this.state.friendListIds}
                                 friendRequestsSent={this.state.friendRequestsSent}
                                 friendRequestsReceived={this.state.friendRequestsReceived}
+                                drawerLeftOpen={this.state.drawerLeftOpen}
+                                drawerLeftToggle={this.drawerLeftToggle}
                             />
                             {/* {FriendList} */}
                         </div>
@@ -903,6 +911,8 @@ class App_holder extends Component {
 
                     <div className={sideDrawerClasses.join('  ')} style={{ paddingTop: '20px' }}>
                         {!this.state.callInitiated && !this.state.CallOtherScreen && !this.state.offerReceived &&
+                            <div>
+                            
                             <FriendRequestsReceived
                                 friendRequestsReceived={this.state.friendRequestsReceived}
                                 userBusy={this.state.userBusy}
@@ -911,6 +921,7 @@ class App_holder extends Component {
                                 acceptFriendRequest={this.acceptFriendRequest}
                                 declineFriendRequest={this.declineFriendRequest}
                             />
+                            </div>
                         }
                     </div>
                 </div> //App end div

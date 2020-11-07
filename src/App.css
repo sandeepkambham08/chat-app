@@ -21,6 +21,7 @@ img{
 } */
 
 .mirror-video{
+  -moz-transform:rotateY(180deg); /* Firefox */
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
 }
@@ -171,7 +172,7 @@ p{
   position: fixed;
   margin-top: 10vh;
   z-index: 200;
-  background-color: rgba(0, 0, 0, 0.808);
+  background-color: rgba(14, 14, 14, 0.808);
   box-sizing: border-box;
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -226,7 +227,7 @@ p{
   right: left;
   position: fixed;
   margin-top: 10vh;
-  z-index: 200;
+  z-index: 700;
   background-color: rgba(0, 0, 0, 0.808);
   box-sizing: border-box;
   text-align: center;
@@ -679,6 +680,7 @@ display: none;
 .All-contacts-div{
   top:0;
   height: 80vh;
+  z-index: 600;
   overflow: scroll;
 }
 

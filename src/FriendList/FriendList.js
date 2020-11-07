@@ -1,6 +1,6 @@
 import React from 'react';
 import './FriendList.css';
-import add_friend from '../media/add_friend_icon.png'
+import add_friend from '../media/add_friend_icon.png';
 // To show the people who sent you friend request
 
 const FriendList = (props) =>{
