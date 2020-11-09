@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import Backdrop from '../Backdrop/Backdrop.js';
+// import Backdrop from '../Backdrop/Backdrop.js';
 import './Discover.css';
 
 class  Discover extends Component {
@@ -35,16 +35,7 @@ class  Discover extends Component {
                         <p className='Send-Friendrequest' onClick={()=>{this.props.sendFriendRequest(key,this.props.peopleList[key])}} >Send request</p>
                         </div>   )  
             }
-            // if(this.props.friendRequestsReceived.indexOf(key)>=0){
-            //     // console.log(this.props.peopleList[key]);
-            //         return (
-            //             <div style={{float:'left'}} className="Discover-contact-card" key={key} disabled={!this.props.userBusy} >
-            //             <img src={this.props.peopleList[key].userPic} alt="contactListPic" className='Discover-contactListPic' />
-            //             {/* <span>User Online</span> */}
-            //             <p key={key} className='Discover-contact-name' id='onlinePerson' >  {this.props.peopleList[key].userName} </p>
-            //             <p className='Send-Friendrequest' onClick={()=>{this.props.sendFriendRequest(key,this.props.peopleList[key])}} >Received request</p>
-            //             </div>   )  
-            // }
+            return null
 
         })}
     </div>

@@ -33,6 +33,10 @@ import FriendRequestsReceived from './FriendRequestsReceived/FriendRequestsRecei
 import Backdrop from './Backdrop/Backdrop.js';
 import BackdropRight from './BackdropRight/BackdropRight.js';
 
+// To enable drag-and-drop //
+import Draggable from 'react-draggable';  
+// ^^ To enable drag-and-drop ^^ //
+
 var firebaseConfig = {
     apiKey: "AIzaSyBw8TC9om3UZO9HPHkOOn0zm0VYjmgmvnc",
     authDomain: "chatbox-390df.firebaseapp.com",
@@ -66,7 +70,7 @@ const ScreenWidth = window.screen.width;
 // const ScreenHeight = window.screen.height;
 
 // Main class begin // 
-class App_holder extends Component {
+class AppHolder extends Component {
 
     constructor(props) {
         super(props);
@@ -104,6 +108,7 @@ class App_holder extends Component {
         friendListIds: [],              // To maintain friend list Ids
         CallOtherScreen: false,         // To show connect now screen 
         friendScreenSharing:false,      // To detect if friend is Screensharing 
+        activeDrags: 0,                 // To control drags
 
     }
 
@@ -778,6 +783,8 @@ class App_holder extends Component {
 
 
     render() {
+        // const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
+
         let sideDrawerClasses = ['Side-drawer', 'Drawer-close'];                    //Friend request drawer classes 
         let sideDrawerClassesLeft = ['Side-drawer-left', 'Left-Drawer-close'];      //Contact drawer classes 
         let sideDrawerClassesMessages = ['Side-drawer-messages', 'Drawer-close-messages'];                    //Friend request drawer classes 
@@ -936,6 +943,11 @@ class App_holder extends Component {
                         <div className='Both-Videos'>
                             <video id="friendsVideo" className={friendsVideoClasses.join(' ')} style={{ width: ScreenWidth }} ref={this.friendsVideo} autoPlay >sdfsf</video>
                             <img className='Messages-button' alt="Side-drawer-button" src={side_drawer} onClick={this.drawerToggle} />
+                            <Draggable 
+                            bounds={{top: -700, left: -1200, right: 0, bottom: 0}} 
+                            // {...dragHandlers}
+                            // defaultPosition= {{x: 500, y: 500}}
+                            >
                             <div className='myVideo-and-controls'>
                                 <img id="videoOn" className='videoOn' src={video_off} onClick={this.resumeVideo} hidden={this.state.videoOn} alt='Video on' />
                                 <img id="videoOff" className='videoOff' src={video_on} onClick={this.stopVideo} hidden={!this.state.videoOn} alt='Video off' />
@@ -945,9 +957,12 @@ class App_holder extends Component {
                                 <img id="screenShare" className='Start-share' src={screen_share} hidden={!this.state.callConnected || this.state.screenShare} alt='Screenshare-start' onClick={this.shareScreenStart} />
                                 <img id="screenShare" className='Stop-share' src={screen_share} hidden={!this.state.screenShare} alt='Screenshare-stop' onClick={this.shareScreenStop} />
                                 {/* <button className='Stop-share' hidden={!this.state.screenShare} onClick={this.shareScreenStop}>Stop share</button> */}
-                                <video id="self-view" className={selfVideoClasses.join(' ')} autoPlay muted ></video>
+                                 {/* <div className="box"> */}
+                                 <video id="self-view" className={selfVideoClasses.join(' ')} autoPlay muted ></video>
+                                {/* </div> */}
                                 {/* <Self_video/> */}
                             </div>
+                            </Draggable>
                             <br></br>
                             <button variant="contained" color="secondary" onClick={this.endCall} className='End-call-button' > End Call </button>
                             {/* } */}
@@ -1156,4 +1171,4 @@ class App_holder extends Component {
 
 }
 
-export default App_holder;
+export default AppHolder;

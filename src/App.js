@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import App_holder from './App_holder';
-import * as firebase from 'firebase';
+import AppHolder from './AppHolder';
+import * as firebase from 'firebase/app';
 import Login_button from './media/login_button_white.png';
 import chat_app_logo from './media/chat_app_logo.png';
 
@@ -88,7 +88,7 @@ class App extends Component {
       // If the user is logged in // 
       if(this.state.loggedIn){            
         return(
-          <App_holder
+          <AppHolder
           userName={this.state.userName}
           userEmail={this.state.userEmail}
           userPic={this.state.userPic}

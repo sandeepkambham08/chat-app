@@ -18,6 +18,7 @@ return(
                                     <p className='Decline Friendrequest'onClick={()=>{props.declineFriendRequest(key,props.peopleList[key])}}  >Decline</p>
                                     </div>   )
                         }
+                        return null
                     })}
     </div>
 )}

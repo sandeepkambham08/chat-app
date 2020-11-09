@@ -58,6 +58,7 @@ const FriendList = (props) =>{
                                 )
                             }
                         } 
+                        return null
                 })}
                 {/* <button className='Discover-button-friends'>+</button> */}
                 <div className={AddFriendsBlock.join(' ')}  onClick={()=>props.drawerLeftToggle()} >
