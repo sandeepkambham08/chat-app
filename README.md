@@ -15,7 +15,9 @@ Chat app
   - Save or delete received files 
   - End the call and start a new call
 
+1. Login and Send request - User1 
 ![Alt text](./src/media/Chat-app-gif/Chat-app-1-login.gif "Chat-app-1-login_gif1")
+2. Login and accept friend request - User 2
 ![Alt text](./src/media/Chat-app-gif/Chat-app-2-acceptRequest.gif "Chat-app-1-acceptRequest_gif2")
 
 ## Experiences gained by developing this project 
