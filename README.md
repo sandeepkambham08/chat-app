@@ -1,7 +1,7 @@
-Chat app 
+##Chat app 
 
 
-## This is a video call app which is developed using webRTC technology
+This is a video call app which is developed using webRTC technology and react.js.  
 
 ## Features in app :
   - Login with google 
@@ -15,10 +15,24 @@ Chat app
   - Save or delete received files 
   - End the call and start a new call
 
-1. Login and Send request - User1 
-![Alt text](./src/media/Chat-app-gif/Chat-app-1-login.gif "Chat-app-1-login_gif1")
-2. Login and accept friend request - User 2
-![Alt text](./src/media/Chat-app-gif/Chat-app-2-acceptRequest.gif "Chat-app-1-acceptRequest_gif2")
+1. Login and Send request - (User-1 screen)
+![Alt text](./src/media/Chat-app-gif/Chat-app-1-Login.gif "Login")
+
+
+2. Login and accept friend request - (User-2 screen)
+![Alt text](./src/media/Chat-app-gif/Chat-app-2-AcceptRequest.gif "Accept-Request")
+
+
+3. Call friend - (User-2 screen)
+![Alt text](./src/media/Chat-app-gif/Chat-app-3-CallFriend.gif "Call-Friend")
+
+
+4. Accept Call - (User-1 screen)
+![Alt text](./src/media/Chat-app-gif/Chat-app-4-AcceptCall.gif "Accept-Call")
+
+
+5. Chat, File transfer & Screen share (User-2 Screen)
+![Alt text](./src/media/Chat-app-gif/Chat-app-5-FileTransfer-ScreenShare.gif "Chat-FileTransfer-ScreenShare")
 
 ## Experiences gained by developing this project 
 **1.** *[React](https://reactjs.org/)* : Project is developed using React as the main focus.
@@ -49,10 +63,25 @@ Chat app
   - Authentication : This is used to help users login/signup using a google account. 
   - Hosting : The website is hosted using Firebase hosting and can be accessed using the link below.
   
- To access the developed website, visit : .....
+ To access the developed website, visit : *[Chat-app](https://chatbox-390df.web.app/)*
 
 
-
+## How to run on your system 
+1. Clone this repository(find the repository URL above)
+  
+  `$ git clone [repository URL]`
+  
+2. Make the project your working directory 
+  
+  `$ cd [local repository]`
+  
+3. Install the application modules by typing 
+  
+  `$ npm install`
+  
+4. Finally run the app by typing
+  
+  `$ npm start`
 
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
