@@ -15,6 +15,9 @@ Chat app
   - Save or delete received files 
   - End the call and start a new call
 
+![Alt text](./src/media/Chat-app-gif/Chat-app-1-login.gif "Chat-app-1-login_gif1")
+![Alt text](./src/media/Chat-app-gif/Chat-app-1-acceptRequest.gif "Chat-app-1-acceptRequest_gif2")
+
 ## Experiences gained by developing this project 
 **1.** *[React](https://reactjs.org/)* : Project is developed using React as the main focus.
   - Great understanding of working with states and props.
