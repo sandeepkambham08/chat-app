@@ -14,7 +14,7 @@ This is a video call app which is developed using webRTC technology and react.js
   - Send messages/files inside call 
   - Save or delete received files 
   - End the call and start a new call
-
+/Users/sandeepkambham/Documents/chat-app/src/media/Chat-app-gif/Chat-app-2-AcceptRequest.gif
 1. Login and Send request - (User-1 screen)
 ![Alt text](./src/media/Chat-app-gif/Chat-app-1-Login.gif "Login")
 
