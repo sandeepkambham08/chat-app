@@ -1,13 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Syne&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Syne&display=swap");
 
-html *
-{
-   font-family: 'Syne', sans-serif !important ;
-   overscroll-behavior-y: none;
-   /* outline: none !important; */
+html * {
+  font-family: "Syne", sans-serif !important ;
+  overscroll-behavior-y: none;
+  /* outline: none !important; */
 }
 
-img{
+img {
   /* user-drag: none;  */
   user-select: none;
   -moz-user-select: none;
@@ -32,17 +31,16 @@ img{
   float: left;
 }
 
-.mirror-video{
-  -moz-transform:rotateY(180deg); /* Firefox */
+.mirror-video {
+  -moz-transform: rotateY(180deg); /* Firefox */
   -webkit-transform: scaleX(-1);
   transform: scaleX(-1);
 }
 
 .App {
-  font-family: 'Syne', sans-serif !important ;
-  
+  font-family: "Syne", sans-serif !important ;
+
   /* text-align: center; */
-  
 }
 .App-header {
   background-color: #282c34;
@@ -58,108 +56,106 @@ img{
   position: fixed;
 }
 
-.App-header p{
+.App-header p {
   text-align: center;
   color: antiquewhite;
 }
-.App-body{
+.App-body {
   text-align: center;
 }
-.App-footer{
+.App-footer {
   margin-top: 28vh;
   margin-left: auto;
   text-align: center;
 }
 
-.App-footer p{
+.App-footer p {
   color: antiquewhite;
   padding: 0.5vh 0;
   background-color: rgba(121, 118, 118, 0.651);
 }
 
-
-.Side-drawer-button{
+.Side-drawer-button {
   width: 38px;
   height: 38px;
   display: block;
-  right:0;
+  right: 0;
   margin: 2vh 1vw 0 0;
   position: fixed;
   cursor: pointer;
   border-radius: 60px;
-  padding:2px;
+  padding: 2px;
   border: 2px solid rgb(238, 238, 238);
   transition: box-shadow 100ms ease-in;
-  box-shadow:-2px 10px 10px 2px rgb(19, 26, 16);
+  box-shadow: -2px 10px 10px 2px rgb(19, 26, 16);
 }
-.Side-drawer-button:hover{
-  box-shadow:-2px 10px 10px 3px rgb(0, 0, 0);
+.Side-drawer-button:hover {
+  box-shadow: -2px 10px 10px 3px rgb(0, 0, 0);
 }
 
-.notification-icon{
+.notification-icon {
   width: 0.5em;
   height: 0.5em;
   display: block;
-  right:0;
+  right: 0;
   margin: 55px 55px 0 0;
   position: absolute;
   cursor: pointer;
   border-radius: 60px;
-  padding:2px;
+  padding: 2px;
   /* border: 2px solid rgb(238, 238, 238); */
   transition: box-shadow 100ms ease-in;
-  box-shadow:-2px 10px 10px 2px rgb(19, 26, 16);
+  box-shadow: -2px 10px 10px 2px rgb(19, 26, 16);
   animation: blinking 1s ease-in-out forwards 11 alternate;
 }
 
 @keyframes blinking {
-  0%{
+  0% {
     opacity: 0.2;
   }
-  25%{
+  25% {
     opacity: 0.3;
   }
-  50%{
+  50% {
     opacity: 0.5;
   }
-  75%{
+  75% {
     opacity: 0.75;
   }
-  100%{
+  100% {
     opacity: 1;
   }
 }
 
-
-.Messages-button{
+.Messages-button {
   width: 38px;
   height: 38px;
   display: block;
-  left:0;
+  left: 0;
   margin: 92vh 0vw 0 5vw;
   position: fixed;
   cursor: pointer;
   border-radius: 60px;
   z-index: 400;
-  padding:2px;
+  padding: 2px;
   background-color: rgb(5, 0, 0);
   border: 2px solid rgb(238, 238, 238);
   transition: box-shadow 100ms ease-in;
-  box-shadow:-2px 10px 10px 2px rgb(19, 26, 16);
+  box-shadow: -2px 10px 10px 2px rgb(19, 26, 16);
 }
 
-.Messages-button:hover{
-  box-shadow:-2px 10px 10px 3px rgb(0, 0, 0);
+.Messages-button:hover {
+  box-shadow: -2px 10px 10px 3px rgb(0, 0, 0);
 }
 
 .App-link {
   color: #61dafb;
 }
-p{
+p {
   color: rgb(27, 27, 26);
 }
 
-.split{
+.split {
   height: 100%;
   top: 100;
   display: block;
@@ -167,8 +163,7 @@ p{
   /* padding-top: 20px; */
 }
 
-
-.Videos-block{
+.Videos-block {
   /* background: lightblue; */
   width: 100vw;
   float: left;
@@ -178,7 +173,7 @@ p{
   background-color: rgb(0, 0, 0);
 }
 
-.Side-drawer{
+.Side-drawer {
   height: 100vh;
   width: 20vw;
   right: 0;
@@ -190,15 +185,14 @@ p{
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-
-.Drawer-open{
+.Drawer-open {
   transform: translateX(0);
 }
 
-.Drawer-close{
+.Drawer-close {
   transform: translateX(+100%);
 }
-.Side-drawer-messages{
+.Side-drawer-messages {
   height: 100vh;
   width: 20vw;
   left: 0;
@@ -208,18 +202,18 @@ p{
   box-sizing: border-box;
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.Drawer-open-messages{
+.Drawer-open-messages {
   transform: translateX(0);
 }
-.Drawer-close-messages{
+.Drawer-close-messages {
   transform: translateX(-100%);
 }
 
-.Contacts-drawer-button{
+.Contacts-drawer-button {
   width: 42px;
   height: 42px;
   display: block;
-  left:0;
+  left: 0;
   border-radius: 25px;
   border: 1px solid rgb(255, 255, 255);
   /* background-color: rgba(122, 60, 9, 0.808); */
@@ -227,15 +221,16 @@ p{
   position: fixed;
   cursor: pointer;
   transition: box-shadow 100ms ease-in;
-  box-shadow:3px 7px 7px 2px rgb(19, 26, 16);
+  box-shadow: 3px 7px 7px 2px rgb(19, 26, 16);
 }
-.Contacts-drawer-button:hover{
+.Contacts-drawer-button:hover {
   cursor: pointer;
-  box-shadow:5px 8px 10px 2px rgb(0, 0, 0);
+  box-shadow: 5px 8px 10px 2px rgb(0, 0, 0);
 }
 
-.Side-drawer-left{
+.Side-drawer-left {
   height: 100vh;
+  min-width: 200px;
   width: 20vw;
   right: left;
   position: fixed;
@@ -247,33 +242,32 @@ p{
   transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-
-.Left-Drawer-open{
+.Left-Drawer-open {
   transform: translateX(0);
 }
-.Left-Drawer-close{
-transform: translateX(-100%);
+.Left-Drawer-close {
+  transform: translateX(-100%);
 }
 
-.Hello-name{
+.Hello-name {
   font-size: small;
   display: block;
-  right:left;
+  right: left;
   margin: 6vh 0.5vw 0 5vw;
   position: fixed;
 }
-.Hello-name-right{
+.Hello-name-right {
   font-size: small;
   display: block;
-  right:0;
+  right: 0;
   margin: 6vh 5vw 0 0vw;
   position: fixed;
 }
 
-.caption{
+.caption {
   text-align: center;
 }
-.Both-Videos{
+.Both-Videos {
   /* text-align: center; */
   border: 1px solid rgb(0, 0, 0);
   /* margin-left: 22.5%; */
@@ -282,7 +276,7 @@ transform: translateX(-100%);
   height: 100vh;
   z-index: 100;
 }
-.friendsVideo{
+.friendsVideo {
   border-radius: 10px;
   text-align: center;
   height: 100vh;
@@ -290,19 +284,19 @@ transform: translateX(-100%);
   z-index: 200;
   position: absolute;
 }
-.myVideo-and-controls{
+.myVideo-and-controls {
   position: fixed;
   margin: 80vh 0 0 85vw;
   z-index: 300;
-  transition: background-color 0.5s ease-in-out, padding 0.5s ease-in-out,border-radius 0.5s ease-in-out;
+  transition: background-color 0.5s ease-in-out, padding 0.5s ease-in-out,
+    border-radius 0.5s ease-in-out;
 }
-.myVideo-and-controls:hover{
-background-color: rgba(207, 207, 207, 0.082);
-padding: 0 0em;
-border-radius: 1em;
-
+.myVideo-and-controls:hover {
+  background-color: rgba(207, 207, 207, 0.082);
+  padding: 0 0em;
+  border-radius: 1em;
 }
- .self-view{
+.self-view {
   margin: 30px 0px 0px 40px;
   border-radius: 10px;
   max-width: 160px;
@@ -310,9 +304,10 @@ border-radius: 1em;
   cursor: pointer;
   /* border: 1px solid black; */
   /* transform: scale(-1,1); */
-} 
+}
 
-.videoOff, .videoOn{
+.videoOff,
+.videoOn {
   width: 20px;
   height: 20px;
   padding: 6px;
@@ -325,30 +320,31 @@ border-radius: 1em;
   transition: box-shadow 300ms ease-in;
   transition: background-color 600ms ease-in-out;
 }
-.videoOff:hover, .videoOn:hover{
+.videoOff:hover,
+.videoOn:hover {
   width: 20px;
   height: 20px;
   padding: 6px;
   margin-right: 5px;
   cursor: pointer;
-  box-shadow:1px 5px 5px 1px rgb(35, 36, 36);
+  box-shadow: 1px 5px 5px 1px rgb(35, 36, 36);
 }
 
-.videoOn{
+.videoOn {
   background-color: rgba(250, 58, 58, 0.911);
-  
 }
-.videoOn:hover{
+.videoOn:hover {
   background-color: rgba(90, 89, 89);
 }
 
-.videoOff{
+.videoOff {
   background-color: rgba(2, 92, 17, 0.527);
 }
-.videoOff:hover{
+.videoOff:hover {
   background-color: rgb(90, 89, 89);
 }
-.audioOff,.audioOn{
+.audioOff,
+.audioOn {
   width: 20px;
   height: 20px;
   padding: 6px;
@@ -361,20 +357,21 @@ border-radius: 1em;
   transition: box-shadow 300ms ease-in;
   transition: background-color 600ms ease-in-out;
 }
-.audioOff{
+.audioOff {
   background-color: rgba(2, 92, 17, 0.527);
 }
-.audioOff:hover{
+.audioOff:hover {
   background-color: rgb(90, 89, 89);
 }
-.audioOn{
+.audioOn {
   background-color: rgba(228, 1, 1, 0.808);
 }
-.audioOn:hover{
+.audioOn:hover {
   background-color: rgb(90, 89, 89);
 }
 
-.Start-share, .Stop-share{
+.Start-share,
+.Stop-share {
   width: 20px;
   height: 20px;
   padding: 6px;
@@ -388,27 +385,27 @@ border-radius: 1em;
   transition: background-color 300ms ease-in-out;
 }
 
-.Start-share{
+.Start-share {
   background-color: rgba(211, 211, 212, 0.5);
 }
-.Start-share:hover{
+.Start-share:hover {
   width: 30px;
   height: 30px;
   padding: 2px;
   background-color: white;
-  box-shadow:1px 5px 5px 1px rgb(35, 36, 36);
+  box-shadow: 1px 5px 5px 1px rgb(35, 36, 36);
 }
-.Stop-share{
+.Stop-share {
   background-color: rgba(175, 42, 18, 0.363);
 }
-.Stop-share:hover{
+.Stop-share:hover {
   width: 30px;
   height: 30px;
   padding: 2px;
   background-color: rgb(250, 4, 4);
 }
 
-.Conversation-block{
+.Conversation-block {
   padding-top: 0px;
   text-align: center;
   width: 90%;
@@ -417,18 +414,18 @@ border-radius: 1em;
   border: 2px solid gray;
   border-radius: 10px;
   background: lavenderblush;
-  overflow: scroll
+  overflow: scroll;
 }
-.Conversation-block p{
-color: #313133
+.Conversation-block p {
+  color: #313133;
 }
 
-.Message-input-box{
+.Message-input-box {
   display: block;
   float: left;
 }
 
-.textInput{
+.textInput {
   margin: 5% 0 0 20%;
   border-radius: 7px;
   width: 90%;
@@ -436,7 +433,7 @@ color: #313133
 
 .Your-input {
   word-wrap: break-word;
-  margin-left:9% ;
+  margin-left: 9%;
   max-width: 90%;
   color: rgb(250, 248, 245) !important;
   background-color: #545657b2;
@@ -448,7 +445,7 @@ color: #313133
 
 .Friend-input {
   word-wrap: break-word;
-  margin-right:9% ;
+  margin-right: 9%;
   max-width: 90%;
   background-color: #61dafb;
   text-align: left;
@@ -458,26 +455,24 @@ color: #313133
   border-bottom-left-radius: 2px;
 }
 
-.who-tag{
+.who-tag {
   font-weight: bolder;
 }
 
-.textInput:disabled{
+.textInput:disabled {
   opacity: 50%;
-} 
+}
 
-.Upload-button{
+.Upload-button {
   display: block;
   float: left;
   cursor: pointer;
 }
 
-.File-options{
+.File-options {
   display: block;
   float: left;
 }
-
-
 
 .App-logo {
   height: 40vmin;
@@ -489,8 +484,8 @@ color: #313133
   font-weight: bolder;
 } */
 
-.inputFile{
-  font-family: 'Syne', sans-serif;
+.inputFile {
+  font-family: "Syne", sans-serif;
 }
 
 /* input[type="file"] {
@@ -503,11 +498,11 @@ color: #313133
   cursor: pointer;
 }
 
-.sendButton{
-  font-family: 'Syne', sans-serif;
-  padding:5px 0px;
+.sendButton {
+  font-family: "Syne", sans-serif;
+  padding: 5px 0px;
   margin: 5px 0 0 105%;
-  border:1px solid rgb(175, 173, 173);
+  border: 1px solid rgb(175, 173, 173);
   width: 7em;
   border-radius: 10px;
   background-color: rgb(76, 141, 163);
@@ -516,18 +511,16 @@ color: #313133
   color: antiquewhite;
   cursor: pointer;
 }
-.sendButton:disabled{
-display: none;
+.sendButton:disabled {
+  display: none;
 }
 
-.Save-button{
-  font-family: 'Syne', sans-serif;
+.Save-button {
+  font-family: "Syne", sans-serif;
   font-size: 5px;
 }
 
- /* Buttons  */
-
-
+/* Buttons  */
 
 .answerButton {
   border: none;
@@ -539,20 +532,21 @@ display: none;
   outline: none;
   position: relative;
   padding: 10px;
-  }
+}
 
-.button:hover, .button:focus {
+.button:hover,
+.button:focus {
   color: #313133;
   transform: translateY(-6px);
   cursor: pointer;
-  box-shadow:1px 5px 5px 1px rgb(35, 36, 36);
+  box-shadow: 1px 5px 5px 1px rgb(35, 36, 36);
 }
-
 
 .answerButton::after {
   z-index: 200;
-  content: '';
-  width: 30px; height: 30px;
+  content: "";
+  width: 30px;
+  height: 30px;
   border-radius: 100%;
   color: rgb(255, 251, 251);
   border: 6px solid green;
@@ -563,7 +557,6 @@ display: none;
   transform: translate(-50%, -50%);
   animation: ring 1.5s infinite;
 }
-
 
 @keyframes ring {
   0% {
@@ -578,11 +571,11 @@ display: none;
   }
 }
 
-@media (max-width:500px){
-  .friendsVideo{
+@media (max-width: 500px) {
+  .friendsVideo {
     max-width: 70vw;
   }
-  .Both-Videos{
+  .Both-Videos {
     /* text-align: center; */
     /* border: 1px solid black; */
     /* margin-left: 25%; */
@@ -601,21 +594,21 @@ display: none;
   } */
 }
 
-.preview{
+.preview {
   width: 10vh;
   height: 10vh;
 }
-.chat-app-logo{
+.chat-app-logo {
   width: 14vw;
   margin: 30vh 0 0 43vw;
   text-align: center;
   border-radius: 9vw;
   border: 1.5px solid antiquewhite;
   transition: box-shadow 300ms ease-in;
-  box-shadow:5px 10px 10px 2px rgb(71, 71, 71);
+  box-shadow: 5px 10px 10px 2px rgb(71, 71, 71);
 }
 
-.logInButton{
+.logInButton {
   width: 14vw;
   margin: 5vh 0 0 43vw;
   text-align: center;
@@ -623,12 +616,11 @@ display: none;
   cursor: pointer;
   transition: box-shadow 300ms ease-in;
 }
-.logInButton:hover{
-  box-shadow:5px 10px 10px 2px rgb(71, 71, 71);
+.logInButton:hover {
+  box-shadow: 5px 10px 10px 2px rgb(71, 71, 71);
 }
 
-
-.Contact-list{
+.Contact-list {
   color: antiquewhite;
 }
 
@@ -641,26 +633,24 @@ display: none;
 #onlinePerson {
   /* background-color: rgb(14, 177, 9); */
   border-radius: 5em;
-  padding: .3em;
+  padding: 0.3em;
   cursor: pointer;
 }
 
-#offlinePerson{
+#offlinePerson {
   /* background-color: rgb(189, 62, 3); */
   border-radius: 5em;
-  padding: .3em;
+  padding: 0.3em;
 }
 #offlinePerson span {
-  display:none;
+  display: none;
 }
 /* #offlinePerson:hover{
   border: 2px solid beige;
 
 } */
 
-
-
-.Contact-list-item-busy span{
+.Contact-list-item-busy span {
   display: none;
 }
 
@@ -669,19 +659,15 @@ display: none;
   font-size: 0.7em;
 }
 
-
-.contactListPic{
+.contactListPic {
   width: 40px;
   height: 40px;
   border-radius: 20px;
   text-align: center;
 }
 
-
-
-
-.Sign-out-button{
-  background-color:  #282c34;
+.Sign-out-button {
+  background-color: #282c34;
   color: antiquewhite;
   text-align: center;
   /* margin-top: 72%; */
@@ -694,32 +680,32 @@ display: none;
 .Sign-out-button:hover {
   background-color: #a02219;
   font-weight: bolder;
-  box-shadow:5px 10px 10px 2px rgb(19, 26, 16);
+  box-shadow: 5px 10px 10px 2px rgb(19, 26, 16);
   cursor: pointer;
 }
 
-.All-contacts-div{
-  top:0;
+.All-contacts-div {
+  top: 0;
   height: 80vh;
   z-index: 600;
   overflow: scroll;
 }
 
-.Sign-out-button-div{
+.Sign-out-button-div {
   margin-top: 4vh;
   bottom: 0;
 }
 
-.Main-profile-pic{
+.Main-profile-pic {
   width: 200px;
   height: 200px;
   border-radius: 80%;
   margin-left: auto;
   /* border: 1px solid rgb(9, 66, 2); */
-  box-shadow:5px 10px 10px 2px rgb(19, 26, 16);
+  box-shadow: 5px 10px 10px 2px rgb(19, 26, 16);
 }
 
-.Welcome-screen{
+.Welcome-screen {
   z-index: 100;
   display: block;
   margin-top: 30vh;
@@ -729,72 +715,72 @@ display: none;
   align-content: center;
 }
 
-.App-header span{
-display: none;
-transition: display 600ms ease-in;
+.App-header span {
+  display: none;
+  transition: display 600ms ease-in;
 }
 
-.App-header:hover span{
+.App-header:hover span {
   display: inline-block;
   font-size: 0.5em;
   color: antiquewhite;
 }
 
-.Connect-now-button{
-  background-color:  #01920d;
+.Connect-now-button {
+  background-color: #01920d;
   color: antiquewhite;
   text-align: center;
   border-radius: 15px;
   padding: 7px;
-  margin:60% 10px;
+  margin: 60% 10px;
   font-weight: bolder;
   /* display: block;
   float: left; */
   border: 1px solid rgb(189, 185, 185);
   transition: background-color 300ms ease-in;
-/* transition: font-weight 100ms ease-in; */
+  /* transition: font-weight 100ms ease-in; */
 }
-.Connect-now-button:hover{
-color: rgb(255, 255, 255);
-background-color: #05ad0d;
-border: 1px solid  rgb(158, 160, 158);
-font-weight: bolder;
-box-shadow:2px 5px 5px 1px rgb(19, 26, 16);
-cursor: pointer;
+.Connect-now-button:hover {
+  color: rgb(255, 255, 255);
+  background-color: #05ad0d;
+  border: 1px solid rgb(158, 160, 158);
+  font-weight: bolder;
+  box-shadow: 2px 5px 5px 1px rgb(19, 26, 16);
+  cursor: pointer;
 }
 
-.Connect-now-button-block{
+.Connect-now-button-block {
   width: 150px;
   display: block;
   float: left;
 }
-.Connect-now-button-offer{
+.Connect-now-button-offer {
   width: 150px;
-  margin:10% 10px;
+  margin: 10% 10px;
   display: block;
   float: left;
 }
 
-.Cannot-connect-now-button{
-  background-color:  #a50000;
+.Cannot-connect-now-button {
+  background-color: #a50000;
   color: antiquewhite;
   text-align: center;
   border-radius: 15px;
   padding: 7px;
-  margin:10% 10px;
+  margin: 10% 10px;
   /* display: block;
   float: left; */
   border: 1px solid rgba(196, 196, 196, 0.774);
   transition: background-color 300ms ease-in;
   cursor: not-allowed;
 }
-.Cannot-connect-now-button:hover{
-  background-color:  #df0505;
+.Cannot-connect-now-button:hover {
+  background-color: #df0505;
   color: rgb(247, 247, 247);
   font-weight: bolder;
 }
-.Back-button{
-  background-color:  #020000;
+.Back-button {
+  background-color: #020000;
   color: antiquewhite;
   text-align: center;
   border-radius: 15px;
@@ -806,12 +792,12 @@ cursor: pointer;
   transition: background-color 300ms ease-in;
   cursor: not-allowed;
 }
-.Back-button:hover{
-  background-color:  #df0505;
+.Back-button:hover {
+  background-color: #df0505;
   color: rgb(247, 247, 247);
   font-weight: bolder;
 }
-.call-other-screen{
+.call-other-screen {
   width: 50%;
   z-index: 100;
   display: block;
@@ -820,29 +806,28 @@ cursor: pointer;
   text-align: center;
 }
 
-.self-pic-and-name{
+.self-pic-and-name {
   width: 200px;
   display: block;
   float: left;
 }
-.Friend-pic-and-name{
+.Friend-pic-and-name {
   /* margin-left: 90px; */
   width: 200px;
   display: block;
   float: left;
 }
 
-.left-drawer-userBusy{
+.left-drawer-userBusy {
   cursor: not-allowed;
 }
 
-
-.End-call-button{
-  padding:1em;
+.End-call-button {
+  padding: 1em;
   background-color: rgb(241, 4, 135);
   color: antiquewhite;
   margin: 90vh 0 0 45vw;
-  z-Index: 400; 
+  z-index: 400;
   width: 5vw;
   border-radius: 0.5em;
   border: 0.5px solid rgb(141, 141, 140);
@@ -850,7 +835,65 @@ cursor: pointer;
   position: absolute;
 }
 
-.End-call-button:hover{
+.End-call-button:hover {
   background-color: rgb(241, 4, 4);
   font-weight: bolder;
+}
+
+@media only screen and (device-height: 667px ) and (-webkit-device-pixel-ratio: 2) {
+  .chat-app-logo {
+    width: 45vw;
+    margin: 30vh 0 0 27vw;
+    border-radius: 40vw;
+  }
+  
+  .logInButton {
+    width: 45vw;
+    margin: 5vh 0 0 27vw;
+    border-radius: 40vw;
+  }
+
+  .Side-drawer-left {
+    width: 70vw;
+  }
+  .Side-drawer {
+    width: 70vw;
+  }
+  .App-header span {
+    padding-top: 2em;
+  }
+  .Main-profile-pic {
+    width: 150px;
+    height: 150px;
+    box-shadow: 2px 7px 10px 2px rgb(19, 26, 16);
+  }
+}
+
+@media only screen and (device-width: 375px) and (device-height: 812px), screen and (device-height: 736px )  and (-webkit-device-pixel-ratio: 3) {
+  .Side-drawer-left {
+    width: 70vw;
+  }
+  .Side-drawer {
+    width: 70vw;
+  }
+  .App-header span {
+    padding-top: 2em;
+  }
+
+  .Main-profile-pic {
+    width: 150px;
+    height: 150px;
+    box-shadow: 2px 7px 10px 2px rgb(19, 26, 16);
+  }
+  .chat-app-logo {
+    width: 45vw;
+    margin: 30vh 0 0 27vw;
+    border-radius: 40vw;
+  }
+  
+  .logInButton {
+    width: 45vw;
+    margin: 5vh 0 0 27vw;
+    border-radius: 40vw;
+  }
 }

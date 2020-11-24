@@ -8,3 +8,27 @@
     top: 10;
     color: rgba(212, 13, 13, 0.863);
 }
+@media (max-width:1000px) { 
+        .Backdrop{
+            margin-left: 200px;   
+        }
+    }
+
+@media only screen 
+    and (device-height : 667px) 
+    and (-webkit-device-pixel-ratio : 2) { 
+        .Backdrop{
+            margin-left: 70vw;   
+        }
+    }
+
+
+@media only screen 
+    and (device-width : 375px) 
+    and (device-height : 812px) 
+    , screen and (device-height: 736px ) 
+    and (-webkit-device-pixel-ratio : 3) { 
+        .Backdrop{
+            margin-left: 70vw;   
+        }
+    }
