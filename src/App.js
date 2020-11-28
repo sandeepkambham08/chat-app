@@ -119,8 +119,8 @@ class App extends Component {
       // To keep user logged in once signed in
       auth.onAuthStateChanged(user =>{
         if(user){
-          console.log("User is already logged in",user);
-          console.log(user.email, user.displayName, user.photoURL, user.providerData[0].uid)
+          console.log("User is already logged in");
+          // console.log(user.email, user.displayName, user.photoURL, user.providerData[0].uid)
           this.setState({loggedIn:true,userName:user.displayName, userEmail:user.email,  userId:user.providerData[0].uid, userPic:user.photoURL});
           db.ref("/Users/"+user.providerData[0].uid+"/profile_detials").set({isActive:true,userName:user.displayName,userEmail:user.email,userId:user.providerData[0].uid,userPic:user.photoURL,userBusy:false});
           db.ref("/Users/"+user.providerData[0].uid+"/rejected").set({callRejected:false});      //To initialize 

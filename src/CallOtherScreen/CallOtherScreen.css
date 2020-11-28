@@ -1,0 +1,20 @@
+.email_status{
+    color: rgb(252, 252, 252);
+    margin-top: 100px;
+    /* margin: auto; */
+    width: fit-content;
+    /* padding: 1em; */
+    font-size: 1.2em;
+    background-color: rgb(63, 61, 61);
+    border-radius: 1em;
+    box-shadow: 3px 6px 10px 1px rgb(19, 26, 16);
+
+}
+.email-sent-message{
+ padding: 0.5em;
+ border: 2px solid rgb(143, 4, 4);
+}
+
+.email-sent{
+    display: none;
+}

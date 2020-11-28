@@ -3,7 +3,7 @@
 html * {
   font-family: "Syne", sans-serif !important ;
   overscroll-behavior-y: none;
-  /* outline: none !important; */
+  outline: none !important;
 }
 
 img {

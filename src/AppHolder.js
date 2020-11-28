@@ -172,6 +172,7 @@ class AppHolder extends Component {
                     })
                     .then(() => {
                         console.log("STEP 6: Added offer on my PC local Description - TIME: " + Date.now());
+                        console.log('-----------*************--------------', pc.localDescription); 
                         this.sendMessage(this.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));
                         console.log('STEP 7: Sent offer to peer - TIME: ' + Date.now());
                     });
@@ -352,6 +353,7 @@ class AppHolder extends Component {
                     )
                     .then(() => {
                         console.log('STEP 13: Added answer to PC localDescription - TIME: ' + Date.now())
+                        console.log('-----------*************--------------', pc.localDescription); 
                         this.sendMessage(that.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));
                         console.log('STEP 14: Sent ANSWER to you')
                         this.setState({ callConnected: true })  //Receiver side message box active 
@@ -876,6 +878,7 @@ class AppHolder extends Component {
                             peopleList={this.state.peopleList}
                             friendId={this.state.friendId}
                             CallOtherScreen={this.state.CallOtherScreen}
+                            userName={this.props.userName}
                             userBusy={this.state.userBusy}
                             userPic={this.props.userPic}
                             backFromCallOtherScreen={this.backFromCallOtherScreen}
