@@ -168,13 +168,12 @@ class AppHolder extends Component {
                 pc.createOffer()
                     .then(offer => {
                         console.log("STEP 5: Created offer on my computer - TIME: " + Date.now());
-                        pc.setLocalDescription(offer)
+                        pc.setLocalDescription(offer).then(() => {
+                            console.log("STEP 6: Added offer on my PC local Description - TIME: " + Date.now());
+                            this.sendMessage(this.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));
+                            console.log('STEP 7: Sent offer to peer - TIME: ' + Date.now());
                     })
-                    .then(() => {
-                        console.log("STEP 6: Added offer on my PC local Description - TIME: " + Date.now());
-                        console.log('-----------*************--------------', pc.localDescription); 
-                        this.sendMessage(this.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));
-                        console.log('STEP 7: Sent offer to peer - TIME: ' + Date.now());
+
                     });
             })
             this.setState({ callingOther: true, CallOtherScreen: false, videoOn: true });
@@ -353,7 +352,7 @@ class AppHolder extends Component {
                     )
                     .then(() => {
                         console.log('STEP 13: Added answer to PC localDescription - TIME: ' + Date.now())
-                        console.log('-----------*************--------------', pc.localDescription); 
+                        // console.log('-----------*************--------------', pc.localDescription); 
                         this.sendMessage(that.state.friendId, JSON.stringify({ 'sdp': pc.localDescription }));
                         console.log('STEP 14: Sent ANSWER to you')
                         this.setState({ callConnected: true })  //Receiver side message box active 
