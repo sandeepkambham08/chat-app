@@ -43,6 +43,7 @@ const CallOtherScreen = (props) => {
                 {props.peopleList[props.friendId].isActive && !props.peopleList[props.friendId].userBusy &&
                 <div className='Connect-now-button-block' >                 
                 <button className='Connect-now-button' onClick={()=>{props.showFriendsFace()}} >Connect now</button> {/*User online button */}
+                <div></div>
                 <button className='Back-button' onClick={()=>{props.backFromCallOtherScreen()}}  >Cancel</button>       {/*User not online button */}
                 </div>}
                 {!props.peopleList[props.friendId].isActive && 
@@ -55,6 +56,7 @@ const CallOtherScreen = (props) => {
                 {props.peopleList[props.friendId].isActive && props.peopleList[props.friendId].userBusy &&
                 <div className='Connect-now-button-block' >    
                 <button className='Cannot-connect-now-button'  >User is Busy </button>       {/*User not online button */}  
+                <div></div>
                 <button className='Back-button' onClick={()=>{props.backFromCallOtherScreen()}}  >Cancel</button>       {/*User not online button */}           
                 </div>}
                 <div className='Friend-pic-and-name'>

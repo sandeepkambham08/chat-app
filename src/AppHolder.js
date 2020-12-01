@@ -15,6 +15,8 @@ import screen_share from './media/screen_share.png';
 import notification_dot from './media/notification_dot.png'
 // ^^^ Image imports ^^^ //
 
+import Ringtone from './media/Ringtone.mp3';
+
 // Import Buttons for file sharing options// 
 import Button from '@material-ui/core/Button';
 import SaveIcon from '@material-ui/icons/Save';
@@ -269,6 +271,7 @@ class AppHolder extends Component {
                     that.setState({ offerReceived: true, userBusy: true, CallOtherScreen: false })         //To make ANSWER  button active
                     db.ref('/Users/' + this.props.userId + '/profile_detials/').update({ userBusy: true });  // Update DB that the user is busy 
                     //   this.setState({callInitiated:true});          // To make video block active 
+                    this.playRingtone();
                 })
                 console.log('Received message : OFFER' + Date.now())
             }
@@ -391,7 +394,7 @@ class AppHolder extends Component {
                 console.log('Friend is not sharing the screen');
             } 
         })
-
+        this.stopRingtone();
     }
 
 
@@ -685,6 +688,7 @@ class AppHolder extends Component {
         // To detect call rejection by friend!
         if (rejected === 'true') {
             db.ref('/Users/' + this.state.friendId + '/rejected/').update({ callRejected: true });
+            this.stopRingtone();
         }
         // Stop Video / Audio after call  // 
         this.stopVideo();
@@ -782,6 +786,13 @@ class AppHolder extends Component {
         this.setState({ CallOtherScreen: false });
     }
 
+    playRingtone = () =>{
+        document.getElementById('Ringtone').play();
+    }
+
+    stopRingtone = () =>{
+        document.getElementById('Ringtone').pause();
+    }
 
     render() {
         // const dragHandlers = {onStart: this.onStart, onStop: this.onStop};
@@ -871,7 +882,7 @@ class AppHolder extends Component {
                                 backdropClicked={this.drawerToggle} />
 
                     {WelcomeScreen}
-
+                    <audio  src={Ringtone} id='Ringtone' className="Ringtone" type="audio"/>
                     {this.state.CallOtherScreen && !this.state.userBusy &&
                         <CallOthersScreen
                             peopleList={this.state.peopleList}

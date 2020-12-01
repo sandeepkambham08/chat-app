@@ -571,29 +571,6 @@ p {
   }
 }
 
-@media (max-width: 500px) {
-  .friendsVideo {
-    max-width: 70vw;
-  }
-  .Both-Videos {
-    /* text-align: center; */
-    /* border: 1px solid black; */
-    /* margin-left: 25%; */
-    border-radius: 10px;
-    /* width: 800px;
-    height: 600px; */
-    z-index: 100;
-  }
-  /* .friendsVideo{
-    border-radius: 10px;
-    text-align: center;
-    width: 800px;
-    height: 600px;
-    z-index: 100;
-    position: absolute;
-  } */
-}
-
 .preview {
   width: 10vh;
   height: 10vh;
@@ -726,34 +703,6 @@ p {
   color: antiquewhite;
 }
 
-.Connect-now-button {
-  background-color: #01920d;
-  color: antiquewhite;
-  text-align: center;
-  border-radius: 15px;
-  padding: 7px;
-  margin: 60% 10px;
-  font-weight: bolder;
-  /* display: block;
-  float: left; */
-  border: 1px solid rgb(189, 185, 185);
-  transition: background-color 300ms ease-in;
-  /* transition: font-weight 100ms ease-in; */
-}
-.Connect-now-button:hover {
-  color: rgb(255, 255, 255);
-  background-color: #05ad0d;
-  border: 1px solid rgb(158, 160, 158);
-  font-weight: bolder;
-  box-shadow: 2px 5px 5px 1px rgb(19, 26, 16);
-  cursor: pointer;
-}
-
-.Connect-now-button-block {
-  width: 150px;
-  display: block;
-  float: left;
-}
 .Connect-now-button-offer {
   width: 150px;
   margin: 10% 10px;
@@ -761,50 +710,14 @@ p {
   float: left;
 }
 
-.Cannot-connect-now-button {
-  background-color: #a50000;
-  color: antiquewhite;
-  text-align: center;
-  border-radius: 15px;
-  padding: 7px;
-  margin: 10% 10px;
-  /* display: block;
-  float: left; */
-  border: 1px solid rgba(196, 196, 196, 0.774);
-  transition: background-color 300ms ease-in;
-  cursor: not-allowed;
-}
-.Cannot-connect-now-button:hover {
-  background-color: #df0505;
-  color: rgb(247, 247, 247);
-  font-weight: bolder;
-}
-.Back-button {
-  background-color: #020000;
-  color: antiquewhite;
-  text-align: center;
-  border-radius: 15px;
-  padding: 7px;
-  /* margin:10px; */
-  /* display: block;
-  float: left; */
-  border: 1px solid rgba(196, 196, 196, 0.774);
-  transition: background-color 300ms ease-in;
-  cursor: not-allowed;
-}
-.Back-button:hover {
-  background-color: #df0505;
-  color: rgb(247, 247, 247);
-  font-weight: bolder;
-}
-.call-other-screen {
+/* .call-other-screen {
   width: 50%;
   z-index: 100;
   display: block;
   margin: 30vh 30vw;
   position: fixed;
   text-align: center;
-}
+} */
 
 .self-pic-and-name {
   width: 200px;
@@ -839,6 +752,71 @@ p {
   background-color: rgb(241, 4, 4);
   font-weight: bolder;
 }
+
+@media (max-width: 500px) {
+  html  *  {
+    overscroll-behavior-y:auto ; 
+   }
+  /* .friendsVideo {
+    max-width: 70vw;
+  } */
+
+  .Welcome-screen {
+    margin-top: 20vh;
+  }
+
+  .Side-drawer-left {
+    background-color: rgba(0, 0, 0, 0.959);
+  }
+  .Side-drawer {
+    background-color: rgba(0, 0, 0, 0.986);
+  }
+
+  .Both-Videos {
+    /* text-align: center; */
+    /* border: 1px solid black; */
+    /* margin-left: 25%; */
+    border-radius: 10px;
+    /* width: 800px;
+    height: 600px; */
+    z-index: 100;
+  }
+  .friendsVideo {
+    width: 98vw !important;
+    margin-left: 1vw;
+  }
+
+  .End-call-button{
+    margin: 90vh 0 0 60vw;
+    width: max-content;
+  }
+  .Side-drawer-messages {
+    width: 60vw;
+  }
+  .textInput {
+    margin: 5% 0 0 10%;
+    border-radius: 7px;
+    width: 90%  !important;
+  }
+  .sendButton {
+    margin: 5px 0 0 10%;
+  }
+  .File-options{
+    display: none;
+  }
+  .myVideo-and-controls {
+    position: fixed;
+    margin: 70vh 0 0 50vw;
+    z-index: 300;
+    transition: background-color 0.5s ease-in-out, padding 0.5s ease-in-out,
+      border-radius 0.5s ease-in-out;
+  }
+  .Start-share,
+  .Stop-share {
+    display: none;
+  }
+}
+
 
 @media only screen and (device-height: 667px ) and (-webkit-device-pixel-ratio: 2) {
   .chat-app-logo {

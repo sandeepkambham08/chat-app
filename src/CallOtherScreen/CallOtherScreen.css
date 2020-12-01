@@ -18,3 +18,107 @@
 .email-sent{
     display: none;
 }
+
+.call-other-screen {
+    width: 50vw;
+    z-index: 100;
+    display: block;
+    margin: 30vh 30vw;
+    position: fixed;
+    text-align: center;
+  }
+
+  .Connect-now-button {
+    background-color: #01920d;
+    color: antiquewhite;
+    text-align: center;
+    border-radius: 15px;
+    padding: 7px;
+    margin: 10px 10px;
+    font-weight: bolder;
+    /* display: block;
+    float: left; */
+    border: 1px solid rgb(189, 185, 185);
+    transition: background-color 300ms ease-in;
+    /* transition: font-weight 100ms ease-in; */
+  }
+  .Connect-now-button:hover {
+    color: rgb(255, 255, 255);
+    background-color: #05ad0d;
+    border: 1px solid rgb(158, 160, 158);
+    font-weight: bolder;
+    box-shadow: 2px 5px 5px 1px rgb(19, 26, 16);
+    cursor: pointer;
+  }
+  
+  .Connect-now-button-block {
+    width: 10vw;
+    padding: 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    float: left;
+  }
+  
+  .Cannot-connect-now-button {
+    background-color: #a50000;
+    color: antiquewhite;
+    text-align: center;
+    border-radius: 15px;
+    padding: 7px;
+    margin: 1em 1em;
+    /* display: block;
+    float: left; */
+    border: 1px solid rgba(196, 196, 196, 0.774);
+    transition: background-color 300ms ease-in;
+    cursor: not-allowed;
+  }
+  .Cannot-connect-now-button:hover {
+    background-color: #df0505;
+    color: rgb(247, 247, 247);
+    font-weight: bolder;
+  }
+  .Back-button {
+    background-color: #3a3939;
+    color: antiquewhite;
+    text-align: center;
+    border-radius: 15px;
+    width: fit-content;
+    margin: auto;
+    padding: 7px 1em;
+    /* margin:10px; */
+    /* display: block;
+    float: left; */
+    border: 1px solid rgba(196, 196, 196, 0.774);
+    transition: background-color 300ms ease-in;
+  }
+  .Back-button:hover {
+    background-color: #0c0c0c;
+    color: rgb(247, 247, 247);
+    font-weight: bolder;
+  }
+
+  @media (max-width: 500px) {
+    .call-other-screen {
+        width: 80vw;
+        margin: 15vh 25vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+    }
+    .Connect-now-button-block {
+        width: 50vw;
+        padding: 2vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        float: left;
+      }
+    .Main-profile-pic{
+        width: 40vw;
+        height: 40vw;
+    }
+    .Cannot-connect-now-button {
+
+    }
+  }

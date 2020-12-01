@@ -133,6 +133,33 @@
     cursor: not-allowed;
     pointer-events: none;
 }
+
+@media (max-width:500px){
+    .Friends-block{
+        margin-top: 50vh;
+        margin-left: 2.5%;
+        width: 95%;
+    }
+    .Friend-pic{
+        width: 50px;
+        height: 50px;
+      }
+      .Contact-list-item-online, .Contact-list-item-busy, .Contact-list-item-offline {
+        padding-top: 0.3em;
+        margin-bottom: 0.3em;
+        /* width:13vw; */
+        /* margin-left:1em ; */
+        margin-right:0.5em ;
+    }
+    .Add-friends-button{
+        float: left;
+        margin: 5px 0 30px 20px;
+        width: 50px;
+        border-radius: 9em;
+        transition: box-shadow 200ms ease-in-out;
+    }
+}
+
 @media only screen 
     and (device-height : 667px) 
     and (-webkit-device-pixel-ratio : 2) { 
